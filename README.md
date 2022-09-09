@@ -1,2 +1,6 @@
 # bezier-clipping
-intersection for bezier curves
+intersection for Bezier curves
+
+find intersection points between two Bezier curves
+
+limitation: not for overlapping curves
