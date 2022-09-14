@@ -15,10 +15,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ControlPoint.cpp">
+    <ClCompile Include="Point.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ControlPoint.ixx">
+    <ClCompile Include="Point.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Bspline.cpp">
