@@ -54,8 +54,15 @@ int Bspline::findKnotSpan(double u) const
 
 bool Bspline::checkNumbers() const
 {
+	if (controlPoints.size() < 1 || p_degree < 1)
+	{
+		return false;
+	}
+
 	if (knotVector.size() == controlPoints.size() + p_degree + 1) // m = n + p + 1, knotVector.size() -1 == controlPoints.size() -1 + p_degree + 1
+	{
 		return true;
+	}
 
 	return false;
 }
