@@ -524,6 +524,7 @@ void make_curve23(Bspline& curve1, Bspline& curve2)
 
 void make_curve24(Bspline& curve1, Bspline& curve2)
 {
+	// make sure degree of the curves are one
 	// two points, degree is 1
 	curve1.addPointAndKnots(Point{ 550, 200 });
 	curve1.addPointAndKnots(Point{ 550, 200 });
@@ -534,7 +535,7 @@ void make_curve24(Bspline& curve1, Bspline& curve2)
 
 void make_curve25(Bspline& curve1, Bspline& curve2)
 {
-	// same overlapping closed curves
+	// same closed curves, offset
 	curve1.addPointAndKnots(Point{ 200, 210 });
 	curve1.addPointAndKnots(Point{ 200, 310 });
 	curve1.addPointAndKnots(Point{ 300, 310 });
@@ -580,7 +581,7 @@ void do_test100()
 	dCurve1->curvePoint(0.5, testPt);
 
 	dCurve1 = curve1.decompose(0.5, 0.5);
-	dCurve1->curvePoint(0.5, testPt);
+	//dCurve1->curvePoint(0.5, testPt); // NaN
 
 	dCurve1 = curve1.decompose(1.0, 1.0);
 }
@@ -593,12 +594,12 @@ int main()
 	{
 		int decomp_num{}; // number of iteration for intersection
 
-		Bspline curve1{ 3 }, curve2{ 3 };
+		Bspline curve1{ 3 }, curve2{ 3 }; // p, degree of the curves set to 3
 		std::vector<Point> ptList;
 		std::vector<Bspline> splines;
 		
 		make_curve02(curve1, curve2);
-
+		//do_test100();
 		//std::chrono::steady_clock::time_point start, stop;
 
 		//start = std::chrono::high_resolution_clock::now();
