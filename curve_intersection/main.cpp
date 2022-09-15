@@ -522,9 +522,10 @@ void make_curve23(Bspline& curve1, Bspline& curve2)
 	curve2.addPointAndKnots(Point{ 300, 200 });
 }
 
+
+// make sure degree of the curves are one
 void make_curve24(Bspline& curve1, Bspline& curve2)
 {
-	// make sure degree of the curves are one
 	// two points, degree is 1
 	curve1.addPointAndKnots(Point{ 550, 200 });
 	curve1.addPointAndKnots(Point{ 550, 200 });
@@ -600,6 +601,7 @@ int main()
 		
 		make_curve02(curve1, curve2);
 		//do_test100();
+
 		//std::chrono::steady_clock::time_point start, stop;
 
 		//start = std::chrono::high_resolution_clock::now();
@@ -607,8 +609,8 @@ int main()
 		curve1.findIntersection(curve2, ptList, decomp_num, false);
 		//curve1.bezierIntersection(curve2, ptList, decomp_num, false);
 			
-		//stop = std::chrono::high_resolution_clock::now();
-		/*auto duration = duration_cast<std::chrono::microseconds>(stop - start);
+		/*stop = std::chrono::high_resolution_clock::now();
+		auto duration = duration_cast<std::chrono::milliseconds>(stop - start);
 		std::cout << '\t' << duration.count() << " ms\n";*/
 
 
