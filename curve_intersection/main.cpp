@@ -587,6 +587,7 @@ void do_test100()
 	dCurve1 = curve1.decompose(1.0, 1.0);
 }
 
+void make_curve26(Bspline& curve1, Bspline& curve2);
 
 
 int main()
@@ -595,18 +596,18 @@ int main()
 	{
 		int decomp_num{}; // number of iteration for intersection
 
-		Bspline curve1{ 3 }, curve2{ 3 }; // p, degree of the curves set to 3
+		Bspline curve1{ 3 }; // , curve2{ 3 }; // p, degree of the curves set to 3
 		std::vector<Point> ptList;
-		std::vector<Bspline> splines;
-		
-		make_curve02(curve1, curve2);
+		//std::vector<Bspline> splines;
+		//
+		//make_curve26(curve1, curve2);
 		//do_test100();
 
 		//std::chrono::steady_clock::time_point start, stop;
 
 		//start = std::chrono::high_resolution_clock::now();
 
-		curve1.findIntersection(curve2, ptList, decomp_num, false);
+		//curve1.findIntersection(curve2, ptList, decomp_num, false);
 		//curve1.bezierIntersection(curve2, ptList, decomp_num, false);
 			
 		/*stop = std::chrono::high_resolution_clock::now();
@@ -614,7 +615,7 @@ int main()
 		std::cout << '\t' << duration.count() << " ms\n";*/
 
 
-		std::cout << '\t' << decomp_num << " decomposition(s)\n";
+		/*std::cout << '\t' << decomp_num << " decomposition(s)\n";
 
 		if (ptList.size() == 0)
 		{
@@ -627,7 +628,7 @@ int main()
 				std::cout << std::format("***intersection point #{}: ", i + 1);
 				std::cout << ptList[i] << '\n';
 			}
-		}
+		}*/
 
 	
 		sf::RenderWindow window(sf::VideoMode(800, 800), "Curve Intersection", sf::Style::Titlebar | sf::Style::Close);
@@ -638,8 +639,22 @@ int main()
 			while (window.pollEvent(event))
 			{
 				if (event.type == sf::Event::Closed)
+				{
 					window.close();
+				}
+				else if (event.type == sf::Event::MouseButtonPressed)
+				{
+					if (event.mouseButton.button == sf::Mouse::Left)
+					{
+						sf::Vector2i pos{ sf::Mouse::getPosition(window) };
+						std::cout << pos.x << ' ' << pos.y << std::endl;
+						curve1.addPointAndKnots(Point{ static_cast<double>(pos.x), static_cast<double>(window.getSize().y - pos.y) });
+					}
+				}
 			}
+			window.clear();
+			
+			//curve1.drawCurve(window, sf::Color::Yellow);
 
 			//curve1.drawControlPolygon(window);
 			//curve1.drawConvexHull(window, sf::Color::Yellow);
@@ -647,19 +662,19 @@ int main()
 
 			//curve2.drawControlPolygon(window);
 			//curve2.drawConvexHull(window, sf::Color::Red);
-			curve2.drawCurve(window, sf::Color::Yellow);
+			//curve2.drawCurve(window, sf::Color::Yellow);
 
 
 			
 
-			auto windowSize{ window.getSize() };
+			/*auto windowSize{ window.getSize() };
 
 			for (auto& p : ptList)
 			{
 				sf::CircleShape c{ 3 };
 				c.setPosition(static_cast<float>(p.x) - c.getRadius(), windowSize.y - static_cast<float>(p.y) - c.getRadius());
 				window.draw(c);
-			}
+			}*/
 
 			window.display();
 

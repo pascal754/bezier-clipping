@@ -20,6 +20,7 @@ module Bspline;
 
 const double Bspline::epsilon{ 1e-9 }; // epsilon is for approximate zero and should be much less than u_epsilon
 const double Bspline::u_epsilon{ 0.0001 }; // for knot values
+const double Bspline::u1_epsilon{ u_epsilon / 10.0 }; // for delta u1
 const int Bspline::max_iteration{ 500'000 }; // maximum iteration for overlapping curves
 const int Bspline::max_num_intersection_points{ 100'000 };
 
@@ -676,7 +677,7 @@ void Bspline::searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& 
 		return;
 	}
 
-	if (deltaU1 < u_epsilon) // prevent only one curve is getting smaller, reduce further iterations
+	if (deltaU1 < u1_epsilon) // (deltaU1 < u_epsilon) // prevent only one curve is getting smaller, reduce further iterations
 	{
 		std::cout << "one curve becoming a point.\n";
 
