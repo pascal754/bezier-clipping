@@ -31,11 +31,13 @@ public:
 	void drawCurve(sf::RenderWindow& window, sf::Color col);
 	void drawConvexHull(sf::RenderWindow& window, sf::Color col);
 	std::optional<Bspline> decompose(double u1, double u2) const;
-	void findIntersection(Bspline crv, std::vector<Point>& iPoints, int& iter, bool lineDetection);
+	void findIntersection(Bspline crv, std::vector<Point>& iPoints, int& iter, bool lineDetection); // check curves first and proceed, call searchIntersection()
 	void bezierIntersection(Bspline bs, std::vector<Point>& iPoints, int& iter, bool lineDetection);
 	void printInfo();
 	int findKnotSpan(double u) const;
+	bool checkNumbers() const; // check m = n + p + 1
 private:
+	void searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& iter, bool lineDetection); // internal call
 	void addPoint(const Point& p);
 	int findFirstPointOfConvexHull() const;
 	bool isPointOnLineSegment(const Point& pt, const Bspline& line) const;
