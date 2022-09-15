@@ -319,7 +319,7 @@ void Bspline::drawControlPolygon(sf::RenderWindow& window) const
 
 void Bspline::drawCurve(sf::RenderWindow& window, sf::Color col)
 {
-	if (cp_n >= p_degree)
+	if (checkNumbers())
 	{
 		double step = (knotVector[cp_n + 1] - knotVector[0]) / ((cp_n / 20 + 1) * 200);
 		Point pt;
