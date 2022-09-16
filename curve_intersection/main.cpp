@@ -6,7 +6,10 @@
 #include <vector>
 #include <chrono>
 #include <cstring>
+#include <imgui.h>
+#include <imgui-SFML.h>
 #include <SFML/Graphics.hpp>
+#include <SFML/System/Clock.hpp>
 
 
 import Bspline;
@@ -63,12 +66,18 @@ int main()
 
 	
 		sf::RenderWindow window(sf::VideoMode(800, 800), "Curve Intersection", sf::Style::Titlebar | sf::Style::Close);
+		window.setFramerateLimit(60);
+		ImGui::SFML::Init(window);
+
+		sf::Clock deltaClock;
 
 		while (window.isOpen())
 		{
 			sf::Event event;
 			while (window.pollEvent(event))
 			{
+				ImGui::SFML::ProcessEvent(window, event);
+
 				if (event.type == sf::Event::Closed)
 				{
 					window.close();
@@ -83,6 +92,23 @@ int main()
 					}
 				}
 			}
+
+			ImGui::SFML::Update(window, deltaClock.restart());
+
+			//ImGui::ShowDemoWindow();
+
+			ImGui::Begin("Operations");
+			ImGui::BeginGroup();
+			if (ImGui::Button("Add a point"))
+				std::cout << "Add a point clicked\n";
+			if (ImGui::Button("Delete a point"))
+				std::cout << "Delete a point clicked\n";
+			if (ImGui::Button("Clear the curve"))
+				std::cout << "Clear the curve clicked\n";
+			ImGui::Button("End");
+			ImGui::EndGroup();
+			ImGui::End();
+
 			window.clear();
 			
 			//curve1.drawCurve(window, sf::Color::Yellow);
@@ -106,6 +132,8 @@ int main()
 				c.setPosition(static_cast<float>(p.x) - c.getRadius(), windowSize.y - static_cast<float>(p.y) - c.getRadius());
 				window.draw(c);
 			}*/
+
+			ImGui::SFML::Render(window);
 
 			window.display();
 
