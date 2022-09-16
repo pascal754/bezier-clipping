@@ -78,6 +78,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <ScanSourceForModuleDependencies>true</ScanSourceForModuleDependencies>
+      <TranslateIncludes>false</TranslateIncludes>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -94,7 +95,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <ScanSourceForModuleDependencies>true</ScanSourceForModuleDependencies>
-      <TranslateIncludes>true</TranslateIncludes>
+      <TranslateIncludes>false</TranslateIncludes>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -111,6 +112,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <ScanSourceForModuleDependencies>true</ScanSourceForModuleDependencies>
+      <TranslateIncludes>false</TranslateIncludes>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -127,7 +129,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <ScanSourceForModuleDependencies>true</ScanSourceForModuleDependencies>
-      <TranslateIncludes>true</TranslateIncludes>
+      <TranslateIncludes>false</TranslateIncludes>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -140,6 +142,7 @@
     <ClCompile Include="Bspline.cpp" />
     <ClCompile Include="Bspline.ixx" />
     <ClCompile Include="make_curve.cpp" />
+    <ClCompile Include="make_curve.ixx" />
     <ClCompile Include="Point.cpp" />
     <ClCompile Include="Point.ixx" />
     <ClCompile Include="main.cpp" />
