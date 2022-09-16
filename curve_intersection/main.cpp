@@ -641,6 +641,8 @@ int main()
 					window.close();
 			}
 
+			window.clear();
+
 			//curve1.drawControlPolygon(window);
 			//curve1.drawConvexHull(window, sf::Color::Yellow);
 			curve1.drawCurve(window, sf::Color::Green);
