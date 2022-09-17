@@ -127,6 +127,9 @@ void Bspline::deleteLastPoint()
 
 void Bspline::deleteLastPointAndKnots()
 {
+	if (controlPoints.size() == 0)
+		return;
+
 	deleteLastPoint();
 	makeKnots();
 }

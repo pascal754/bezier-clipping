@@ -21,7 +21,6 @@ public:
 	void basisFuns(int i, double u);
 	void curvePoint(double u, Point& pt);
 	void addPointAndKnots(const Point& p);
-	void deleteLastPoint();
 	void deleteLastPointAndKnots();
 	Point getPoint(int i) const;
 	void findConvexHull();
@@ -37,6 +36,7 @@ public:
 	int findKnotSpan(double u) const;
 	bool checkNumbers() const; // check m = n + p + 1
 private:
+	void deleteLastPoint();
 	void searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& iter, bool lineDetection); // internal call
 	void addPoint(const Point& p);
 	int findFirstPointOfConvexHull() const;
