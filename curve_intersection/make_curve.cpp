@@ -564,12 +564,18 @@ void do_test100()
 
 	dCurve1 = curve1.decompose(0.0, 0.0);
 	dCurve1 = curve1.decompose(0.0, 0.5);
-	dCurve1->curvePoint(0.0, testPt);
-	dCurve1->curvePoint(0.3, testPt);
-	dCurve1->curvePoint(0.5, testPt);
+	if (dCurve1)
+	{
+		dCurve1->curvePoint(0.3, testPt);
+		dCurve1->curvePoint(0.0, testPt);
+		dCurve1->curvePoint(0.5, testPt);
+	}
 
 	dCurve1 = curve1.decompose(0.5, 0.5);
-	//dCurve1->curvePoint(0.5, testPt); // NaN
+	if (dCurve1)
+	{
+		dCurve1->curvePoint(0.5, testPt); // NaN
+	}
 
 	dCurve1 = curve1.decompose(1.0, 1.0);
 }
