@@ -30,7 +30,7 @@ int main()
 	{
 		int decomp_num{}; // number of iteration for intersection
 
-		Bspline curve1{ 3 }; // , curve2{ 3 }; // p, degree of the curves set to 3
+		Bspline curve1{ 3 }, curve2{ 3 }; // p, degree of the curves set to 3
 		std::vector<Point> ptList;
 		//std::vector<Bspline> splines;
 		//
@@ -71,6 +71,7 @@ int main()
 
 		sf::Clock deltaClock;
 
+		bool curve1EditMode{}, curve2EditMode{};
 		while (window.isOpen())
 		{
 			sf::Event event;
@@ -88,7 +89,10 @@ int main()
 					{
 						sf::Vector2i pos{ sf::Mouse::getPosition(window) };
 						std::cout << pos.x << ' ' << pos.y << std::endl;
-						curve1.addPointAndKnots(Point{ static_cast<double>(pos.x), static_cast<double>(window.getSize().y - pos.y) });
+						if (curve1EditMode)
+							curve1.addPointAndKnots(Point{ static_cast<double>(pos.x), static_cast<double>(window.getSize().y - pos.y) });
+						if (curve2EditMode)
+							curve2.addPointAndKnots(Point{ static_cast<double>(pos.x), static_cast<double>(window.getSize().y - pos.y) });
 					}
 				}
 			}
@@ -99,13 +103,54 @@ int main()
 
 			ImGui::Begin("Operations");
 			ImGui::BeginGroup();
-			if (ImGui::Button("Add a point"))
-				std::cout << "Add a point clicked\n";
-			if (ImGui::Button("Delete a point"))
-				std::cout << "Delete a point clicked\n";
-			if (ImGui::Button("Clear the curve"))
-				std::cout << "Clear the curve clicked\n";
-			ImGui::Button("End");
+			if (ImGui::Button("Add a point to curve A"))
+			{
+				curve1EditMode = true;
+			}
+			if (ImGui::Button("Delete the last point from curve A"))
+			{
+				if (ptList.size() != 0)
+				{
+					ptList.clear();
+				}
+				curve1.deleteLastPointAndKnots();
+			}
+			if (ImGui::Button("Finish curve A edit mode"))
+			{
+				curve1EditMode = false;
+			}
+			if (ImGui::Button("Add a point to curve B"))
+			{
+				curve2EditMode = true;
+			}
+			if (ImGui::Button("Delete the last point from curve B"))
+			{
+				if (ptList.size() != 0)
+				{
+					ptList.clear();
+				}
+				curve2.deleteLastPointAndKnots();
+			}
+			if (ImGui::Button("Finish curve B edit mode"))
+			{
+				curve2EditMode = false;
+			}
+			if (ImGui::Button("Find intersection"))
+			{
+				if (ptList.size() != 0)
+				{
+					ptList.clear();
+				}
+				curve1.findIntersection(curve2, ptList, decomp_num, false);
+			}
+			if (ImGui::Button("Decompose and find intersection"))
+			{
+				if (ptList.size() != 0)
+				{
+					ptList.clear();
+				}
+				curve1.bezierIntersection(curve2, ptList, decomp_num, false);
+			}
 			ImGui::EndGroup();
 			ImGui::End();
 
@@ -119,25 +164,25 @@ int main()
 
 			//curve2.drawControlPolygon(window);
 			//curve2.drawConvexHull(window, sf::Color::Red);
-			//curve2.drawCurve(window, sf::Color::Yellow);
+			curve2.drawCurve(window, sf::Color::Yellow);
 
 
 			
 
-			/*auto windowSize{ window.getSize() };
+			auto windowSize{ window.getSize() };
 
 			for (auto& p : ptList)
 			{
 				sf::CircleShape c{ 3 };
 				c.setPosition(static_cast<float>(p.x) - c.getRadius(), windowSize.y - static_cast<float>(p.y) - c.getRadius());
 				window.draw(c);
-			}*/
+			}
 
 			ImGui::SFML::Render(window);
 
 			window.display();
 
-			sf::sleep(sf::milliseconds(100));
+			//sf::sleep(sf::milliseconds(100));
 		}
 	}
 	catch (std::exception& e)
