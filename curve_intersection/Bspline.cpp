@@ -553,7 +553,23 @@ std::optional<Bspline> Bspline::decompose(double u1, double u2) const
 void Bspline::findIntersection(Bspline crv, std::vector<Point>& iPoints, int& iter, bool lineDetection)
 {
 	if (checkNumbers() && crv.checkNumbers())
+	{
 		searchIntersection(crv, iPoints, iter, lineDetection);
+		std::cout << '\t' << iter << " decomposition(s)\n";
+
+		if (iPoints.size() == 0)
+		{
+			std::cout << "No intersection\n";
+		}
+		else
+		{
+			for (int i{}; i < iPoints.size(); ++i)
+			{
+				std::cout << std::format("***intersection point #{}: ", i + 1);
+				std::cout << iPoints[i] << '\n';
+			}
+		}
+	}
 	else
 		std::cout << "m = n + p + 1 not satisfied\n";
 }
@@ -1038,6 +1054,21 @@ void Bspline::bezierIntersection(Bspline bs, std::vector<Point>& iPoints, int& d
 		{
 			if (bezierLists[0][i].has_value() && bezierLists[1][j].has_value())
 				bezierLists[0][i]->searchIntersection(*bezierLists[1][j], iPoints, dNum, lineDetection);
+		}
+	}
+
+	std::cout << '\t' << dNum << " decomposition(s)\n";
+
+	if (iPoints.size() == 0)
+	{
+		std::cout << "No intersection\n";
+	}
+	else
+	{
+		for (int i{}; i < iPoints.size(); ++i)
+		{
+			std::cout << std::format("***intersection point #{}: ", i + 1);
+			std::cout << iPoints[i] << '\n';
 		}
 	}
 } //end bezierIntersection
