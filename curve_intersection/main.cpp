@@ -135,6 +135,7 @@ int main()
 				{
 					curve1EditMode = true;
 					curve2EditMode = false;
+					ptList.clear();
 				}
 				if (ImGui::Button("Delete the last point from curve A"))
 				{
@@ -144,18 +145,19 @@ int main()
 					}
 					curve1.deleteLastPointAndKnots();
 				}
-				if (ImGui::Button("Finish curve A edit mode"))
-				{
-					curve1EditMode = false;
-				}
+
 				if (ImGui::Button("Erase curve A"))
 				{
+					curve1EditMode = false;
+					curve2EditMode = false;
 					curve1.clear();
+					ptList.clear();
 				}
 				if (ImGui::Button("Add a point to curve B"))
 				{
-					curve2EditMode = true;
 					curve1EditMode = false;
+					curve2EditMode = true;
+					ptList.clear();
 				}
 				if (ImGui::Button("Delete the last point from curve B"))
 				{
@@ -165,13 +167,13 @@ int main()
 					}
 					curve2.deleteLastPointAndKnots();
 				}
-				if (ImGui::Button("Finish curve B edit mode"))
-				{
-					curve2EditMode = false;
-				}
+
 				if (ImGui::Button("Erase curve B"))
 				{
+					curve1EditMode = false;
+					curve2EditMode = false;
 					curve2.clear();
+					ptList.clear();
 				}
 				if (ImGui::Button("Find intersection"))
 				{
