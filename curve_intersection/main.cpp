@@ -29,7 +29,6 @@ void printUsage()
 
 
 
-
 int main()
 {
 	try
@@ -135,6 +134,7 @@ int main()
 				if (ImGui::Button("Add a point to curve A"))
 				{
 					curve1EditMode = true;
+					curve2EditMode = false;
 				}
 				if (ImGui::Button("Delete the last point from curve A"))
 				{
@@ -155,6 +155,7 @@ int main()
 				if (ImGui::Button("Add a point to curve B"))
 				{
 					curve2EditMode = true;
+					curve1EditMode = false;
 				}
 				if (ImGui::Button("Delete the last point from curve B"))
 				{
@@ -174,6 +175,8 @@ int main()
 				}
 				if (ImGui::Button("Find intersection"))
 				{
+					curve1EditMode = false;
+					curve2EditMode = false;
 					decomp_num = 0;
 					if (ptList.size() != 0)
 					{
@@ -183,6 +186,8 @@ int main()
 				}
 				if (ImGui::Button("Decompose and find intersection"))
 				{
+					curve1EditMode = false;
+					curve2EditMode = false;
 					decomp_num = 0;
 					if (ptList.size() != 0)
 					{
