@@ -62,6 +62,11 @@ int main()
 		window.setFramerateLimit(60);
 		ImGui::SFML::Init(window);
 
+		sf::RenderWindow childWindow(sf::VideoMode(300, 600), "Operations", sf::Style::Titlebar);
+		childWindow.setFramerateLimit(60);
+		ImGui::SFML::Init(childWindow);
+
+
 		sf::Clock deltaClock;
 
 		bool curve1EditMode{}, curve2EditMode{};
@@ -74,6 +79,11 @@ int main()
 
 				if (event.type == sf::Event::Closed)
 				{
+					if (childWindow.isOpen())
+					{
+						childWindow.close();
+					}
+
 					window.close();
 				}
 				else if (event.type == sf::Event::MouseButtonPressed)
@@ -90,64 +100,99 @@ int main()
 				}
 			}
 
-			ImGui::SFML::Update(window, deltaClock.restart());
+			// Child window event processing
+			if (childWindow.isOpen())
+			{
+				while (childWindow.pollEvent(event))
+				{
+					ImGui::SFML::ProcessEvent(childWindow, event);
+					if (event.type == sf::Event::Closed)
+					{
+						childWindow.close();
+						ImGui::SFML::Shutdown(childWindow);
+					}
+				}
+			}
+
+			// Update
+			const sf::Time dt = deltaClock.restart();
+
+			ImGui::SFML::Update(window, dt);
+
+			if (childWindow.isOpen())
+			{
+				ImGui::SFML::Update(childWindow, dt);
+			}
+
 
 			//ImGui::ShowDemoWindow();
 
-			ImGui::Begin("Operations");
-			ImGui::BeginGroup();
-			if (ImGui::Button("Add a point to curve A"))
-			{
-				curve1EditMode = true;
-			}
-			if (ImGui::Button("Delete the last point from curve A"))
-			{
-				if (ptList.size() != 0)
+			// Add ImGui widgets in the child window
+			if (childWindow.isOpen()) {
+
+				ImGui::Begin("Operations");
+				ImGui::BeginGroup();
+				if (ImGui::Button("Add a point to curve A"))
 				{
-					ptList.clear();
+					curve1EditMode = true;
 				}
-				curve1.deleteLastPointAndKnots();
-			}
-			if (ImGui::Button("Finish curve A edit mode"))
-			{
-				curve1EditMode = false;
-			}
-			if (ImGui::Button("Add a point to curve B"))
-			{
-				curve2EditMode = true;
-			}
-			if (ImGui::Button("Delete the last point from curve B"))
-			{
-				if (ptList.size() != 0)
+				if (ImGui::Button("Delete the last point from curve A"))
 				{
-					ptList.clear();
+					if (ptList.size() != 0)
+					{
+						ptList.clear();
+					}
+					curve1.deleteLastPointAndKnots();
 				}
-				curve2.deleteLastPointAndKnots();
-			}
-			if (ImGui::Button("Finish curve B edit mode"))
-			{
-				curve2EditMode = false;
-			}
-			if (ImGui::Button("Find intersection"))
-			{
-				decomp_num = 0;
-				if (ptList.size() != 0)
+				if (ImGui::Button("Finish curve A edit mode"))
 				{
-					ptList.clear();
+					curve1EditMode = false;
 				}
-				curve1.findIntersection(curve2, ptList, decomp_num, false);
-			}
-			if (ImGui::Button("Decompose and find intersection"))
-			{
-				decomp_num = 0;
-				if (ptList.size() != 0)
+				if (ImGui::Button("Erase curve A"))
 				{
-					ptList.clear();
+					curve1.clear();
 				}
-				curve1.bezierIntersection(curve2, ptList, decomp_num, false);
+				if (ImGui::Button("Add a point to curve B"))
+				{
+					curve2EditMode = true;
+				}
+				if (ImGui::Button("Delete the last point from curve B"))
+				{
+					if (ptList.size() != 0)
+					{
+						ptList.clear();
+					}
+					curve2.deleteLastPointAndKnots();
+				}
+				if (ImGui::Button("Finish curve B edit mode"))
+				{
+					curve2EditMode = false;
+				}
+				if (ImGui::Button("Erase curve B"))
+				{
+					curve2.clear();
+				}
+				if (ImGui::Button("Find intersection"))
+				{
+					decomp_num = 0;
+					if (ptList.size() != 0)
+					{
+						ptList.clear();
+					}
+					curve1.findIntersection(curve2, ptList, decomp_num, false);
+				}
+				if (ImGui::Button("Decompose and find intersection"))
+				{
+					decomp_num = 0;
+					if (ptList.size() != 0)
+					{
+						ptList.clear();
+					}
+					curve1.bezierIntersection(curve2, ptList, decomp_num, false);
+				}
+				ImGui::EndGroup();
+				ImGui::End();
 			}
-			ImGui::EndGroup();
-			ImGui::End();
 
 			window.clear();
 			
@@ -177,8 +222,18 @@ int main()
 
 			window.display();
 
+			// Child window drawing
+			if (childWindow.isOpen())
+			{
+				childWindow.clear();
+				ImGui::SFML::Render(childWindow);
+				childWindow.display();
+			}
+
 			//sf::sleep(sf::milliseconds(100));
 		}
+
+		ImGui::SFML::Shutdown();
 	}
 	catch (std::exception& e)
 	{
