@@ -38,6 +38,7 @@ public:
 	void printInfo();
 	int findKnotSpan(double u) const;
 	bool checkNumbers() const; // check m = n + p + 1
+	void clear();
 private:
 	void deleteLastPoint();
 	void searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& iter, bool lineDetection); // internal call

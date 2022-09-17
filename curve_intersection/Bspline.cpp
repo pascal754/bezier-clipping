@@ -76,6 +76,15 @@ bool Bspline::checkNumbers() const
 	return false;
 }
 
+void Bspline::clear()
+{
+	controlPoints.clear();
+	knotVector.clear();
+	convexHull.clear();
+	isConvexHullUpdated = false;
+	cp_n = -1;
+}
+
 void Bspline::basisFuns(int i, double u)
 {
 	// Algorithm A2.2 pp70
@@ -1046,22 +1055,17 @@ void Bspline::bezierIntersection(Bspline bs, std::vector<Point>& iPoints, int& d
 
 	for (int i{ p_degree }; i <= cp_n; ++i)
 	{
-		auto dCurve{ decompose(knotVector[i], knotVector[i + 1]) };
-		if (dCurve)
-		{
-			bezierLists[0].push_back(dCurve);
-			++dNum;
-		}
+
+		bezierLists[0].push_back(decompose(knotVector[i], knotVector[i + 1]));
+		++dNum;
+
 	}
 
 	for (int i{ bs.p_degree }; i <= bs.cp_n; ++i)
 	{
-		auto dCurve{ bs.decompose(bs.knotVector[i], bs.knotVector[i + 1]) };
-		if (dCurve)
-		{
-			bezierLists[1].push_back(dCurve);
-			++dNum;
-		}
+		
+		bezierLists[1].push_back(bs.decompose(bs.knotVector[i], bs.knotVector[i + 1]));
+		++dNum;
 	}
 
 
