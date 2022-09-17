@@ -65,6 +65,11 @@ int main()
 		childWindow.setFramerateLimit(60);
 		ImGui::SFML::Init(childWindow);
 
+		auto pos{ window.getPosition() };
+		pos.x += window.getSize().x;
+
+		childWindow.setPosition(pos);
+
 
 		sf::Clock deltaClock;
 
