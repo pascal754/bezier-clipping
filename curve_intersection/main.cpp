@@ -49,20 +49,7 @@ int main()
 		std::cout << '\t' << duration.count() << " ms\n";*/
 
 
-		/*std::cout << '\t' << decomp_num << " decomposition(s)\n";
-
-		if (ptList.size() == 0)
-		{
-			std::cout << "No intersection\n";
-		}
-		else
-		{
-			for (int i{}; i < ptList.size(); ++i)
-			{
-				std::cout << std::format("***intersection point #{}: ", i + 1);
-				std::cout << ptList[i] << '\n';
-			}
-		}*/
+		
 
 	
 		sf::RenderWindow window(sf::VideoMode(800, 800), "Curve Intersection", sf::Style::Titlebar | sf::Style::Close);
