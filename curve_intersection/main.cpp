@@ -2,10 +2,16 @@
 // by SM
 // curve intersection
 
-#include <iostream>
-#include <vector>
-#include <chrono>
-#include <cstring>
+//#include <iostream>
+//#include <vector>
+//#include <chrono>
+//#include <cstring>
+
+import <iostream>;
+import <vector>;
+import <chrono>;
+import <cstring>;
+
 #include <imgui.h>
 #include <imgui-SFML.h>
 #include <SFML/Graphics.hpp>
@@ -52,7 +58,7 @@ int main()
 		
 
 	
-		sf::RenderWindow window(sf::VideoMode(800, 800), "Curve Intersection", sf::Style::Titlebar | sf::Style::Close);
+		sf::RenderWindow window(sf::VideoMode(1000, 800), "Curve Intersection", sf::Style::Titlebar | sf::Style::Close);
 		window.setFramerateLimit(60);
 		ImGui::SFML::Init(window);
 
@@ -124,6 +130,7 @@ int main()
 			}
 			if (ImGui::Button("Find intersection"))
 			{
+				decomp_num = 0;
 				if (ptList.size() != 0)
 				{
 					ptList.clear();
@@ -132,6 +139,7 @@ int main()
 			}
 			if (ImGui::Button("Decompose and find intersection"))
 			{
+				decomp_num = 0;
 				if (ptList.size() != 0)
 				{
 					ptList.clear();

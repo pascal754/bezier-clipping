@@ -3,10 +3,13 @@
 
 module;
 
-#include <iostream>
-#include <cmath>
+//#include <iostream>
+//#include <cmath>
 
 module Point;
+
+import <iostream>;
+import <cmath>;
 
 const double Point::epsilon{0.5}; // chosen for screen pixel
 
