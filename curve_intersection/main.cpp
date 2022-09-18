@@ -188,6 +188,12 @@ int main()
 				{
 					curve1EditMode = false;
 					curve2EditMode = false;
+
+					window.clear();
+					curve1.drawCurve(window, sf::Color::Green);
+					curve2.drawCurve(window, sf::Color::Yellow);
+					window.display();
+
 					decomp_num = 0;
 					if (ptList.size() != 0)
 					{

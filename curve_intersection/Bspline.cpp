@@ -29,8 +29,8 @@ import <stdexcept>;
 const double Bspline::epsilon{ 1e-9 }; // epsilon is for approximate zero and should be much less than u_epsilon
 const double Bspline::u_epsilon{ 0.0001 }; // for knot values
 const double Bspline::u1_epsilon{ u_epsilon / 10.0 }; // for delta u1
-const int Bspline::max_iteration{ 500'000 }; // maximum iteration for overlapping curves
-const int Bspline::max_num_intersection_points{ 100'000 };
+const int Bspline::max_iteration{ 20'000 }; // maximum iteration for overlapping curves
+const int Bspline::max_num_intersection_points{ 1'000 };
 
 int Bspline::findKnotSpan(double u) const
 {
