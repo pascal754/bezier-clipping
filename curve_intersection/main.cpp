@@ -2,15 +2,15 @@
 // by SM
 // curve intersection
 
-//#include <iostream>
-//#include <vector>
-//#include <chrono>
-//#include <cstring>
+#include <iostream>
+#include <vector>
+#include <chrono>
+#include <cstring>
 
-import <iostream>;
-import <vector>;
-import <chrono>;
-import <cstring>;
+//import <iostream>;
+//import <vector>;
+//import <chrono>;
+//import <cstring>;
 
 #include <imgui.h>
 #include <imgui-SFML.h>
@@ -61,7 +61,7 @@ int main()
 		window.setFramerateLimit(60);
 		ImGui::SFML::Init(window);
 
-		sf::RenderWindow childWindow(sf::VideoMode(300, 600), "Operations", sf::Style::Titlebar);
+		sf::RenderWindow childWindow(sf::VideoMode(300, 350), "Operations", sf::Style::Titlebar);
 		childWindow.setFramerateLimit(60);
 		ImGui::SFML::Init(childWindow);
 
@@ -75,6 +75,7 @@ int main()
 
 		bool curve1EditMode{}, curve2EditMode{};
 		bool decomposeFirst{};
+		bool imguiOpen{ true };
 		while (window.isOpen())
 		{
 			sf::Event event;
@@ -135,7 +136,10 @@ int main()
 			// Add ImGui widgets in the child window
 			if (childWindow.isOpen()) {
 
-				ImGui::Begin("Operations");
+				ImGui::SetNextWindowPos(ImVec2(5, 5)); // , ImGuiCond_FirstUseEver);
+				ImGui::SetNextWindowSize(ImVec2(280, 300));
+
+				ImGui::Begin("Operations", & imguiOpen, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar);
 				ImGui::BeginGroup();
 				if (ImGui::Button("Add a point to curve A"))
 				{
@@ -159,6 +163,10 @@ int main()
 					curve1.clear();
 					ptList.clear();
 				}
+
+				ImGui::Separator();
+				ImGui::NewLine();
+
 				if (ImGui::Button("Add a point to curve B"))
 				{
 					curve1EditMode = false;
@@ -181,6 +189,9 @@ int main()
 					curve2.clear();
 					ptList.clear();
 				}
+				
+				ImGui::Separator();
+				ImGui::NewLine();
 
 				ImGui::Checkbox("Decompose curves first", &decomposeFirst);
 
