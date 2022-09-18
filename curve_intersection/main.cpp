@@ -22,18 +22,11 @@ import Bspline;
 import Point;
 import make_curve;
 
-void printUsage()
-{
-	std::cout << "Usage: command e | b\n";
-}
-
-
-
 int main()
 {
 	try
 	{
-		int decomp_num{}; // save number of iteration for intersection
+		int decomp_num{}; // save the number of decomposition of curves
 
 		Bspline curve1{ 3 }, curve2{ 3 }; // p, degree of the curves set to 3
 		std::vector<Point> ptList;
@@ -55,6 +48,7 @@ int main()
 
 		bool curve1EditMode{};
 		bool curve2EditMode{};
+		bool curve1ConvexHull{}, curve2ConvexHull{};
 		bool decomposeFirst{};
 		bool imguiOpen{ true };
 		while (window.isOpen())
@@ -142,6 +136,8 @@ int main()
 					ptList.clear();
 				}
 
+				ImGui::Checkbox("Convex Hull for A", &curve1ConvexHull);
+
 				ImGui::Separator();
 				ImGui::NewLine();
 
@@ -168,6 +164,8 @@ int main()
 					ptList.clear();
 				}
 				
+				ImGui::Checkbox("Convex Hull for B", &curve2ConvexHull);
+
 				ImGui::Separator();
 				ImGui::NewLine();
 
@@ -177,6 +175,8 @@ int main()
 				{
 					curve1EditMode = false;
 					curve2EditMode = false;
+					curve1ConvexHull = false;
+					curve2ConvexHull = false;
 
 					window.clear();
 					curve1.drawCurve(window, sf::Color::Green);
@@ -203,13 +203,19 @@ int main()
 
 			window.clear();
 			
-			//curve1.drawControlPolygon(window);
-			//curve1.drawConvexHull(window, sf::Color::Yellow);
 			curve1.drawCurve(window, sf::Color::Green);
+			//curve1.drawControlPolygon(window);
+			if (curve1ConvexHull)
+			{
+				curve1.drawConvexHull(window, sf::Color::White);
+			}
 
-			//curve2.drawControlPolygon(window);
-			//curve2.drawConvexHull(window, sf::Color::Red);
 			curve2.drawCurve(window, sf::Color::Yellow);
+			//curve2.drawControlPolygon(window);
+			if (curve2ConvexHull)
+			{
+				curve2.drawConvexHull(window, sf::Color::Magenta);
+			}
 
 
 			
