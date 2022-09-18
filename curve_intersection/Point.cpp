@@ -8,6 +8,9 @@ module;
 
 module Point;
 
+//import <iostream>;
+//import <cmath>;
+
 const double Point::epsilon{0.5}; // chosen for screen pixel
 
 std::ostream& operator<<(std::ostream& os, const Point& cp)

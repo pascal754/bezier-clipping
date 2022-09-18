@@ -9,6 +9,9 @@ module;
 
 export module Bspline;
 
+//import <vector>;
+//import <optional>;
+
 import Point;
 
 export class Bspline {
@@ -21,7 +24,6 @@ public:
 	void basisFuns(int i, double u);
 	void curvePoint(double u, Point& pt);
 	void addPointAndKnots(const Point& p);
-	void deleteLastPoint();
 	void deleteLastPointAndKnots();
 	Point getPoint(int i) const;
 	void findConvexHull();
@@ -31,11 +33,15 @@ public:
 	void drawCurve(sf::RenderWindow& window, sf::Color col);
 	void drawConvexHull(sf::RenderWindow& window, sf::Color col);
 	std::optional<Bspline> decompose(double u1, double u2) const;
-	void findIntersection(Bspline crv, std::vector<Point>& iPoints, int& iter, bool lineDetection);
+	void findIntersection(Bspline crv, std::vector<Point>& iPoints, int& iter, bool lineDetection); // check curves first and proceed, call searchIntersection()
 	void bezierIntersection(Bspline bs, std::vector<Point>& iPoints, int& iter, bool lineDetection);
 	void printInfo();
 	int findKnotSpan(double u) const;
+	bool checkNumbers() const; // check m = n + p + 1
+	void clear();
 private:
+	void deleteLastPoint();
+	void searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& iter, bool lineDetection); // internal call
 	void addPoint(const Point& p);
 	int findFirstPointOfConvexHull() const;
 	bool isPointOnLineSegment(const Point& pt, const Bspline& line) const;
@@ -47,6 +53,7 @@ private:
 
 	static const double epsilon;
 	static const double u_epsilon;
+	static const double u1_epsilon;
 	static const int max_iteration;
 	static const int max_num_intersection_points;
 

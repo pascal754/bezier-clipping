@@ -17,11 +17,20 @@ module;
 
 module Bspline;
 
+//import <iostream>;
+//import <string>;
+//import <vector>;
+//import <list>;
+//import <chrono>;
+//import <algorithm>;
+//import <format>;
+//import <stdexcept>;
 
 const double Bspline::epsilon{ 1e-9 }; // epsilon is for approximate zero and should be much less than u_epsilon
 const double Bspline::u_epsilon{ 0.0001 }; // for knot values
-const int Bspline::max_iteration{ 500'000 }; // maximum iteration for overlapping curves
-const int Bspline::max_num_intersection_points{ 100'000 };
+const double Bspline::u1_epsilon{ u_epsilon / 10.0 }; // for delta u1
+const int Bspline::max_iteration{ 20'000 }; // maximum iteration for overlapping curves
+const int Bspline::max_num_intersection_points{ 1'000 };
 
 int Bspline::findKnotSpan(double u) const
 {
@@ -50,6 +59,30 @@ int Bspline::findKnotSpan(double u) const
 	}
 
 	return mid;
+}
+
+bool Bspline::checkNumbers() const
+{
+	if (controlPoints.size() < 1 || p_degree < 1)
+	{
+		return false;
+	}
+
+	if (knotVector.size() == controlPoints.size() + p_degree + 1) // m = n + p + 1, knotVector.size() -1 == controlPoints.size() -1 + p_degree + 1
+	{
+		return true;
+	}
+
+	return false;
+}
+
+void Bspline::clear()
+{
+	controlPoints.clear();
+	knotVector.clear();
+	convexHull.clear();
+	isConvexHullUpdated = false;
+	cp_n = -1;
 }
 
 void Bspline::basisFuns(int i, double u)
@@ -111,6 +144,9 @@ void Bspline::deleteLastPoint()
 
 void Bspline::deleteLastPointAndKnots()
 {
+	if (controlPoints.size() == 0)
+		return;
+
 	deleteLastPoint();
 	makeKnots();
 }
@@ -303,7 +339,7 @@ void Bspline::drawControlPolygon(sf::RenderWindow& window) const
 
 void Bspline::drawCurve(sf::RenderWindow& window, sf::Color col)
 {
-	if (cp_n >= p_degree)
+	if (checkNumbers())
 	{
 		double step = (knotVector[cp_n + 1] - knotVector[0]) / ((cp_n / 20 + 1) * 200);
 		Point pt;
@@ -522,7 +558,7 @@ std::optional<Bspline> Bspline::decompose(double u1, double u2) const
 		decomposed.addPoint(qw[j + bias]);
 	}
 
-	if (static_cast<int>(decomposed.knotVector.size()) - 1 != decomposed.cp_n + decomposed.p_degree + 1)
+	if (!decomposed.checkNumbers())
 	{
 		std::cout << "decompose() decomposed curve error; m = n + p + 1 not satisfied, return\n";
 		return {};
@@ -530,6 +566,30 @@ std::optional<Bspline> Bspline::decompose(double u1, double u2) const
 
 	return decomposed;
 } //end decompose
+
+void Bspline::findIntersection(Bspline crv, std::vector<Point>& iPoints, int& iter, bool lineDetection)
+{
+	if (checkNumbers() && crv.checkNumbers())
+	{
+		searchIntersection(crv, iPoints, iter, lineDetection);
+		std::cout << '\t' << iter << " decomposition(s)\n";
+
+		if (iPoints.size() == 0)
+		{
+			std::cout << "No intersection\n";
+		}
+		else
+		{
+			for (int i{}; i < iPoints.size(); ++i)
+			{
+				std::cout << std::format("***intersection point #{}: ", i + 1);
+				std::cout << iPoints[i] << '\n';
+			}
+		}
+	}
+	else
+		std::cout << "m = n + p + 1 not satisfied\n";
+}
 
 void Bspline::findLineThruEndPoints()
 {
@@ -576,7 +636,7 @@ void Bspline::findMinMaxDistance()
 	}
 }
 
-void Bspline::findIntersection(Bspline crv, std::vector<Point>& iPoints, int& dNum, bool lineDetection)
+void Bspline::searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& dNum, bool lineDetection)
 {
 	std::cout << std::format("~~~ Iteration #{} ~~~\n", dNum);
 	std::cout << std::format("curve A u1: {}, u2: {}\n", knotVector.front(), knotVector.back());
@@ -603,7 +663,7 @@ void Bspline::findIntersection(Bspline crv, std::vector<Point>& iPoints, int& dN
 
 	if (deltaU1 < 0 || deltaU2 < 0)
 	{
-		std::cout << "findIntersection() negative delta u, return\n";
+		std::cout << "searchIntersection() negative delta u, return\n";
 		return;
 	}
 
@@ -649,11 +709,11 @@ void Bspline::findIntersection(Bspline crv, std::vector<Point>& iPoints, int& dN
 	if (deltaU1 > deltaU2)
 	{
 		std::cout << "switching two curves\n";
-		crv.findIntersection(*this, iPoints, dNum, lineDetection);
+		crv.searchIntersection(*this, iPoints, dNum, lineDetection);
 		return;
 	}
 
-	if (deltaU1 < u_epsilon) // prevent only one curve is getting smaller, reduce further iterations
+	if (deltaU1 < u1_epsilon) // (deltaU1 < u_epsilon) // prevent only one curve is getting smaller, reduce further iterations
 	{
 		std::cout << "one curve becoming a point.\n";
 
@@ -786,16 +846,16 @@ void Bspline::findIntersection(Bspline crv, std::vector<Point>& iPoints, int& dN
 						isPointOnLineSegment(crv.convexHull.front(), *this) || isPointOnLineSegment(crv.convexHull.back(), *this)
 						)
 					{
-						std::cout << "findIntersection() *** two line segments are touching or (partially) overlapping ***\n";
+						std::cout << "searchIntersection() *** two line segments are touching or (partially) overlapping ***\n";
 					}
 					else
 					{
-						std::cout << "findIntersection() two line segments are on the same line(not overlapping)\n";
+						std::cout << "searchIntersection() two line segments are on the same line(not overlapping)\n";
 					}
 				}
 				else
 				{
-					std::cout << "findIntersection(); two line segments are parallel\n";
+					std::cout << "searchIntersection(); two line segments are parallel\n";
 				}
 
 			}
@@ -877,13 +937,13 @@ void Bspline::findIntersection(Bspline crv, std::vector<Point>& iPoints, int& dN
 		if (bs1)
 		{
 			++dNum;
-			bs1->findIntersection(crv, iPoints, dNum, lineDetection);
+			bs1->searchIntersection(crv, iPoints, dNum, lineDetection);
 		}
 		auto bs2{ decompose(knotVector[0] + deltaU1 / 2.0, knotVector[cp_n + 1]) };
 		if (bs2)
 		{
 			++dNum;
-			bs2->findIntersection(crv, iPoints, dNum, lineDetection);
+			bs2->searchIntersection(crv, iPoints, dNum, lineDetection);
 		}
 		return;
 	} //end if
@@ -960,12 +1020,12 @@ void Bspline::findIntersection(Bspline crv, std::vector<Point>& iPoints, int& dN
 		if (bs1)
 		{
 			++dNum;
-			bs1->findIntersection(*this, iPoints, dNum, lineDetection);
+			bs1->searchIntersection(*this, iPoints, dNum, lineDetection);
 		}
 		auto bs2{ crv.decompose(crv.knotVector[0] + deltaU2 / 2.0, crv.knotVector[crv.cp_n + 1]) };
 		if (bs2) {
 			++dNum;
-			bs2->findIntersection(*this, iPoints, dNum, lineDetection);
+			bs2->searchIntersection(*this, iPoints, dNum, lineDetection);
 		}
 		return;
 	}
@@ -975,26 +1035,35 @@ void Bspline::findIntersection(Bspline crv, std::vector<Point>& iPoints, int& dN
 		if (decomposedC2)
 		{
 			++dNum;
-			decomposedC2->findIntersection(*this, iPoints, dNum, lineDetection);
+			decomposedC2->searchIntersection(*this, iPoints, dNum, lineDetection);
 		}
 		return;
 	}
-} //end findIntersection
+} //end searchIntersection
 
 
 // decompose each curve on knot and find intersection for combination
 void Bspline::bezierIntersection(Bspline bs, std::vector<Point>& iPoints, int& dNum, bool lineDetection)
 {
+	if (!checkNumbers() || !bs.checkNumbers())
+	{
+		std::cout << "m = n + p + 1 not satisfied\n";
+		return;
+	}
+
 	std::vector<std::optional<Bspline>> bezierLists[2];
 
 	for (int i{ p_degree }; i <= cp_n; ++i)
 	{
+
 		bezierLists[0].push_back(decompose(knotVector[i], knotVector[i + 1]));
 		++dNum;
+
 	}
 
 	for (int i{ bs.p_degree }; i <= bs.cp_n; ++i)
 	{
+		
 		bezierLists[1].push_back(bs.decompose(bs.knotVector[i], bs.knotVector[i + 1]));
 		++dNum;
 	}
@@ -1004,7 +1073,22 @@ void Bspline::bezierIntersection(Bspline bs, std::vector<Point>& iPoints, int& d
 		for (size_t j{}; j < bezierLists[1].size(); ++j)
 		{
 			if (bezierLists[0][i].has_value() && bezierLists[1][j].has_value())
-				bezierLists[0][i]->findIntersection(*bezierLists[1][j], iPoints, dNum, lineDetection);
+				bezierLists[0][i]->searchIntersection(*bezierLists[1][j], iPoints, dNum, lineDetection);
+		}
+	}
+
+	std::cout << '\t' << dNum << " decomposition(s)\n";
+
+	if (iPoints.size() == 0)
+	{
+		std::cout << "No intersection\n";
+	}
+	else
+	{
+		for (int i{}; i < iPoints.size(); ++i)
+		{
+			std::cout << std::format("***intersection point #{}: ", i + 1);
+			std::cout << iPoints[i] << '\n';
 		}
 	}
 } //end bezierIntersection
