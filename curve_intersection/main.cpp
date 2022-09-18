@@ -46,10 +46,11 @@ int main()
 
 		sf::Clock deltaClock;
 
-		bool curve1EditMode{};
-		bool curve2EditMode{};
+		bool curve1EditMode{}, curve2EditMode{};
 		bool curve1ConvexHull{}, curve2ConvexHull{};
+		//bool curve1ControlPolygon{}, curve2ControlPolygon{};
 		bool decomposeFirst{};
+		bool lineDetection{};
 		bool imguiOpen{ true };
 		while (window.isOpen())
 		{
@@ -109,7 +110,7 @@ int main()
 			if (childWindow.isOpen()) {
 
 				ImGui::SetNextWindowPos(ImVec2(5, 5)); // , ImGuiCond_FirstUseEver);
-				ImGui::SetNextWindowSize(ImVec2(280, 300));
+				ImGui::SetNextWindowSize(ImVec2(280, 340));
 
 				ImGui::Begin("Operations", & imguiOpen, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar);
 				ImGui::BeginGroup();
@@ -136,6 +137,7 @@ int main()
 					ptList.clear();
 				}
 
+				//ImGui::Checkbox("Control Polygon for A", &curve1ControlPolygon);
 				ImGui::Checkbox("Convex Hull for A", &curve1ConvexHull);
 
 				ImGui::Separator();
@@ -164,6 +166,7 @@ int main()
 					ptList.clear();
 				}
 				
+				//ImGui::Checkbox("Control Polygon for B", &curve2ControlPolygon);
 				ImGui::Checkbox("Convex Hull for B", &curve2ConvexHull);
 
 				ImGui::Separator();
@@ -171,12 +174,16 @@ int main()
 
 				ImGui::Checkbox("Decompose curves first", &decomposeFirst);
 
+				ImGui::Checkbox("Line detection", &lineDetection);
+
 				if (ImGui::Button("Find intersection"))
 				{
 					curve1EditMode = false;
 					curve2EditMode = false;
 					curve1ConvexHull = false;
 					curve2ConvexHull = false;
+					/*curve1ControlPolygon = false;
+					curve2ControlPolygon = false;*/
 
 					window.clear();
 					curve1.drawCurve(window, sf::Color::Green);
@@ -190,11 +197,11 @@ int main()
 					}
 					if (decomposeFirst)
 					{
-						curve1.bezierIntersection(curve2, ptList, decomp_num, false);
+						curve1.bezierIntersection(curve2, ptList, decomp_num, lineDetection);
 					}
 					else
 					{
-						curve1.findIntersection(curve2, ptList, decomp_num, false);
+						curve1.findIntersection(curve2, ptList, decomp_num, lineDetection);
 					}
 				}
 				ImGui::EndGroup();
@@ -203,19 +210,27 @@ int main()
 
 			window.clear();
 			
-			curve1.drawCurve(window, sf::Color::Green);
-			//curve1.drawControlPolygon(window);
+			/*if (curve1ControlPolygon)
+			{
+				curve1.drawControlPolygon(window);
+			}*/
 			if (curve1ConvexHull)
 			{
 				curve1.drawConvexHull(window, sf::Color::White);
 			}
 
-			curve2.drawCurve(window, sf::Color::Yellow);
-			//curve2.drawControlPolygon(window);
+			curve1.drawCurve(window, sf::Color::Green);
+
+			/*if (curve2ControlPolygon)
+			{
+				curve2.drawControlPolygon(window);
+			}*/
 			if (curve2ConvexHull)
 			{
 				curve2.drawConvexHull(window, sf::Color::Magenta);
 			}
+
+			curve2.drawCurve(window, sf::Color::Yellow);
 
 
 			
