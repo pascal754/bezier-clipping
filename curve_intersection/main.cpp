@@ -176,6 +176,8 @@ int main()
 
 				ImGui::Checkbox("Line detection", &lineDetection);
 
+				ImGui::Checkbox("Verbose mode", &Bspline::debug);
+
 				if (ImGui::Button("Find intersection"))
 				{
 					curve1EditMode = false;

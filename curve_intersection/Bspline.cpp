@@ -26,6 +26,7 @@ module Bspline;
 //import <format>;
 //import <stdexcept>;
 
+bool Bspline::debug{ false };
 const double Bspline::epsilon{ 1e-9 }; // epsilon is for approximate zero and should be much less than u_epsilon
 const double Bspline::u_epsilon{ 0.0001 }; // for knot values
 const double Bspline::u1_epsilon{ u_epsilon / 10.0 }; // for delta u1
@@ -36,7 +37,7 @@ int Bspline::findKnotSpan(double u) const
 {
 	if (u < knotVector.front() || u > knotVector.back())
 	{
-		std::cout << "findKnotSpan() u is outside of range\n";
+		if (debug) { std::cout << "findKnotSpan() u is outside of range\n"; }
 		throw std::runtime_error("findKnotSpan() u is outside of range");
 	}
 
@@ -169,7 +170,10 @@ int Bspline::findFirstPointOfConvexHull() const
 		else if (controlPoints[i].y == controlPoints[pos].y &&
 			controlPoints[i].x < controlPoints[pos].x)
 		{
-			std::cout << "findFirstPointOfConvexHull() two points have the same y values\n";
+			if (debug)
+			{
+				std::cout << "findFirstPointOfConvexHull() two points have the same y values\n";
+			}
 			pos = i;
 		}
 	}
@@ -303,7 +307,7 @@ void Bspline::makeKnots()
 
 	if (!hasEnoughPoints())
 	{
-		std::cout << "makeKnots() : not enough control points to make knot vector\n";
+		std::cout << "makeKnots() : not enough control points to make knot vector. add more points.\n";
 		return;
 	}
 
@@ -380,30 +384,39 @@ std::optional<Bspline> Bspline::decompose(double u1, double u2) const
 {
 	// Algorithm A5.4 RefineKnotVectCurve on pp164
 
-	std::cout << std::format("decompose() u1: {}, u2: {}\n", u1, u2);
+	if (debug) { std::cout << std::format("decompose() u1: {}, u2: {}\n", u1, u2); }
 
 	if (u1 < 0 || u2 < 0)
 	{
-		std::cout << "decompose() negative knot, return\n";
+		if (debug)
+		{
+			std::cout << "decompose() negative knot, return\n";
+		}
 		return {};
 	}
 
 	if (u1 < knotVector.front() || u2 > knotVector.back())
 	{
-		std::cout << "decompose() interval is outside the knot vector, return\n";
+		if (debug)
+		{
+			std::cout << "decompose() interval is outside the knot vector, return\n";
+		}
 		return {};
 	}
 
 
 	if (static_cast<int>(knotVector.size()) - 1 != cp_n + p_degree + 1)
 	{
-		std::cout << "decompose(); m = n + p + 1 not satisfied, return\n";
+		if (debug) { std::cout << "decompose(); m = n + p + 1 not satisfied, return\n"; }
 		return {};
 	}
 
 	if (u1 == knotVector[0] && u2 == knotVector[cp_n + 1])
 	{
-		std::cout << "decompose() self decomposition, return\n";
+		if (debug)
+		{
+			std::cout << "decompose() self decomposition, return\n";
+		}
 		return *this;
 	}
 
@@ -432,7 +445,10 @@ std::optional<Bspline> Bspline::decompose(double u1, double u2) const
 
 	if (m1 > p_degree + 1 || m1 < 0 || m2 > p_degree + 1 || m2 < 0)
 	{
-		std::cout << "decompose() knot vector is wrong\n";
+		if (debug)
+		{
+			std::cout << "decompose() knot vector is wrong\n";
+		}
 		return {};
 	}
 
@@ -441,13 +457,16 @@ std::optional<Bspline> Bspline::decompose(double u1, double u2) const
 	int sum{ m1 + m2 };
 	if (sum == 0)
 	{
-		std::cout << "decompose() no knot insertion, return\n";
+		if (debug)
+		{
+			std::cout << "decompose() no knot insertion, return\n";
+		}
 		return {};
 	}
 	std::vector<double> uBar;
 	std::vector<Point> qw;
 
-	std::cout << std::format("decompose() pre_a: {}, pre_b: {}, m1: {}, m2: {}\n", pre_a, pre_b, m1, m2);
+	if (debug) { std::cout << std::format("decompose() pre_a: {}, pre_b: {}, m1: {}, m2: {}\n", pre_a, pre_b, m1, m2); }
 
 
 	std::vector<double> X;
@@ -463,7 +482,10 @@ std::optional<Bspline> Bspline::decompose(double u1, double u2) const
 
 	++post_b;
 
-	std::cout << std::format("decompose() post_a: {}, post_b: {}\n", post_a, post_b);
+	if (debug)
+	{
+		std::cout << std::format("decompose() post_a: {}, post_b: {}\n", post_a, post_b);
+	}
 
 	int r{ static_cast<int>(X.size()) - 1 };
 	int m{ cp_n + p_degree + 1 };
@@ -512,7 +534,10 @@ std::optional<Bspline> Bspline::decompose(double u1, double u2) const
 			{
 				if (ind >= static_cast<int>(qw.size()))
 				{
-					std::cout << "decompose() index out of range\n";
+					if (debug)
+					{
+						std::cout << "decompose() index out of range\n";
+					}
 					throw std::runtime_error("decompose() index out of range");
 				}
 
@@ -545,7 +570,10 @@ std::optional<Bspline> Bspline::decompose(double u1, double u2) const
 		newKnots[j] = uBar[j + bias];
 		if (newKnots[j] < 0)
 		{
-			std::cout << "decompose() new knot is negative\n";
+			if (debug)
+			{
+				std::cout << "decompose() new knot is negative\n";
+			}
 			return {};
 		}
 	}
@@ -560,7 +588,10 @@ std::optional<Bspline> Bspline::decompose(double u1, double u2) const
 
 	if (!decomposed.checkNumbers())
 	{
-		std::cout << "decompose() decomposed curve error; m = n + p + 1 not satisfied, return\n";
+		if (debug)
+		{
+			std::cout << "decompose() decomposed curve error; m = n + p + 1 not satisfied, return\n";
+		}
 		return {};
 	}
 
@@ -572,6 +603,7 @@ void Bspline::findIntersection(Bspline crv, std::vector<Point>& iPoints, int& it
 	if (checkNumbers() && crv.checkNumbers())
 	{
 		searchIntersection(crv, iPoints, iter, lineDetection);
+
 		std::cout << '\t' << iter << " decomposition(s)\n";
 
 		if (iPoints.size() == 0)
@@ -597,7 +629,10 @@ void Bspline::findLineThruEndPoints()
 	Point ptn{ controlPoints.back() };
 	if (pt0.hasSameCoord(ptn))
 	{
-		std::cout << "findLineThruEndPoints() first control point coincides with the last one\n";
+		if (debug)
+		{
+			std::cout << "findLineThruEndPoints() first control point coincides with the last one\n";
+		}
 		coef_a = 0;
 		coef_b = 1;
 		coef_c = -pt0.y;
@@ -638,13 +673,16 @@ void Bspline::findMinMaxDistance()
 
 void Bspline::searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& dNum, bool lineDetection)
 {
-	std::cout << std::format("~~~ Iteration #{} ~~~\n", dNum);
-	std::cout << std::format("curve A u1: {}, u2: {}\n", knotVector.front(), knotVector.back());
-	std::cout << std::format("curve B u1: {}, u2: {}\n", crv.knotVector.front(), crv.knotVector.back());
-	std::cout << "curve A:\n";
-	printInfo();
-	std::cout << "curve B:\n";
-	crv.printInfo();
+	if (debug) 
+	{
+		std::cout << std::format("~~~ Iteration #{} ~~~\n", dNum);
+		std::cout << std::format("curve A u1: {}, u2: {}\n", knotVector.front(), knotVector.back());
+		std::cout << std::format("curve B u1: {}, u2: {}\n", crv.knotVector.front(), crv.knotVector.back());
+		std::cout << "curve A:\n";
+		printInfo();
+		std::cout << "curve B:\n";
+		crv.printInfo();
+	}
 
 	if (dNum > max_iteration)
 	{
@@ -663,14 +701,21 @@ void Bspline::searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& 
 
 	if (deltaU1 < 0 || deltaU2 < 0)
 	{
-		std::cout << "searchIntersection() negative delta u, return\n";
+		if (debug)
+		{
+			std::cout << "searchIntersection() negative delta u, return\n";
+		}
 		return;
 	}
 
 	if (deltaU1 < u_epsilon && deltaU2 < u_epsilon)
 	{
 
-		std::cout << "deltaU1 and deltaU2 are within tolerance: candidate for intersection\n";
+		if (debug)
+		{
+			std::cout << "deltaU1 and deltaU2 are within tolerance: candidate for intersection\n";
+		}
+
 		Point intersectPt, intersectPt2;
 		if (deltaU1 == 0)
 		{
@@ -690,32 +735,35 @@ void Bspline::searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& 
 			crv.curvePoint(crv.knotVector[0] + deltaU2 / 2.0, intersectPt2);
 		}
 
-		std::cout << std::format("u on curve A: {}, u on curve B: {}\n", knotVector[0] + deltaU1 / 2.0, crv.knotVector[0] + deltaU2 / 2.0);
-		std::cout << std::format("a candidate point on curve A: ({}, {})\n", intersectPt.x, intersectPt.y);
-		std::cout << std::format("a candidate point on curve B: ({}, {})\n", intersectPt2.x, intersectPt2.y);
+		if (debug)
+		{
+			std::cout << std::format("u on curve A: {}, u on curve B: {}\n", knotVector[0] + deltaU1 / 2.0, crv.knotVector[0] + deltaU2 / 2.0);
+			std::cout << std::format("a candidate point on curve A: ({}, {})\n", intersectPt.x, intersectPt.y);
+			std::cout << std::format("a candidate point on curve B: ({}, {})\n", intersectPt2.x, intersectPt2.y);
+		}
 
 		if (std::abs(intersectPt.x - intersectPt2.x) < Point::epsilon && std::abs(intersectPt.y - intersectPt2.y) < Point::epsilon)
 		{
-			std::cout << "=== Intersection found === \n";
+			if (debug) { std::cout << "=== Intersection found === \n"; }
 			iPoints.push_back(intersectPt);
 		}
 		else
 		{
-			std::cout << "Two points are not within tolerance. no intersection\n";
+			if (debug) { std::cout << "Two points are not within tolerance. no intersection\n"; }
 		}
 		return;
 	}
 
 	if (deltaU1 > deltaU2)
 	{
-		std::cout << "switching two curves\n";
+		if (debug) { std::cout << "switching two curves\n"; }
 		crv.searchIntersection(*this, iPoints, dNum, lineDetection);
 		return;
 	}
 
 	if (deltaU1 < u1_epsilon) // (deltaU1 < u_epsilon) // prevent only one curve is getting smaller, reduce further iterations
 	{
-		std::cout << "one curve becoming a point.\n";
+		if (debug) { std::cout << "one curve becoming a point.\n"; }
 
 		Point pt1, pt2, pt3;
 		if (deltaU1 == 0) // u1 == u2
@@ -730,9 +778,12 @@ void Bspline::searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& 
 		crv.curvePoint(crv.knotVector.front(), pt2);
 		crv.curvePoint(crv.knotVector.back(), pt3);
 
-		std::cout << std::format("point on curve A: ({}, {})\n", pt1.x, pt1.y);
-		std::cout << std::format("start point on curve B: ({}, {})\n", pt2.x, pt2.y);
-		std::cout << std::format("end point on curve B : ({}, {})\n", pt3.x, pt3.y);
+		if (debug)
+		{
+			std::cout << std::format("point on curve A: ({}, {})\n", pt1.x, pt1.y);
+			std::cout << std::format("start point on curve B: ({}, {})\n", pt2.x, pt2.y);
+			std::cout << std::format("end point on curve B : ({}, {})\n", pt3.x, pt3.y);
+		}
 
 		// check whether converging point is on the control points of the other curve
 		crv.findConvexHull();
@@ -740,18 +791,18 @@ void Bspline::searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& 
 		{
 			if (pt1.hasSameCoordWithTolerance(x))
 			{
-				std::cout << "=== intersection found at control points ===\n";
+				if (debug) { std::cout << "=== intersection found at control points ===\n"; }
 				iPoints.push_back(pt1);
-				std::cout << "returning\n";
+				if (debug) { std::cout << "returning\n"; }
 				return;
 			}
 		}
 
 		if (crv.convexHull.size() == 2 && isPointOnLineSegment(pt1, crv))
 		{
-			std::cout << "=== intersection found between a point and a line segment ===\n";
+			if (debug) { std::cout << "=== intersection found between a point and a line segment ===\n"; }
 			iPoints.push_back(pt1);
-			std::cout << "returning\n";
+			if (debug) { std::cout << "returning\n"; }
 			return;
 		}
 
@@ -760,17 +811,17 @@ void Bspline::searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& 
 
 		if (pt1.x < x_min->x || pt1.x > x_max->x || pt1.y < y_min->y || pt1.y > y_max->y)
 		{
-			std::cout << "a point is outside the box containing other's convex hull\n";
+			if (debug) { std::cout << "a point is outside the box containing other's convex hull\n"; }
 			return;
 		}
 		
 		if (deltaU1 < epsilon) // prevent infinite loop(stackoverflow)
 		{
-			std::cout << "last resort, deltaU1 is too small. stop continuing. return\n";
+			if (debug) { std::cout << "last resort, deltaU1 is too small. stop continuing. return\n"; }
 			return;
 		}
 
-		std::cout << "continuing ...\n";
+		if (debug) { std::cout << "continuing ...\n"; }
 	} // deltaU1 < u_epsilon
 
 	// line detection
@@ -880,11 +931,11 @@ void Bspline::searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& 
 
 	findMinMaxDistance();
 
-	std::cout << std::format("min, max of clipping lines of curve A: {}, {}\n", minDist, maxDist);
+	if (debug) { std::cout << std::format("min, max of clipping lines of curve A: {}, {}\n", minDist, maxDist); }
 
 	if (maxDist == minDist)  // (std::abs(maxDist - minDist) < epsilon)
 	{
-		std::cout << std::format("curve A is a line segment\n");
+		if (debug) { std::cout << std::format("curve A is a line segment\n"); }
 	}
 
 	Bspline distanceCurve{ Bspline(crv.p_degree, crv.knotVector) };
@@ -908,22 +959,25 @@ void Bspline::searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& 
 		max = std::fmax(max, d);
 	}
 
-	std::cout << std::format("minimum and maximum of distance curve: {}, {}\n", min, max);
+	if (debug) { std::cout << std::format("minimum and maximum of distance curve: {}, {}\n", min, max); }
 
 	if (min > maxDist || max < minDist) // outside the clipping lines: no intersection
 	{
-		std::cout << "curve B is outside the clipping lines\n";
+		if (debug) { std::cout << "curve B is outside the clipping lines\n"; }
 		return;
 	}
 
 	distanceCurve.findConvexHull();
 
-	std::cout << "distance curve information:\n";
-	distanceCurve.printInfo();
+	if (debug)
+	{
+		std::cout << "distance curve information:\n";
+		distanceCurve.printInfo();
+	}
 
 	if (distanceCurve.convexHull.size() < 2)
 	{
-		std::cout << "distanceCurve.controlPoints.size() < 2\n";
+		if (debug) { std::cout << "distanceCurve.controlPoints.size() < 2\n"; }
 		throw std::runtime_error("distanceCurve.controlPoints.size() < 2");
 	}
 
@@ -957,18 +1011,21 @@ void Bspline::searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& 
 	{
 		if (isThereLineIntersection(distance, pt.y, pt2.y))
 		{
-			std::cout << "intersection between clipping line and one edge of convex hull of the distance curve: \n";
+			if (debug) { std::cout << "intersection between clipping line and one edge of convex hull of the distance curve: \n"; }
 			if (pt.y == pt2.y)
 			{
-				std::cout << "   the edge is horizontal (distance curve), u values: \n";
-				std::cout << pt.x << ' ' << pt2.x << '\n';
+				if (debug)
+				{
+					std::cout << "   the edge is horizontal (distance curve), u values: \n";
+					std::cout << pt.x << ' ' << pt2.x << '\n';
+				}
 				uValues.push_back(pt.x);
 				uValues.push_back(pt2.x);
 			}
 			else
 			{
 				uValues.push_back((pt2.x - pt.x) * (distance - pt.y) / (pt2.y - pt.y) + pt.x);
-				std::cout << "   u: " << uValues.back() << '\n';
+				if (debug) { std::cout << "   u: " << uValues.back() << '\n'; }
 			}
 		}
 	}; // end of findUs
@@ -988,7 +1045,7 @@ void Bspline::searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& 
 
 	if (uValues.size() < 2)
 	{
-		std::cout << "the number of clipped u values < 2, returning\n";
+		if (debug) { std::cout << "the number of clipped u values < 2, returning\n"; }
 		return;
 	}
 
@@ -997,22 +1054,22 @@ void Bspline::searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& 
 
 	if (std::isnan(u_min) || std::isnan(u_max))
 	{
-		std::cout << "u value is NaN, returning\n";
+		if (debug) { std::cout << "u value is NaN, returning\n"; }
 		return;
 	}
 
 	if (std::isinf(u_min) || std::isinf(u_max))
 	{
-		std::cout << "u vaue is Inf, returning\n";
+		if (debug) { std::cout << "u vaue is Inf, returning\n"; }
 		return;
 	}
 
 	if (u_max == u_min)
 	{
-		std::cout << "The interval of the u on the clipped curve is zero: a point\n";
+		if (debug) { std::cout << "The interval of the u on the clipped curve is zero: a point\n"; }
 	}
 
-	std::cout << std::format("u_min: {}, u_max: {}\n", u_min, u_max);
+	if (debug) { std::cout << std::format("u_min: {}, u_max: {}\n", u_min, u_max); }
 
 	if ((u_max - u_min) > deltaU2 * 0.8)
 	{
