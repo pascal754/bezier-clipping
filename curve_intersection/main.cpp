@@ -74,6 +74,7 @@ int main()
 		sf::Clock deltaClock;
 
 		bool curve1EditMode{}, curve2EditMode{};
+		bool decomposeFirst{};
 		while (window.isOpen())
 		{
 			sf::Event event;
@@ -180,6 +181,9 @@ int main()
 					curve2.clear();
 					ptList.clear();
 				}
+
+				ImGui::Checkbox("Decompose curves first", &decomposeFirst);
+
 				if (ImGui::Button("Find intersection"))
 				{
 					curve1EditMode = false;
@@ -189,18 +193,14 @@ int main()
 					{
 						ptList.clear();
 					}
-					curve1.findIntersection(curve2, ptList, decomp_num, false);
-				}
-				if (ImGui::Button("Decompose and find intersection"))
-				{
-					curve1EditMode = false;
-					curve2EditMode = false;
-					decomp_num = 0;
-					if (ptList.size() != 0)
+					if (decomposeFirst)
 					{
-						ptList.clear();
+						curve1.bezierIntersection(curve2, ptList, decomp_num, false);
 					}
-					curve1.bezierIntersection(curve2, ptList, decomp_num, false);
+					else
+					{
+						curve1.findIntersection(curve2, ptList, decomp_num, false);
+					}
 				}
 				ImGui::EndGroup();
 				ImGui::End();
