@@ -33,29 +33,10 @@ int main()
 {
 	try
 	{
-		int decomp_num{}; // number of iteration for intersection
+		int decomp_num{}; // save number of iteration for intersection
 
 		Bspline curve1{ 3 }, curve2{ 3 }; // p, degree of the curves set to 3
 		std::vector<Point> ptList;
-		//std::vector<Bspline> splines;
-		//
-		//make_curve26(curve1, curve2);
-		//do_test100();
-
-		//std::chrono::steady_clock::time_point start, stop;
-
-		//start = std::chrono::high_resolution_clock::now();
-
-		//curve1.findIntersection(curve2, ptList, decomp_num, false);
-		//curve1.bezierIntersection(curve2, ptList, decomp_num, false);
-			
-		/*stop = std::chrono::high_resolution_clock::now();
-		auto duration = duration_cast<std::chrono::milliseconds>(stop - start);
-		std::cout << '\t' << duration.count() << " ms\n";*/
-
-
-		
-
 	
 		sf::RenderWindow window(sf::VideoMode(1000, 800), "Curve Intersection", sf::Style::Titlebar | sf::Style::Close);
 		window.setFramerateLimit(60);
@@ -70,10 +51,10 @@ int main()
 
 		childWindow.setPosition(pos);
 
-
 		sf::Clock deltaClock;
 
-		bool curve1EditMode{}, curve2EditMode{};
+		bool curve1EditMode{};
+		bool curve2EditMode{};
 		bool decomposeFirst{};
 		bool imguiOpen{ true };
 		while (window.isOpen())
@@ -129,9 +110,6 @@ int main()
 			{
 				ImGui::SFML::Update(childWindow, dt);
 			}
-
-
-			//ImGui::ShowDemoWindow();
 
 			// Add ImGui widgets in the child window
 			if (childWindow.isOpen()) {

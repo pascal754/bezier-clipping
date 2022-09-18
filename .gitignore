@@ -5,3 +5,7 @@
 /x64/Debug
 /curve_intersection/x64/Debug
 /.vs
+/curve_intersection/x64/Release
+/x64/Release
+/curve_intersection/imgui.ini
+/curve_intersection/output.txt
