@@ -196,7 +196,7 @@ void Bspline::curvePoint(double u, Point& cp) {
 void Bspline::addPoint(const Point& p)
 {
 	controlPoints.push_back(p);
-	cp_n = static_cast<int>(controlPoints.size()) - 1;
+	cp_n = std::ssize(controlPoints) - 1;
 	isConvexHullUpdated = false;
 }
 
@@ -209,7 +209,7 @@ void Bspline::addPointAndKnots(const Point& p)
 void Bspline::deleteLastPoint()
 {
 	controlPoints.pop_back();
-	cp_n = static_cast<int>(controlPoints.size()) - 1;
+	cp_n = std::ssize(controlPoints) - 1;
 	isConvexHullUpdated = false;
 }
 
@@ -229,9 +229,9 @@ Point Bspline::getPoint(int i) const
 
 int Bspline::findFirstPointOfConvexHull() const
 {
-	size_t pos{ 0 };
+	auto pos{ 0 };
 
-	for (size_t i{ 1 }; i < controlPoints.size(); ++i)
+	for (auto i{ 1 }; i < std::ssize(controlPoints); ++i)
 	{
 		if (controlPoints[i].y < controlPoints[pos].y)
 		{
@@ -247,7 +247,7 @@ int Bspline::findFirstPointOfConvexHull() const
 			pos = i;
 		}
 	}
-	return static_cast<int>(pos);
+	return pos;
 }
 
 void Bspline::findConvexHull()
@@ -475,7 +475,7 @@ std::optional<Bspline> Bspline::decompose(double u1, double u2) const
 	}
 
 
-	if (static_cast<int>(knotVector.size()) - 1 != cp_n + p_degree + 1)
+	if (std::ssize(knotVector) - 1 != cp_n + p_degree + 1)
 	{
 		if (debug) { std::cout << "decompose(); m = n + p + 1 not satisfied, return\n"; }
 		return {};
@@ -557,7 +557,7 @@ std::optional<Bspline> Bspline::decompose(double u1, double u2) const
 		std::cout << std::format("decompose() post_a: {}, post_b: {}\n", post_a, post_b);
 	}
 
-	int r{ static_cast<int>(X.size()) - 1 };
+	int r{ static_cast<int>(std::ssize(X)) - 1 };
 	int m{ cp_n + p_degree + 1 };
 	uBar.resize(m + r + 2);
 	qw.resize(cp_n + r + 2);
@@ -602,7 +602,7 @@ std::optional<Bspline> Bspline::decompose(double u1, double u2) const
 			}
 			else
 			{
-				if (ind >= static_cast<int>(qw.size()))
+				if (ind >= std::size(qw))
 				{
 					if (debug)
 					{
