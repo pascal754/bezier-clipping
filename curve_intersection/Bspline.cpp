@@ -13,6 +13,7 @@ module;
 #include <algorithm>
 #include <format>
 #include <stdexcept>
+#include <fstream>
 #include <SFML/Graphics.hpp>
 
 module Bspline;
@@ -84,6 +85,42 @@ void Bspline::clear()
 	convexHull.clear();
 	isConvexHullUpdated = false;
 	cp_n = -1;
+}
+
+void Bspline::loadPoints(Bspline& curve1, Bspline& curve2)
+{
+	std::ifstream dataFile{ "points.dat" };
+	if (!dataFile.is_open())
+	{
+		std::cerr << "file not found\n";
+		return;
+	}
+	try
+	{
+		std::string xCoord, yCoord;
+		dataFile >> xCoord >> yCoord;
+		if (xCoord == "A" && yCoord == "A")
+		{
+			while (dataFile >> xCoord >> yCoord)
+			{
+				if (xCoord == "B" && yCoord == "B")
+				{
+					break;
+				}
+				curve1.addPointAndKnots(Point{ std::stod(xCoord), std::stod(yCoord) });
+				std::cout << xCoord << ' ' << yCoord << '\n';
+			}
+			while (dataFile >> xCoord >> yCoord)
+			{
+				curve2.addPointAndKnots(Point{ std::stod(xCoord), std::stod(yCoord) });
+				std::cout << xCoord << ' ' << yCoord << '\n';
+			}
+		}
+	}
+	catch (...)
+	{
+		std::cerr << "file reading error\n";
+	}
 }
 
 void Bspline::basisFuns(int i, double u)

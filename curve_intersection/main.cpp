@@ -35,7 +35,7 @@ int main()
 		window.setFramerateLimit(60);
 		ImGui::SFML::Init(window);
 
-		sf::RenderWindow childWindow(sf::VideoMode(300, 350), "Operations", sf::Style::Titlebar);
+		sf::RenderWindow childWindow(sf::VideoMode(300, 380), "Operations", sf::Style::Titlebar);
 		childWindow.setFramerateLimit(60);
 		ImGui::SFML::Init(childWindow);
 
@@ -110,10 +110,33 @@ int main()
 			if (childWindow.isOpen()) {
 
 				ImGui::SetNextWindowPos(ImVec2(5, 5)); // , ImGuiCond_FirstUseEver);
-				ImGui::SetNextWindowSize(ImVec2(280, 340));
+				ImGui::SetNextWindowSize(ImVec2(280, 375));
 
 				ImGui::Begin("Operations", & imguiOpen, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar);
 				ImGui::BeginGroup();
+				if (ImGui::Button("Load points from the file"))
+				{
+					curve1EditMode = false;
+					curve2EditMode = false;
+					curve1ConvexHull = false;
+					curve2ConvexHull = false;
+					/*curve1ControlPolygon = false;
+					curve2ControlPolygon = false;*/
+
+					window.clear();
+					curve1.drawCurve(window, sf::Color::Green);
+					curve2.drawCurve(window, sf::Color::Yellow);
+					window.display();
+
+					curve1.clear();
+					curve2.clear();
+					ptList.clear();
+					Bspline::loadPoints(curve1, curve2);
+				}
+
+				ImGui::Separator();
+				ImGui::NewLine();
+
 				if (ImGui::Button("Add a point to curve A"))
 				{
 					curve1EditMode = true;
