@@ -87,7 +87,7 @@ void Bspline::clear()
 	cp_n = -1;
 }
 
-void Bspline::loadPoints(Bspline& curve1, Bspline& curve2)
+void loadPoints(Bspline& curve1, Bspline& curve2)
 {
 	std::ifstream dataFile{ "points.dat" };
 	if (!dataFile.is_open())
@@ -127,16 +127,32 @@ void Bspline::loadPoints(Bspline& curve1, Bspline& curve2)
 void savePoints(const Bspline& curve1, const Bspline& curve2)
 {
 	std::ofstream dataFile{ "saved_points.dat" };
-	dataFile << "A A\n";
-	for (const auto& p : curve1.controlPoints)
+
+	if (!dataFile.is_open())
 	{
-		dataFile << p.x << ' ' << p.y << '\n';
+		std::cerr << "file error\n";
+		return;
 	}
 
-	dataFile << "\nB B\n";
-	for (const auto& p : curve2.controlPoints)
+	try
 	{
-		dataFile << p.x << ' ' << p.y << '\n';
+
+
+		dataFile << "A A\n";
+		for (const auto& p : curve1.controlPoints)
+		{
+			dataFile << p.x << ' ' << p.y << '\n';
+		}
+
+		dataFile << "\nB B\n";
+		for (const auto& p : curve2.controlPoints)
+		{
+			dataFile << p.x << ' ' << p.y << '\n';
+		}
+	}
+	catch (...)
+	{
+		std::cerr << "error while saving the file\n";
 	}
 }
 

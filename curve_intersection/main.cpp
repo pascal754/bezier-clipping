@@ -131,7 +131,7 @@ int main()
 					curve1.clear();
 					curve2.clear();
 					ptList.clear();
-					Bspline::loadPoints(curve1, curve2);
+					loadPoints(curve1, curve2);
 				}
 
 				if (ImGui::Button("Save points to the file"))

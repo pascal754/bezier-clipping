@@ -40,7 +40,7 @@ public:
 	bool checkNumbers() const; // check m = n + p + 1
 	void clear();
 	static bool debug;
-	static void loadPoints(Bspline& curve1, Bspline& curve2);
+	friend void loadPoints(Bspline& curve1, Bspline& curve2);
 	friend void savePoints(const Bspline& curve1, const Bspline& curve2);
 private:
 	void deleteLastPoint();
