@@ -800,12 +800,13 @@ void Bspline::searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& 
 		{
 			if (debug) { std::cout << "=== Intersection found === \n"; }
 			iPoints.push_back(intersectPt);
+			return;
 		}
 		else
 		{
-			if (debug) { std::cout << "Two points are not within tolerance. no intersection\n"; }
+			if (debug) { std::cout << "Two points are not within tolerance. no intersection. continuing...\n"; }
 		}
-		return;
+		//return;
 	}
 
 	if (deltaU1 > deltaU2)
