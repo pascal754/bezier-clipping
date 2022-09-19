@@ -35,7 +35,7 @@ int main()
 		window.setFramerateLimit(60);
 		ImGui::SFML::Init(window);
 
-		sf::RenderWindow childWindow(sf::VideoMode(300, 380), "Operations", sf::Style::Titlebar);
+		sf::RenderWindow childWindow(sf::VideoMode(300, 415), "Operations", sf::Style::Titlebar);
 		childWindow.setFramerateLimit(60);
 		ImGui::SFML::Init(childWindow);
 
@@ -110,7 +110,7 @@ int main()
 			if (childWindow.isOpen()) {
 
 				ImGui::SetNextWindowPos(ImVec2(5, 5)); // , ImGuiCond_FirstUseEver);
-				ImGui::SetNextWindowSize(ImVec2(280, 375));
+				ImGui::SetNextWindowSize(ImVec2(280, 405));
 
 				ImGui::Begin("Operations", & imguiOpen, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar);
 				ImGui::BeginGroup();
@@ -132,6 +132,13 @@ int main()
 					curve2.clear();
 					ptList.clear();
 					Bspline::loadPoints(curve1, curve2);
+				}
+
+				if (ImGui::Button("Save points to the file"))
+				{
+					curve1EditMode = false;
+					curve2EditMode = false;
+					savePoints(curve1, curve2);
 				}
 
 				ImGui::Separator();

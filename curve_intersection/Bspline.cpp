@@ -110,6 +110,7 @@ void Bspline::loadPoints(Bspline& curve1, Bspline& curve2)
 				curve1.addPointAndKnots(Point{ std::stod(xCoord), std::stod(yCoord) });
 				std::cout << xCoord << ' ' << yCoord << '\n';
 			}
+
 			while (dataFile >> xCoord >> yCoord)
 			{
 				curve2.addPointAndKnots(Point{ std::stod(xCoord), std::stod(yCoord) });
@@ -120,6 +121,22 @@ void Bspline::loadPoints(Bspline& curve1, Bspline& curve2)
 	catch (...)
 	{
 		std::cerr << "file reading error\n";
+	}
+}
+
+void savePoints(const Bspline& curve1, const Bspline& curve2)
+{
+	std::ofstream dataFile{ "saved_points.dat" };
+	dataFile << "A A\n";
+	for (const auto& p : curve1.controlPoints)
+	{
+		dataFile << p.x << ' ' << p.y << '\n';
+	}
+
+	dataFile << "\nB B\n";
+	for (const auto& p : curve2.controlPoints)
+	{
+		dataFile << p.x << ' ' << p.y << '\n';
 	}
 }
 
@@ -802,64 +819,64 @@ void Bspline::searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& 
 	{
 		if (debug) { std::cout << "one curve becoming a point.\n"; }
 
-		Point pt1, pt2, pt3;
-		if (deltaU1 == 0) // u1 == u2
-		{
-			pt1 = controlPoints.front();
-		}
-		else
-		{
-			curvePoint(knotVector[0] + deltaU1 / 2.0, pt1);
-		}
+		//Point pt1, pt2, pt3;
+		//if (deltaU1 == 0) // u1 == u2
+		//{
+		//	pt1 = controlPoints.front();
+		//}
+		//else
+		//{
+		//	curvePoint(knotVector[0] + deltaU1 / 2.0, pt1);
+		//}
 
-		crv.curvePoint(crv.knotVector.front(), pt2);
-		crv.curvePoint(crv.knotVector.back(), pt3);
+		//crv.curvePoint(crv.knotVector.front(), pt2);
+		//crv.curvePoint(crv.knotVector.back(), pt3);
 
-		if (debug)
-		{
-			std::cout << std::format("point on curve A: ({}, {})\n", pt1.x, pt1.y);
-			std::cout << std::format("start point on curve B: ({}, {})\n", pt2.x, pt2.y);
-			std::cout << std::format("end point on curve B : ({}, {})\n", pt3.x, pt3.y);
-		}
+		//if (debug)
+		//{
+		//	std::cout << std::format("point on curve A: ({}, {})\n", pt1.x, pt1.y);
+		//	std::cout << std::format("start point on curve B: ({}, {})\n", pt2.x, pt2.y);
+		//	std::cout << std::format("end point on curve B : ({}, {})\n", pt3.x, pt3.y);
+		//}
 
-		// check whether converging point is on the control points of the other curve
-		crv.findConvexHull();
-		for (auto& x : crv.convexHull) // or crv.controlPoints
-		{
-			if (pt1.hasSameCoordWithTolerance(x))
-			{
-				if (debug) { std::cout << "=== intersection found at control points ===\n"; }
-				iPoints.push_back(pt1);
-				if (debug) { std::cout << "returning\n"; }
-				return;
-			}
-		}
+		//// check whether converging point is on the control points of the other curve
+		//crv.findConvexHull();
+		//for (auto& x : crv.convexHull) // or crv.controlPoints
+		//{
+		//	if (pt1.hasSameCoordWithTolerance(x))
+		//	{
+		//		if (debug) { std::cout << "=== intersection found at control points ===\n"; }
+		//		iPoints.push_back(pt1);
+		//		if (debug) { std::cout << "returning\n"; }
+		//		return;
+		//	}
+		//}
 
-		if (crv.convexHull.size() == 2 && isPointOnLineSegment(pt1, crv))
-		{
-			if (debug) { std::cout << "=== intersection found between a point and a line segment ===\n"; }
-			iPoints.push_back(pt1);
-			if (debug) { std::cout << "returning\n"; }
-			return;
-		}
+		//if (crv.convexHull.size() == 2 && isPointOnLineSegment(pt1, crv))
+		//{
+		//	if (debug) { std::cout << "=== intersection found between a point and a line segment ===\n"; }
+		//	iPoints.push_back(pt1);
+		//	if (debug) { std::cout << "returning\n"; }
+		//	return;
+		//}
 
-		auto [x_min, x_max] { std::minmax_element(crv.convexHull.begin(), crv.convexHull.end(), [](const Point& lhs, const Point& rhs) { return lhs.x < rhs.x; }) };
-		auto [y_min, y_max] { std::minmax_element(crv.convexHull.begin(), crv.convexHull.end(), [](const Point& lhs, const Point& rhs) { return lhs.y < rhs.y; }) };
+		//auto [x_min, x_max] { std::minmax_element(crv.convexHull.begin(), crv.convexHull.end(), [](const Point& lhs, const Point& rhs) { return lhs.x < rhs.x; }) };
+		//auto [y_min, y_max] { std::minmax_element(crv.convexHull.begin(), crv.convexHull.end(), [](const Point& lhs, const Point& rhs) { return lhs.y < rhs.y; }) };
 
-		if (pt1.x < x_min->x || pt1.x > x_max->x || pt1.y < y_min->y || pt1.y > y_max->y)
-		{
-			if (debug) { std::cout << "a point is outside the box containing other's convex hull\n"; }
-			return;
-		}
-		
-		if (deltaU1 < epsilon) // prevent infinite loop(stackoverflow)
-		{
-			if (debug) { std::cout << "last resort, deltaU1 is too small. stop continuing. return\n"; }
-			return;
-		}
-
+		//if (pt1.x < x_min->x || pt1.x > x_max->x || pt1.y < y_min->y || pt1.y > y_max->y)
+		//{
+		//	if (debug) { std::cout << "a point is outside the box containing other's convex hull. continuing ...\n"; }
+		//	//return;
+		//}
+	
 		if (debug) { std::cout << "continuing ...\n"; }
 	} // deltaU1 < u_epsilon
+
+	if (deltaU1 < epsilon) // prevent infinite loop(stackoverflow)
+	{
+		if (debug) { std::cout << "last resort, deltaU1 is too small. return\n"; }
+		return;
+	}
 
 	// line detection
 	// on: simple line intersection between straight lines, no recursive solution

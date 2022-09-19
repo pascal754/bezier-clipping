@@ -41,6 +41,7 @@ public:
 	void clear();
 	static bool debug;
 	static void loadPoints(Bspline& curve1, Bspline& curve2);
+	friend void savePoints(const Bspline& curve1, const Bspline& curve2);
 private:
 	void deleteLastPoint();
 	void searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& iter, bool lineDetection); // internal call
