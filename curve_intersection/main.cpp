@@ -22,7 +22,7 @@ import Bspline;
 import Point;
 import make_curve;
 
-int main()
+auto main() -> int 
 {
 	try
 	{
