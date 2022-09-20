@@ -822,7 +822,6 @@ void Bspline::searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& 
 		{
 			if (debug) { std::cout << "Two points are not within tolerance. no intersection. continuing...\n"; }
 		}
-		//return;
 	}
 
 	if (deltaU1 > deltaU2)
@@ -832,10 +831,12 @@ void Bspline::searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& 
 		return;
 	}
 
-	if (deltaU1 < u1_epsilon) // (deltaU1 < u_epsilon) // prevent only one curve is getting smaller, reduce further iterations
+	if (deltaU1 < u1_epsilon) // (deltaU1 < u_epsilon)
 	{
 		if (debug) { std::cout << "one curve becoming a point.\n"; }
 
+		// prevent only one curve is getting smaller, reduce further iterations
+		// causes missing intersection points
 		//Point pt1, pt2, pt3;
 		//if (deltaU1 == 0) // u1 == u2
 		//{
@@ -895,7 +896,7 @@ void Bspline::searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& 
 		return;
 	}
 
-	// line detection
+	// line or point detection
 	// on: simple line intersection between straight lines, no recursive solution
 	// off: try to find intersection, the number of iteration is limited by Bspline::max_iteration or Bspline::max_num_intersection_points whichever comes first
 	if (lineDetection)
