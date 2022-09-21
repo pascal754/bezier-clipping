@@ -32,8 +32,8 @@ bool Bspline::debug{ false };
 const double Bspline::epsilon{ 1e-9 }; // epsilon is for approximate zero and should be much less than u_epsilon
 const double Bspline::u_epsilon{ 0.0001 }; // for knot values
 const double Bspline::u1_epsilon{ u_epsilon / 10.0 }; // for delta u1
-const int Bspline::max_iteration{ 20'000 }; // maximum iteration for overlapping curves
-const int Bspline::max_num_intersection_points{ 1'000 };
+const int Bspline::max_iteration{ 1'000'000 }; // maximum iteration for overlapping curves
+const int Bspline::max_num_intersection_points{ 1'000'000 };
 
 int Bspline::findKnotSpan(double u) const
 {
@@ -677,7 +677,9 @@ void Bspline::findIntersection(Bspline crv, std::vector<Point>& iPoints, int& it
 
 		std::cout << '\t' << iter << " decomposition(s)\n";
 
-		if (iPoints.size() == 0)
+		std::cout << "the number of intersection: " << iPoints.size() << '\n';
+
+		/*if (iPoints.size() == 0)
 		{
 			std::cout << "No intersection\n";
 		}
@@ -688,7 +690,7 @@ void Bspline::findIntersection(Bspline crv, std::vector<Point>& iPoints, int& it
 				std::cout << std::format("***intersection point #{}: ", i + 1);
 				std::cout << iPoints[i] << '\n';
 			}
-		}
+		}*/
 	}
 	else
 		std::cout << "m = n + p + 1 not satisfied\n";
@@ -1144,6 +1146,30 @@ void Bspline::searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& 
 
 	if (debug) { std::cout << std::format("u_min: {}, u_max: {}\n", u_min, u_max); }
 
+	if (u_min < crv.knotVector.front())
+	{
+		if (u_max == u_min || u_max < crv.knotVector.front())
+		{
+			u_max = crv.knotVector.front();
+			if (debug) { std::cout << "u_max adjusted to u_0\n"; }
+		}
+		
+		u_min = crv.knotVector.front(); // due to calculation error u_min could be smaller than u_0
+
+		if (debug) { std::cout << "u_min adjusted to u_0\n"; }
+	}
+
+	if (u_max > crv.knotVector.back())
+	{
+		if (u_min == u_max || u_min > crv.knotVector.back())
+		{
+			u_min = crv.knotVector.back();
+			if (debug) { std::cout << "u_min adjusted to u_m\n"; }
+		}
+		u_max = crv.knotVector.back(); // due to calculation error u_max could be slightly larger than u_m
+		if (debug) { std::cout << "u_max adjusted to u_m\n"; }
+	}
+
 	if ((u_max - u_min) > deltaU2 * 0.8)
 	{
 		auto bs1{ crv.decompose(crv.knotVector[0], crv.knotVector[0] + deltaU2 / 2.0) };
@@ -1209,7 +1235,9 @@ void Bspline::bezierIntersection(Bspline bs, std::vector<Point>& iPoints, int& d
 
 	std::cout << '\t' << dNum << " decomposition(s)\n";
 
-	if (iPoints.size() == 0)
+	std::cout << "the number of intersection: " << iPoints.size() << '\n';
+
+	/*if (iPoints.size() == 0)
 	{
 		std::cout << "No intersection\n";
 	}
@@ -1220,7 +1248,7 @@ void Bspline::bezierIntersection(Bspline bs, std::vector<Point>& iPoints, int& d
 			std::cout << std::format("***intersection point #{}: ", i + 1);
 			std::cout << iPoints[i] << '\n';
 		}
-	}
+	}*/
 } //end bezierIntersection
 
 
