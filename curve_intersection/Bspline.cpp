@@ -137,8 +137,6 @@ void savePoints(const Bspline& curve1, const Bspline& curve2)
 
 	try
 	{
-
-
 		dataFile << "A A\n";
 		for (const auto& p : curve1.controlPoints)
 		{
@@ -150,6 +148,8 @@ void savePoints(const Bspline& curve1, const Bspline& curve2)
 		{
 			dataFile << p.x << ' ' << p.y << '\n';
 		}
+		
+		std::cout << "points data written to \"saved_points.data\"\n";
 	}
 	catch (...)
 	{
