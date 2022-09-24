@@ -21,6 +21,7 @@
 import Bspline;
 import Point;
 import make_curve;
+import Grid;
 
 auto main() -> int 
 {
@@ -74,6 +75,8 @@ auto main() -> int
 					{
 						sf::Vector2i pos{ sf::Mouse::getPosition(window) };
 						std::cout << pos.x << ' ' << pos.y << std::endl;
+						pos.x = static_cast<int>(std::roundf(static_cast<float>(pos.x) / 50.0f)) * 50;
+						pos.y = static_cast<int>(std::roundf(static_cast<float>(pos.y) / 50.0f)) * 50;
 						if (curve1EditMode)
 							curve1.addPointAndKnots(Point{ static_cast<double>(pos.x), static_cast<double>(window.getSize().y - pos.y) });
 						if (curve2EditMode)
@@ -242,10 +245,15 @@ auto main() -> int
 
 			window.clear();
 			
+			auto windowSize{ window.getSize() };
+
+			drawGrids(window, windowSize.x, windowSize.y, 50);
+
 			/*if (curve1ControlPolygon)
 			{
 				curve1.drawControlPolygon(window);
 			}*/
+
 			if (curve1ConvexHull)
 			{
 				curve1.drawConvexHull(window, sf::Color::White);
@@ -264,10 +272,6 @@ auto main() -> int
 
 			curve2.drawCurve(window, sf::Color::Yellow);
 
-
-			
-
-			auto windowSize{ window.getSize() };
 
 			for (auto& p : ptList)
 			{

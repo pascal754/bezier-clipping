@@ -36,5 +36,8 @@
     <ClCompile Include="make_curve.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Grid.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

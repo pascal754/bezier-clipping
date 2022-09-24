@@ -197,7 +197,7 @@ void Bspline::curvePoint(double u, Point& cp) {
 void Bspline::addPoint(const Point& p)
 {
 	controlPoints.push_back(p);
-	cp_n = std::ssize(controlPoints) - 1;
+	cp_n = static_cast<int>(std::ssize(controlPoints)) - 1;
 	isConvexHullUpdated = false;
 }
 
@@ -210,7 +210,7 @@ void Bspline::addPointAndKnots(const Point& p)
 void Bspline::deleteLastPoint()
 {
 	controlPoints.pop_back();
-	cp_n = std::ssize(controlPoints) - 1;
+	cp_n = static_cast<int>(std::ssize(controlPoints)) - 1;
 	isConvexHullUpdated = false;
 }
 
@@ -679,7 +679,7 @@ void Bspline::findIntersection(Bspline crv, std::vector<Point>& iPoints, int& it
 
 		std::cout << "the number of intersection: " << iPoints.size() << '\n';
 
-		/*if (iPoints.size() == 0)
+		if (iPoints.size() == 0)
 		{
 			std::cout << "No intersection\n";
 		}
@@ -690,7 +690,7 @@ void Bspline::findIntersection(Bspline crv, std::vector<Point>& iPoints, int& it
 				std::cout << std::format("***intersection point #{}: ", i + 1);
 				std::cout << iPoints[i] << '\n';
 			}
-		}*/
+		}
 	}
 	else
 		std::cout << "m = n + p + 1 not satisfied\n";
@@ -1237,7 +1237,7 @@ void Bspline::bezierIntersection(Bspline bs, std::vector<Point>& iPoints, int& d
 
 	std::cout << "the number of intersection: " << iPoints.size() << '\n';
 
-	/*if (iPoints.size() == 0)
+	if (iPoints.size() == 0)
 	{
 		std::cout << "No intersection\n";
 	}
@@ -1248,7 +1248,7 @@ void Bspline::bezierIntersection(Bspline bs, std::vector<Point>& iPoints, int& d
 			std::cout << std::format("***intersection point #{}: ", i + 1);
 			std::cout << iPoints[i] << '\n';
 		}
-	}*/
+	}
 } //end bezierIntersection
 
 

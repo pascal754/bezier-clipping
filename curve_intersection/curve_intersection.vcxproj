@@ -157,6 +157,7 @@
   <ItemGroup>
     <ClCompile Include="Bspline.cpp" />
     <ClCompile Include="Bspline.ixx" />
+    <ClCompile Include="Grid.ixx" />
     <ClCompile Include="make_curve.cpp" />
     <ClCompile Include="make_curve.ixx" />
     <ClCompile Include="Point.cpp" />
