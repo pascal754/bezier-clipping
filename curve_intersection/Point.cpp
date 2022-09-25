@@ -4,6 +4,7 @@
 module;
 
 #include <iostream>
+#include <format>
 #include <cmath>
 
 module Point;
@@ -15,7 +16,7 @@ const double Point::epsilon{0.5}; // chosen for screen pixel
 
 std::ostream& operator<<(std::ostream& os, const Point& cp)
 {
-    os << "(" << cp.x << ", " << cp.y << ") ra = " << cp.angle; // << " " << col;
+	os << std::format("({}, {}) ra = {}", cp.x, cp.y, cp.angle);
     return os;
 }
 
