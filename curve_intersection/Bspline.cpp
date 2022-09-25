@@ -862,7 +862,7 @@ void Bspline::searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& 
 		if (debug) { std::cout << "one curve becoming a point.\n"; }
 
 		if (debug) { std::cout << "continuing ...\n"; }
-	} // deltaU1 < u_epsilon
+	}
 
 	if (deltaU1 < epsilon) // prevent infinite loop(stackoverflow)
 	{
@@ -936,10 +936,10 @@ void Bspline::searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& 
 			double d{ coef_a * crv.coef_b - crv.coef_a * coef_b };
 
 			// check whether they are points
-			if (convexHull.front().hasSameCoord(convexHull.back()))
+			if (convexHull.size() == 1) // convexHull.front().hasSameCoord(convexHull.back()))
 			{
 				std::cout << "curve A is a point\n";
-				if (crv.convexHull.front().hasSameCoord(crv.convexHull.back())) // point vs. point
+				if (crv.convexHull.size() == 1) // crv.convexHull.front().hasSameCoord(crv.convexHull.back())) // point vs. point
 				{
 					std::cout << "curve B is a point\n";
 					if (convexHull.front().hasSameCoordWithTolerance(crv.convexHull.front()))
@@ -968,7 +968,7 @@ void Bspline::searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& 
 					}
 				}
 			}
-			else if (crv.convexHull.front().hasSameCoord(crv.convexHull.back())) // line vs. point
+			else if (crv.convexHull.size() == 1) // (crv.convexHull.front().hasSameCoord(crv.convexHull.back())) // line vs. point
 			{
 				std::cout << "curve B is a point\n";
 				if (isPointOnLineSegment(crv.convexHull.front(), *this))
