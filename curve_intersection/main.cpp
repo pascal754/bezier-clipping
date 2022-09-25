@@ -36,7 +36,7 @@ auto main() -> int
 		window.setFramerateLimit(60);
 		ImGui::SFML::Init(window);
 
-		sf::RenderWindow childWindow(sf::VideoMode(300, 415), "Operations", sf::Style::Titlebar);
+		sf::RenderWindow childWindow(sf::VideoMode(300, 485), "Operations", sf::Style::Titlebar);
 		childWindow.setFramerateLimit(60);
 		ImGui::SFML::Init(childWindow);
 
@@ -50,11 +50,13 @@ auto main() -> int
 		bool curve1EditMode{}, curve2EditMode{};
 		bool curve1ConvexHull{}, curve2ConvexHull{};
 		//bool curve1ControlPolygon{}, curve2ControlPolygon{};
+		bool gridMode{}, gridSnapMode{};
 		bool decomposeFirst{};
 		bool lineDetection{};
 		bool imguiOpen{ true };
 		while (window.isOpen())
 		{
+			auto windowSize{ window.getSize() };
 			sf::Event event;
 			while (window.pollEvent(event))
 			{
@@ -74,9 +76,12 @@ auto main() -> int
 					if (event.mouseButton.button == sf::Mouse::Left)
 					{
 						sf::Vector2i pos{ sf::Mouse::getPosition(window) };
+						if (gridSnapMode)
+						{
+							pos.x = static_cast<int>(std::roundf(static_cast<float>(pos.x) / 50.0f)) * 50;
+							pos.y = static_cast<int>(std::roundf(static_cast<float>(pos.y) / 50.0f)) * 50;
+						}
 						std::cout << pos.x << ' ' << pos.y << std::endl;
-						pos.x = static_cast<int>(std::roundf(static_cast<float>(pos.x) / 50.0f)) * 50;
-						pos.y = static_cast<int>(std::roundf(static_cast<float>(pos.y) / 50.0f)) * 50;
 						if (curve1EditMode)
 							curve1.addPointAndKnots(Point{ static_cast<double>(pos.x), static_cast<double>(window.getSize().y - pos.y) });
 						if (curve2EditMode)
@@ -113,10 +118,17 @@ auto main() -> int
 			if (childWindow.isOpen()) {
 
 				ImGui::SetNextWindowPos(ImVec2(5, 5)); // , ImGuiCond_FirstUseEver);
-				ImGui::SetNextWindowSize(ImVec2(280, 405));
+				ImGui::SetNextWindowSize(ImVec2(280, 475));
 
 				ImGui::Begin("Operations", & imguiOpen, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar);
 				ImGui::BeginGroup();
+				
+				ImGui::Checkbox("Show grid", &gridMode);
+				ImGui::Checkbox("Grid snap", &gridSnapMode);
+
+				ImGui::Separator();
+				ImGui::NewLine();
+
 				if (ImGui::Button("Load points from the file"))
 				{
 					curve1EditMode = false;
@@ -221,6 +233,10 @@ auto main() -> int
 					curve2ControlPolygon = false;*/
 
 					window.clear();
+					if (gridMode)
+					{
+						drawGrids(window, windowSize.x, windowSize.y, 50);
+					}
 					curve1.drawCurve(window, sf::Color::Green);
 					curve2.drawCurve(window, sf::Color::Yellow);
 					window.display();
@@ -245,9 +261,13 @@ auto main() -> int
 
 			window.clear();
 			
-			auto windowSize{ window.getSize() };
-
-			drawGrids(window, windowSize.x, windowSize.y, 50);
+			
+			if (gridMode)
+			{
+				drawGrids(window, windowSize.x, windowSize.y, 50);
+			}
+			
+			curve1.drawCurve(window, sf::Color::Green);
 
 			/*if (curve1ControlPolygon)
 			{
@@ -259,7 +279,7 @@ auto main() -> int
 				curve1.drawConvexHull(window, sf::Color::White);
 			}
 
-			curve1.drawCurve(window, sf::Color::Green);
+			curve2.drawCurve(window, sf::Color::Yellow);
 
 			/*if (curve2ControlPolygon)
 			{
@@ -270,12 +290,12 @@ auto main() -> int
 				curve2.drawConvexHull(window, sf::Color::Magenta);
 			}
 
-			curve2.drawCurve(window, sf::Color::Yellow);
 
 
 			for (auto& p : ptList)
 			{
 				sf::CircleShape c{ 3 };
+				//c.setFillColor(sf::Color{ 128, 128, 128 });
 				c.setPosition(static_cast<float>(p.x) - c.getRadius(), windowSize.y - static_cast<float>(p.y) - c.getRadius());
 				window.draw(c);
 			}

@@ -4,7 +4,7 @@ module;
 
 export module Grid;
 
-export void drawGrids(sf::RenderWindow& window, int width, int height, int step)
+export void drawGrids(sf::RenderWindow& window, unsigned int width, unsigned int height, unsigned int step)
 {
 	sf::Vertex line[2];
 	line[0].color = sf::Color{ 64, 64, 64 };
@@ -15,7 +15,7 @@ export void drawGrids(sf::RenderWindow& window, int width, int height, int step)
 	line[0].position.y = 0;
 	line[1].position.y = static_cast<float>(height);
 
-	for (int i{}; i < width; i += step)
+	for (unsigned int i{step}; i < width; i += step)
 	{
 		line[0].position.x = static_cast<float>(i);
 		line[1].position.x = static_cast<float>(i);
@@ -26,7 +26,7 @@ export void drawGrids(sf::RenderWindow& window, int width, int height, int step)
 	line[0].position.x = 0;
 	line[1].position.x = static_cast<float>(width);
 
-	for (int i{}; i < height; i += step)
+	for (unsigned int i{step}; i < height; i += step)
 	{
 		line[0].position.y = static_cast<float>(i);
 		line[1].position.y = static_cast<float>(i);

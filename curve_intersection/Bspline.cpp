@@ -29,11 +29,11 @@ module Bspline;
 //import <fstream>;
 
 bool Bspline::debug{ false };
-const double Bspline::epsilon{ 1e-12 }; // epsilon is for approximate zero and should be much less than u_epsilon
+const double Bspline::epsilon{ 1e-9 }; // epsilon is for approximate zero and should be much less than u_epsilon
 const double Bspline::u_epsilon{ 0.0001 }; // for knot values
 const double Bspline::u1_epsilon{ u_epsilon / 10.0 }; // for delta u1
-const int Bspline::max_iteration{ 1'000'000 }; // maximum iteration for overlapping curves
-const int Bspline::max_num_intersection_points{ 1'000'000 };
+const int Bspline::max_iteration{ 50'000 }; // maximum iteration for overlapping curves
+const int Bspline::max_num_intersection_points{ 50'000 };
 
 int Bspline::findKnotSpan(double u) const
 {
@@ -1278,8 +1278,10 @@ bool Bspline::isPointOnLineSegment(const Point& pt, const Bspline& line) const
 	// due to floating point error check again the point is on either end points of the line segment
 
 	if (
-		((std::abs(pt.x - x) < Point::epsilon && std::abs(pt.y - y) < Point::epsilon) &&
-			(min_x - Point::epsilon / 2.0) < x && x < (max_x + Point::epsilon / 2.0) && (min_y - Point::epsilon) < y && y < (max_y + Point::epsilon)) ||
+		(
+		(std::abs(pt.x - x) < Point::epsilon && std::abs(pt.y - y) < Point::epsilon) &&
+			(min_x - Point::epsilon) < x && x < (max_x + Point::epsilon) && (min_y - Point::epsilon) < y && y < (max_y + Point::epsilon)
+		) ||
 		pt.hasSameCoordWithTolerance(line.convexHull.front()) ||
 		pt.hasSameCoordWithTolerance(line.convexHull.back())
 		)
