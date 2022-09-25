@@ -50,7 +50,7 @@ auto main() -> int
 		bool curve1EditMode{}, curve2EditMode{};
 		bool curve1ConvexHull{}, curve2ConvexHull{};
 		//bool curve1ControlPolygon{}, curve2ControlPolygon{};
-		bool gridMode{}, gridSnapMode{};
+		bool gridMode{ true }, gridSnapMode{ true };
 		bool decomposeFirst{};
 		bool lineDetection{};
 		bool imguiOpen{ true };
@@ -276,7 +276,7 @@ auto main() -> int
 
 			if (curve1ConvexHull)
 			{
-				curve1.drawConvexHull(window, sf::Color::White);
+				curve1.drawConvexHull(window, sf::Color::Cyan);
 			}
 
 			curve2.drawCurve(window, sf::Color::Yellow);

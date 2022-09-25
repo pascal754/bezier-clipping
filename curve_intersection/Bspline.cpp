@@ -258,7 +258,7 @@ void Bspline::findConvexHull()
 		return;
 	}
 
-	if (controlPoints.size() == 1) // ? needs more thoughts ...
+	if (controlPoints.size() == 1)
 	{
 		convexHull = controlPoints;
 		isConvexHullUpdated = true;
@@ -416,20 +416,43 @@ void Bspline::drawCurve(sf::RenderWindow& window, sf::Color col)
 {
 	if (checkNumbers())
 	{
-		double step = (knotVector[cp_n + 1] - knotVector[0]) / ((cp_n / 20 + 1) * 200);
-		Point pt;
-		sf::VertexArray curve{ sf::LineStrip };
-		auto wSize{ window.getSize() };
-
-		for (auto u{ knotVector[0] }; u < knotVector[cp_n + 1]; u += step)
+		findConvexHull();
+		if (convexHull.size() == 1) // draw point
 		{
-			curvePoint(u, pt);
-			curve.append(sf::Vertex{ sf::Vector2f{static_cast<float>(pt.x), wSize.y - static_cast<float>(pt.y)}, col });
+			auto wSize{ window.getSize() };
+			sf::CircleShape c{ 5 };
+			c.setFillColor(col);
+			c.setPosition(static_cast<float>(convexHull.front().x) - c.getRadius(), wSize.y - static_cast<float>(convexHull.front().y) - c.getRadius());
+			window.draw(c);
 		}
+		else // draw curve
+		{
+			double step = (knotVector[cp_n + 1] - knotVector[0]) / ((cp_n / 20 + 1) * 200);
+			Point pt;
+			sf::VertexArray curve{ sf::LineStrip };
+			auto wSize{ window.getSize() };
 
-		curvePoint(knotVector[cp_n + 1], pt);
-		curve.append(sf::Vertex{ sf::Vector2f{static_cast<float>(pt.x), wSize.y - static_cast<float>(pt.y)}, col });
-		window.draw(curve);
+			for (auto u{ knotVector[0] }; u < knotVector[cp_n + 1]; u += step)
+			{
+				curvePoint(u, pt);
+				curve.append(sf::Vertex{ sf::Vector2f{static_cast<float>(pt.x), wSize.y - static_cast<float>(pt.y)}, col });
+			}
+
+			curvePoint(knotVector[cp_n + 1], pt);
+			curve.append(sf::Vertex{ sf::Vector2f{static_cast<float>(pt.x), wSize.y - static_cast<float>(pt.y)}, col });
+			window.draw(curve);
+		}
+	}
+	else // draw control points until the curve satisfies m = n + p + 1
+	{
+		auto wSize{ window.getSize() };
+		for (auto& p : controlPoints)
+		{
+			sf::CircleShape c{ 5 };
+			c.setFillColor(col);
+			c.setPosition(static_cast<float>(p.x) - c.getRadius(), wSize.y - static_cast<float>(p.y) - c.getRadius());
+			window.draw(c);
+		}
 	}
 }
 
