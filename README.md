@@ -1,6 +1,6 @@
 # intersection algorithm for two Bezier curves
 
-find intersection points between two Bezier curves
+find intersection points between two Bezier curves using Bezier clipping
 
 m = n + p + 1 should be satisfied for a curve
 (m: knot vector, n: control point, p: degree of the curve)
