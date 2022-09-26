@@ -99,6 +99,9 @@ void loadPoints(Bspline& curve1, Bspline& curve2, std::string_view filePathName)
 	}
 	try
 	{
+		curve1.clear();
+		curve2.clear();
+
 		std::string xCoord, yCoord;
 		dataFile >> xCoord >> yCoord;
 		if (xCoord == "A" && yCoord == "A")

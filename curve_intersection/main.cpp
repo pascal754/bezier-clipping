@@ -16,7 +16,6 @@
 #include <imgui-SFML.h>
 #include <SFML/Graphics.hpp>
 #include <SFML/System/Clock.hpp>
-//#include "ImGuiFileDialog-Lib_Only/ImGuiFileDialog.h"
 
 
 import Bspline;
@@ -132,10 +131,9 @@ auto main() -> int
 				ImGui::Separator();
 				ImGui::NewLine();
 
-				// open file dialog for loading
+				// launch a file dialog for loading points
 				if (ImGui::Button("Load points from the file"))
 				{
-					// ImGuiFileDialog::Instance()->OpenDialog("LoadPoints", "Open File", ".dat,.txt", ".", "", 1, nullptr, ImGuiFileDialogFlags_Modal);
 					curve1EditMode = false;
 					curve2EditMode = false;
 					curve1ConvexHull = false;
@@ -143,57 +141,17 @@ auto main() -> int
 					/*curve1ControlPolygon = false;
 					curve2ControlPolygon = false;*/
 
-					window.clear();
-					curve1.drawCurve(window, sf::Color::Green);
-					curve2.drawCurve(window, sf::Color::Yellow);
-					window.display();
-
-					curve1.clear();
-					curve2.clear();
-					ptList.clear();
 					std::string filePathName, fileName;
 					if (launchFileDialog('o', filePathName, fileName))
 					{
 						loadPoints(curve1, curve2, filePathName);
+						ptList.clear();
 					}
 				}
 
-				//if (ImGuiFileDialog::Instance()->Display("LoadPoints"))
-				//{
-				//	// action if OK
-				//	if (ImGuiFileDialog::Instance()->IsOk())
-				//	{
-				//		std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
-				//		//std::string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
-
-				//		// action
-				//		curve1EditMode = false;
-				//		curve2EditMode = false;
-				//		curve1ConvexHull = false;
-				//		curve2ConvexHull = false;
-				//		/*curve1ControlPolygon = false;
-				//		curve2ControlPolygon = false;*/
-
-				//		window.clear();
-				//		curve1.drawCurve(window, sf::Color::Green);
-				//		curve2.drawCurve(window, sf::Color::Yellow);
-				//		window.display();
-
-				//		curve1.clear();
-				//		curve2.clear();
-				//		ptList.clear();
-				//		loadPoints(curve1, curve2, filePathName);
-				//	}
-
-				//	// close
-				//	ImGuiFileDialog::Instance()->Close();
-				//}
-
-				
+				// launch a file dialog for saving points
 				if (ImGui::Button("Save points to the file"))
 				{
-					//ImGuiFileDialog::Instance()->OpenDialog("SavePoints", "Save File", ".dat,.txt", ".", "", 1, nullptr, ImGuiFileDialogFlags_Modal | ImGuiFileDialogFlags_ConfirmOverwrite);
-
 					curve1EditMode = false;
 					curve2EditMode = false;
 					std::string filePathName, fileName;
@@ -202,24 +160,6 @@ auto main() -> int
 						savePoints(curve1, curve2, filePathName);
 					}
 				}
-
-				//if (ImGuiFileDialog::Instance()->Display("SavePoints"))
-				//{
-				//	// action if OK
-				//	if (ImGuiFileDialog::Instance()->IsOk())
-				//	{
-				//		std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
-				//		//std::string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
-
-				//		// action
-				//		curve1EditMode = false;
-				//		curve2EditMode = false;
-				//		savePoints(curve1, curve2, filePathName);
-				//	}
-
-				//	// close
-				//	ImGuiFileDialog::Instance()->Close();
-				//}
 
 				ImGui::Separator();
 				ImGui::NewLine();
