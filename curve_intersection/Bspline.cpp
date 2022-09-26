@@ -899,7 +899,7 @@ void Bspline::searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& 
 			}
 		}
 
-		if (crv.convexHull.size() == 2 && isPointOnLineSegment(pt1, crv))
+		if (crv.convexHull.size() == 2 && crv.isPointOnLineSegment(pt1))
 		{
 			if (debug) { std::cout << "=== intersection found between a point and a line segment ===\n"; }
 			iPoints.push_back(pt1);
@@ -956,7 +956,7 @@ void Bspline::searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& 
 				}
 				else // point vs. line
 				{
-					if (isPointOnLineSegment(convexHull.front(), crv))
+					if (crv.isPointOnLineSegment(convexHull.front()))
 					{
 						std::cout << "=== intersection found between a point and a line ===\n";
 						std::cout << std::format("intersection point: ({}, {})\n", convexHull.front().x, convexHull.front().y);
@@ -972,7 +972,7 @@ void Bspline::searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& 
 			else if (crv.convexHull.size() == 1) // (crv.convexHull.front().hasSameCoord(crv.convexHull.back())) // line vs. point
 			{
 				std::cout << "curve B is a point\n";
-				if (isPointOnLineSegment(crv.convexHull.front(), *this))
+				if (isPointOnLineSegment(crv.convexHull.front()))
 				{
 					std::cout << "=== intersection found between a point and a line ===\n";
 					std::cout << std::format("intersection point: ({}, {})\n", crv.convexHull.front().x, crv.convexHull.front().y);
@@ -990,8 +990,8 @@ void Bspline::searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& 
 			{
 				if (coef_c == crv.coef_c)
 				{
-					if (isPointOnLineSegment(convexHull.front(), crv) || isPointOnLineSegment(convexHull.back(), crv) ||
-						isPointOnLineSegment(crv.convexHull.front(), *this) || isPointOnLineSegment(crv.convexHull.back(), *this)
+					if (crv.isPointOnLineSegment(convexHull.front()) || crv.isPointOnLineSegment(convexHull.back()) ||
+						isPointOnLineSegment(crv.convexHull.front()) || isPointOnLineSegment(crv.convexHull.back())
 						)
 					{
 						std::cout << "searchIntersection() *** two line segments are touching or (partially) overlapping ***\n";
@@ -1013,7 +1013,7 @@ void Bspline::searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& 
 				
 				if (debug) { std::cout << std::format("candidate point: ({}, {})\n", ip.x, ip.y); }
 
-				if (isPointOnLineSegment(ip, *this) && isPointOnLineSegment(ip, crv))
+				if (isPointOnLineSegment(ip) && crv.isPointOnLineSegment(ip))
 				{
 					std::cout << "=== intersection found: two line segments ===\n";
 					std::cout << std::format("intersection point: ({}, {})\n", ip.x, ip.y);
@@ -1284,18 +1284,18 @@ bool Bspline::isThereLineIntersection(double y, double y1, double y2) const
 		return true;
 }
 
-bool Bspline::isPointOnLineSegment(const Point& pt, const Bspline& line) const
+bool Bspline::isPointOnLineSegment(const Point& pt) const
 {
 	// find the intersection point between the given line and the perpendicular line passing through the point
-	double x{ line.coef_b * line.coef_b * pt.x - line.coef_a * line.coef_b * pt.y - line.coef_a * line.coef_c };
-	double y{ line.coef_a * line.coef_a * pt.y - line.coef_a * line.coef_b * pt.x - line.coef_b * line.coef_c };
+	double x{ coef_b * coef_b * pt.x - coef_a * coef_b * pt.y - coef_a * coef_c };
+	double y{ coef_a * coef_a * pt.y - coef_a * coef_b * pt.x - coef_b * coef_c };
 
 	if (debug) { std::cout << std::format("calculated point: ({}, {})\n", x, y); }
 
-	auto min_x{ std::min(line.controlPoints.front().x, line.controlPoints.back().x) };
-	auto max_x{ std::max(line.controlPoints.front().x, line.controlPoints.back().x) };
-	auto min_y{ std::min(line.controlPoints.front().y, line.controlPoints.back().y) };
-	auto max_y{ std::max(line.controlPoints.front().y, line.controlPoints.back().y) };
+	auto min_x{ std::min(controlPoints.front().x, controlPoints.back().x) };
+	auto max_x{ std::max(controlPoints.front().x, controlPoints.back().x) };
+	auto min_y{ std::min(controlPoints.front().y, controlPoints.back().y) };
+	auto max_y{ std::max(controlPoints.front().y, controlPoints.back().y) };
 
 	// check A: the intersection point coinsides with the given point
 	// B: the point is inside the line segment
@@ -1306,8 +1306,8 @@ bool Bspline::isPointOnLineSegment(const Point& pt, const Bspline& line) const
 		(std::abs(pt.x - x) < Point::epsilon && std::abs(pt.y - y) < Point::epsilon) &&
 			(min_x - Point::epsilon) < x && x < (max_x + Point::epsilon) && (min_y - Point::epsilon) < y && y < (max_y + Point::epsilon)
 		) ||
-		pt.hasSameCoordWithTolerance(line.convexHull.front()) ||
-		pt.hasSameCoordWithTolerance(line.convexHull.back())
+		pt.hasSameCoordWithTolerance(convexHull.front()) ||
+		pt.hasSameCoordWithTolerance(convexHull.back())
 		)
 	{
 		if (debug) { std::cout << "a point is on the line\n"; }
