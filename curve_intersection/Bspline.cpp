@@ -7,6 +7,7 @@ module;
 
 #include <iostream>
 #include <string>
+#include <string_view>
 #include <vector>
 #include <list>
 #include <chrono>
@@ -88,9 +89,9 @@ void Bspline::clear()
 	cp_n = -1;
 }
 
-void loadPoints(Bspline& curve1, Bspline& curve2)
+void loadPoints(Bspline& curve1, Bspline& curve2, std::string_view filePathName)
 {
-	std::ifstream dataFile{ "points.dat" };
+	std::ifstream dataFile{ filePathName.data()};
 	if (!dataFile.is_open())
 	{
 		std::cerr << "file not found\n";
@@ -125,9 +126,9 @@ void loadPoints(Bspline& curve1, Bspline& curve2)
 	}
 }
 
-void savePoints(const Bspline& curve1, const Bspline& curve2)
+void savePoints(const Bspline& curve1, const Bspline& curve2, std::string_view filePathName)
 {
-	std::ofstream dataFile{ "saved_points.dat" };
+	std::ofstream dataFile{ filePathName.data() };
 
 	if (!dataFile.is_open())
 	{
@@ -149,7 +150,7 @@ void savePoints(const Bspline& curve1, const Bspline& curve2)
 			dataFile << p.x << ' ' << p.y << '\n';
 		}
 		
-		std::cout << "points data written to \"saved_points.data\"\n";
+		std::cout << "points data written to" << filePathName << '\n';
 	}
 	catch (...)
 	{
