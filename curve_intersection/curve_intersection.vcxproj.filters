@@ -39,7 +39,7 @@
     <ClCompile Include="Grid.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ImGuiFileDialog-Lib_Only\ImGuiFileDialog.cpp">
+    <ClCompile Include="FileDialog.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
