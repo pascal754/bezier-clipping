@@ -29,8 +29,8 @@ auto main() -> int
 	try
 	{
 		int decomp_num{}; // save the number of decomposition of curves
-
-		Bspline curve1{ 3 }, curve2{ 3 }; // p, degree of the curves set to 3
+		int degreeA{ 3 }, degreeB{ 3 };
+		Bspline curve1{ degreeA }, curve2{ degreeB }; // p, degree of the curves
 		std::vector<Point> ptList;
 	
 		sf::RenderWindow window(sf::VideoMode(1000, 800), "Curve Intersection", sf::Style::Titlebar | sf::Style::Close);
@@ -38,7 +38,7 @@ auto main() -> int
 		window.setPosition(sf::Vector2i{ 300, 50 });
 		ImGui::SFML::Init(window);
 
-		sf::RenderWindow childWindow(sf::VideoMode(300, 485), "Operations", sf::Style::Titlebar);
+		sf::RenderWindow childWindow(sf::VideoMode(300, 535), "Operations", sf::Style::Titlebar);
 		childWindow.setFramerateLimit(60);
 		ImGui::SFML::Init(childWindow);
 
@@ -56,6 +56,7 @@ auto main() -> int
 		bool decomposeFirst{};
 		bool lineDetection{};
 		bool imguiOpen{ true };
+
 		while (window.isOpen())
 		{
 			auto windowSize{ window.getSize() };
@@ -120,7 +121,7 @@ auto main() -> int
 			if (childWindow.isOpen()) {
 
 				ImGui::SetNextWindowPos(ImVec2(5, 5)); // , ImGuiCond_FirstUseEver);
-				ImGui::SetNextWindowSize(ImVec2(280, 475));
+				ImGui::SetNextWindowSize(ImVec2(280, 525));
 
 				ImGui::Begin("Operations", & imguiOpen, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar);
 				ImGui::BeginGroup();
@@ -144,6 +145,8 @@ auto main() -> int
 					std::string filePathName, fileName;
 					if (launchFileDialog('o', filePathName, fileName))
 					{
+						curve1.chageDegree(degreeA);
+						curve2.chageDegree(degreeB);
 						loadPoints(curve1, curve2, filePathName);
 						ptList.clear();
 					}
@@ -190,6 +193,13 @@ auto main() -> int
 				//ImGui::Checkbox("Control Polygon for A", &curve1ControlPolygon);
 				ImGui::Checkbox("Convex Hull for A", &curve1ConvexHull);
 
+				if (ImGui::InputInt("degree A", &degreeA))
+				{
+					degreeA = std::clamp(degreeA, 1, 10);
+					curve1.chageDegree(degreeA);
+					ptList.clear();
+				}
+
 				ImGui::Separator();
 				ImGui::NewLine();
 
@@ -218,6 +228,13 @@ auto main() -> int
 				
 				//ImGui::Checkbox("Control Polygon for B", &curve2ControlPolygon);
 				ImGui::Checkbox("Convex Hull for B", &curve2ConvexHull);
+
+				if (ImGui::InputInt("degree B", &degreeB))
+				{
+					degreeB = std::clamp(degreeB, 1, 10);
+					curve2.chageDegree(degreeB);
+					ptList.clear();
+				}
 
 				ImGui::Separator();
 				ImGui::NewLine();

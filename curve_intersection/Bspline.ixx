@@ -40,6 +40,7 @@ public:
 	int findKnotSpan(double u) const;
 	bool checkNumbers() const; // check m = n + p + 1
 	void clear();
+	void chageDegree(int degree);
 	static bool debug;
 	friend void loadPoints(Bspline& curve1, Bspline& curve2, std::string_view filePathName);
 	friend void savePoints(const Bspline& curve1, const Bspline& curve2, std::string_view filePathName);

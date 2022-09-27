@@ -89,6 +89,18 @@ void Bspline::clear()
 	cp_n = -1;
 }
 
+void Bspline::chageDegree(int degree)
+{
+	if (degree < 1 || degree > 10)
+		return;
+
+	p_degree = degree;
+	basis.resize(p_degree + 1);
+	left.resize(p_degree + 1);
+	right.resize(p_degree + 1);
+	makeKnots();
+}
+
 void loadPoints(Bspline& curve1, Bspline& curve2, std::string_view filePathName)
 {
 	std::ifstream dataFile{ filePathName.data()};
