@@ -165,7 +165,7 @@ void savePoints(const Bspline& curve1, const Bspline& curve2, std::string_view f
 			dataFile << p.x << ' ' << p.y << '\n';
 		}
 		
-		std::cout << "points data written to" << filePathName << '\n';
+		std::cout << "points data written to " << filePathName << '\n';
 	}
 	catch (...)
 	{

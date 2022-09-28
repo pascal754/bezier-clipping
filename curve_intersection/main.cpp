@@ -5,6 +5,8 @@
 #include <iostream>
 #include <vector>
 #include <chrono>
+#include <array>
+#include <algorithm>
 #include <cstring>
 
 //import <iostream>;
@@ -38,7 +40,7 @@ auto main() -> int
 		window.setPosition(sf::Vector2i{ 300, 50 });
 		ImGui::SFML::Init(window);
 
-		sf::RenderWindow childWindow(sf::VideoMode(300, 535), "Operations", sf::Style::Titlebar);
+		sf::RenderWindow childWindow(sf::VideoMode(300, 755), "Operations", sf::Style::Titlebar);
 		childWindow.setFramerateLimit(60);
 		ImGui::SFML::Init(childWindow);
 
@@ -73,6 +75,8 @@ auto main() -> int
 					}
 
 					window.close();
+					ImGui::SFML::Shutdown();
+					return 0;
 				}
 				else if (event.type == sf::Event::MouseButtonPressed)
 				{
@@ -121,7 +125,7 @@ auto main() -> int
 			if (childWindow.isOpen()) {
 
 				ImGui::SetNextWindowPos(ImVec2(5, 5)); // , ImGuiCond_FirstUseEver);
-				ImGui::SetNextWindowSize(ImVec2(280, 525));
+				ImGui::SetNextWindowSize(ImVec2(280, 745));
 
 				ImGui::Begin("Operations", & imguiOpen, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar);
 				ImGui::BeginGroup();
@@ -195,6 +199,8 @@ auto main() -> int
 
 				if (ImGui::InputInt("degree A", &degreeA))
 				{
+					curve1EditMode = false;
+					curve2EditMode = false;
 					degreeA = std::clamp(degreeA, 1, 10);
 					curve1.chageDegree(degreeA);
 					ptList.clear();
@@ -231,6 +237,8 @@ auto main() -> int
 
 				if (ImGui::InputInt("degree B", &degreeB))
 				{
+					curve1EditMode = false;
+					curve2EditMode = false;
 					degreeB = std::clamp(degreeB, 1, 10);
 					curve2.chageDegree(degreeB);
 					ptList.clear();
@@ -277,6 +285,18 @@ auto main() -> int
 						curve1.findIntersection(curve2, ptList, decomp_num, lineDetection);
 					}
 				}
+
+				ImGui::Separator();
+				ImGui::NewLine();
+
+				static std::array<char, 512> text{ "Find intersection points\nbetween two B-spline curves\nusing Bezier clipping" };
+
+				//static ImGuiInputTextFlags flags = ImGuiInputTextFlags_AllowTabInput | ImGuiInputTextFlags_ReadOnly;
+				//ImGui::CheckboxFlags("ImGuiInputTextFlags_ReadOnly", &flags, ImGuiInputTextFlags_ReadOnly);
+				//ImGui::CheckboxFlags("ImGuiInputTextFlags_AllowTabInput", &flags, ImGuiInputTextFlags_AllowTabInput);
+				//ImGui::CheckboxFlags("ImGuiInputTextFlags_CtrlEnterForNewLine", &flags, ImGuiInputTextFlags_CtrlEnterForNewLine);
+				ImGui::InputTextMultiline("##source", text.data(), text.size(), ImVec2(-FLT_MIN, ImGui::GetTextLineHeight() * 16), ImGuiInputTextFlags_ReadOnly);
+
 				ImGui::EndGroup();
 				ImGui::End();
 			}
@@ -337,7 +357,7 @@ auto main() -> int
 			//sf::sleep(sf::milliseconds(100));
 		}
 
-		ImGui::SFML::Shutdown();
+		
 	}
 	catch (std::exception& e)
 	{
