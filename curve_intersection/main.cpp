@@ -289,7 +289,7 @@ auto main() -> int
 				ImGui::Separator();
 				ImGui::NewLine();
 
-				static std::array<char, 512> text{ "Find intersection points\nbetween two Bezier curves\nusing Bezier clipping" };
+				static std::array<char, 512> text{ "Find intersection points\nbetween two B-spline curves\nusing Bezier clipping" };
 
 				//static ImGuiInputTextFlags flags = ImGuiInputTextFlags_AllowTabInput | ImGuiInputTextFlags_ReadOnly;
 				//ImGui::CheckboxFlags("ImGuiInputTextFlags_ReadOnly", &flags, ImGuiInputTextFlags_ReadOnly);
