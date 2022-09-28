@@ -75,8 +75,6 @@ auto main() -> int
 					}
 
 					window.close();
-					ImGui::SFML::Shutdown();
-					return 0;
 				}
 				else if (event.type == sf::Event::MouseButtonPressed)
 				{
@@ -357,7 +355,7 @@ auto main() -> int
 			//sf::sleep(sf::milliseconds(100));
 		}
 
-		
+		ImGui::SFML::Shutdown();
 	}
 	catch (std::exception& e)
 	{
