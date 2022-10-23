@@ -357,7 +357,7 @@ auto main() -> int
 
 		ImGui::SFML::Shutdown();
 	}
-	catch (std::exception& e)
+	catch (const std::exception& e)
 	{
 		std::cerr << e.what() << '\n';
 		return 1;
