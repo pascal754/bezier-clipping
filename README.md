@@ -1,19 +1,24 @@
-# intersection algorithm for two B-spline curves
+# Intersection algorithm for two B-spline curves
 
-find intersection points between two B-spline curves using Bezier clipping
+## Find intersection points between two B-spline curves using Bezier clipping
 
-m = n + p + 1 should be satisfied for a curve
-(m: knot vector, n: control point, p: degree of the curve)
+- m = n + p + 1 should be satisfied for a curve
+(m: knot vector, n: control point, p: degree of curve)
 
-limitation: not for overlapping curves or self intersection
+## Limitation
 
-print verbose debug information: command > output.txt may be preferred
+- Not for overlapping curves or self intersection
 
+## With Debug checked
 
-Development Tools
+- print verbose debug information
 
-Microsoft Visual Studio Community 2022 (64-bit) - Preview
+- to save to a file: command > output.txt may be preferred
+
+## Development Tools
+
+- Microsoft Visual Studio Community 2022 (64-bit) - Preview
 Version 17.4.0 Preview 2.0
 C++20
 
-imgui-sfml 2.5#1 via vcpkg
+- imgui-sfml 2.5#1 via vcpkg
