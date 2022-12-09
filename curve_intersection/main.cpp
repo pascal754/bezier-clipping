@@ -8,12 +8,6 @@
 #include <array>
 #include <algorithm>
 #include <cstring>
-
-//import <iostream>;
-//import <vector>;
-//import <chrono>;
-//import <cstring>;
-
 #include <imgui.h>
 #include <imgui-SFML.h>
 #include <SFML/Graphics.hpp>
@@ -22,7 +16,6 @@
 
 import Bspline;
 import Point;
-import make_curve;
 import Grid;
 import FileDialog;
 
@@ -80,17 +73,17 @@ auto main() -> int
 				{
 					if (event.mouseButton.button == sf::Mouse::Left)
 					{
-						sf::Vector2i pos{ sf::Mouse::getPosition(window) };
+						sf::Vector2i mPos{ sf::Mouse::getPosition(window) };
 						if (gridSnapMode)
 						{
-							pos.x = static_cast<int>(std::roundf(static_cast<float>(pos.x) / 50.0f)) * 50;
-							pos.y = static_cast<int>(std::roundf(static_cast<float>(pos.y) / 50.0f)) * 50;
+							mPos.x = static_cast<int>(std::roundf(static_cast<float>(mPos.x) / 50.0f)) * 50;
+							mPos.y = static_cast<int>(std::roundf(static_cast<float>(mPos.y) / 50.0f)) * 50;
 						}
 						std::cout << pos.x << ' ' << pos.y << std::endl;
 						if (curve1EditMode)
-							curve1.addPointAndKnots(Point{ static_cast<double>(pos.x), static_cast<double>(window.getSize().y - pos.y) });
+							curve1.addPointAndKnots(Point{ static_cast<double>(mPos.x), static_cast<double>(window.getSize().y - mPos.y) });
 						if (curve2EditMode)
-							curve2.addPointAndKnots(Point{ static_cast<double>(pos.x), static_cast<double>(window.getSize().y - pos.y) });
+							curve2.addPointAndKnots(Point{ static_cast<double>(mPos.x), static_cast<double>(window.getSize().y - mPos.y) });
 					}
 				}
 			}

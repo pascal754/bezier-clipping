@@ -10,9 +10,6 @@ module;
 
 export module Bspline;
 
-//import <vector>;
-//import <optional>;
-
 import Point;
 
 export class Bspline {

@@ -7,7 +7,6 @@ module;
 
 #include <iostream>
 #include <string>
-#include <string_view>
 #include <vector>
 #include <list>
 #include <chrono>
@@ -18,16 +17,6 @@ module;
 #include <SFML/Graphics.hpp>
 
 module Bspline;
-
-//import <iostream>;
-//import <string>;
-//import <vector>;
-//import <list>;
-//import <chrono>;
-//import <algorithm>;
-//import <format>;
-//import <stdexcept>;
-//import <fstream>;
 
 bool Bspline::debug{ false };
 const double Bspline::epsilon{ 1e-9 }; // epsilon is for approximate zero and should be much less than u_epsilon
