@@ -3,7 +3,7 @@
 ## Find intersection points between two B-spline curves using Bezier clipping
 
 - m = n + p + 1 should be satisfied for a curve
-(m: knot vector, n: control point, p: degree of curve)
+(m: knot vector [0, m], n: control points [0, n], p: degree of curve)
 
 ## Limitation
 
