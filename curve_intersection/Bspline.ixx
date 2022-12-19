@@ -34,17 +34,17 @@ public:
     void findIntersection(Bspline crv, std::vector<Point>& iPoints, int& iter, bool lineDetection); // check curves first and proceed, call searchIntersection()
     void bezierIntersection(Bspline bs, std::vector<Point>& iPoints, int& iter, bool lineDetection);
     void printInfo();
+    void globalCurveInterpolation();
     int findKnotSpan(double u) const;
     bool checkNumbers() const; // check m = n + p + 1
     void clear();
     void chageDegree(int degree);
-    void globalCurveInterpolation(int n, const std::vector<Point>& Q, int r, int p, int& m, std::vector<double>& U, std::vector<Point>& P);
-    void find_u_bar_k(const std::vector<Point>& Q, std::vector<double>& uk);
+    void find_u_bar_k(std::vector<double>& uk);
     void find_U(const std::vector<double>& uk, size_t n);
     static bool DEBUG;
     friend void loadPoints(Bspline& curve1, Bspline& curve2, std::string_view filePathName);
     friend void savePoints(const Bspline& curve1, const Bspline& curve2, std::string_view filePathName);
-    void LUPSolve(const std::vector<std::vector<double>>& A, const std::vector<int>& P, const std::vector<Point>& b, std::vector<Point>& x);
+    void LUPSolve(const std::vector<std::vector<double>>& A, const std::vector<int>& P);
     bool LUPDecompose(std::vector<std::vector<double>>& A, size_t N, std::vector<int>& P);
 private:
     void deleteLastPoint();
@@ -67,6 +67,7 @@ private:
     int p_degree{}; // degree
     int cp_n{ -1 }; // n + 1: # of control pts
     std::vector<Point> controlPoints;
+    std::vector<Point> interpolationPoints;
     std::vector<double> knotVector;
     std::vector<double> basis, left, right;
     std::vector<Point> convexHull;
