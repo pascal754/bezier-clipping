@@ -3,13 +3,13 @@
 
 module;
 
+#include <optional>
+#include <vector>
+#include <string_view>
 #include <SFML/Graphics.hpp>
 
 export module Bspline;
 
-import <optional>;
-import <vector>;
-import <string_view>;
 import Point;
 
 export class Bspline {
@@ -22,7 +22,9 @@ public:
     void basisFuns(int i, double u);
     void curvePoint(double u, Point& pt);
     void addPointAndKnots(const Point& p);
+    void addInterpolationPoint(const Point& p);
     void deleteLastPointAndKnots();
+    void deleteLastInterpolationPoint();
     Point getPoint(int i) const;
     void findConvexHull();
     bool leftTurn(const Point& p0, const Point& p1, const Point& p2) const;

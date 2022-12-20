@@ -2,18 +2,17 @@
 // by SM
 // curve intersection
 
-
+#include <iostream>
+#include <vector>
+#include <chrono>
+#include <array>
+#include <algorithm>
+#include <cstring>
 #include <imgui.h>
 #include <imgui-SFML.h>
 #include <SFML/Graphics.hpp>
 #include <SFML/System/Clock.hpp>
 
-import<iostream>;
-import<vector>;
-import<chrono>;
-import<array>;
-import<algorithm>;
-import<cstring>;
 import Bspline;
 import Point;
 import Grid;
@@ -79,11 +78,17 @@ auto main() -> int
                             mPos.x = static_cast<int>(std::roundf(static_cast<float>(mPos.x) / 50.0f)) * 50;
                             mPos.y = static_cast<int>(std::roundf(static_cast<float>(mPos.y) / 50.0f)) * 50;
                         }
-                        std::cout << pos.x << ' ' << pos.y << std::endl;
+                        std::cout << mPos.x << ' ' << window.getSize().y - mPos.y << std::endl;
                         if (curve1EditMode)
-                            curve1.addPointAndKnots(Point{ static_cast<double>(mPos.x), static_cast<double>(window.getSize().y - mPos.y) });
+                        {
+                            //curve1.addPointAndKnots(Point{ static_cast<double>(mPos.x), static_cast<double>(window.getSize().y - mPos.y) });
+                            curve1.addInterpolationPoint(Point{ static_cast<double>(mPos.x), static_cast<double>(window.getSize().y - mPos.y) });
+                        }
                         if (curve2EditMode)
-                            curve2.addPointAndKnots(Point{ static_cast<double>(mPos.x), static_cast<double>(window.getSize().y - mPos.y) });
+                        {
+                            //curve2.addPointAndKnots(Point{ static_cast<double>(mPos.x), static_cast<double>(window.getSize().y - mPos.y) });
+                            curve2.addInterpolationPoint(Point{ static_cast<double>(mPos.x), static_cast<double>(window.getSize().y - mPos.y) });
+                        }
                     }
                 }
             }
@@ -174,7 +179,8 @@ auto main() -> int
                     {
                         ptList.clear();
                     }
-                    curve1.deleteLastPointAndKnots();
+                    //curve1.deleteLastPointAndKnots();
+                    curve1.deleteLastInterpolationPoint();
                 }
 
                 if (ImGui::Button("Erase curve A"))
@@ -212,7 +218,8 @@ auto main() -> int
                     {
                         ptList.clear();
                     }
-                    curve2.deleteLastPointAndKnots();
+                    //curve2.deleteLastPointAndKnots();
+                    curve2.deleteLastInterpolationPoint();
                 }
 
                 if (ImGui::Button("Erase curve B"))

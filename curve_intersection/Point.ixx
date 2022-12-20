@@ -1,9 +1,11 @@
 // September 2, 2022
 // by SM
 
-export module Point;
+module;
 
-import <iostream>;
+#include <iostream>
+
+export module Point;
 
 export class Point {
 public:

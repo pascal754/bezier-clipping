@@ -21,9 +21,6 @@
     <ClCompile Include="Point.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Bspline.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Bspline.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -40,6 +37,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FileDialog.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Bspline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

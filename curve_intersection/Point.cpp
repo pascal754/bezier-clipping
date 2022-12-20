@@ -1,11 +1,13 @@
 // September 2, 2022
 // by SM
 
-module Point;
+module;
 
-import<iostream>;
-import<format>;
-import<cmath>;
+#include <iostream>
+#include <format>
+#include <cmath>
+
+module Point;
 
 const double Point::epsilon{ 0.5 }; // chosen for screen pixel
 

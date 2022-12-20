@@ -5,19 +5,20 @@
 
 module;
 
+#include <iostream>
+#include <string>
+#include <vector>
+#include <list>
+#include <chrono>
+#include <algorithm>
+#include <format>
+#include <stdexcept>
+#include <fstream>
 #include <SFML/Graphics.hpp>
 
 module Bspline;
 
-import<iostream>;
-import<string>;
-import<vector>;
-import<list>;
-import<chrono>;
-import<algorithm>;
-import<format>;
-import<stdexcept>;
-import<fstream>;
+
 
 bool Bspline::DEBUG{ false };
 const double Bspline::epsilon{ 1e-9 }; // epsilon is for approximate zero and should be much less than u_epsilon
@@ -73,6 +74,7 @@ bool Bspline::checkNumbers() const
 void Bspline::clear()
 {
     controlPoints.clear();
+    interpolationPoints.clear();
     knotVector.clear();
     convexHull.clear();
     isConvexHullUpdated = false;
@@ -200,33 +202,54 @@ void Bspline::curvePoint(double u, Point& cp) {
     }
 }
 
-void Bspline::addPoint(const Point& p)
+void Bspline::addPoint(const Point& p) // control point
 {
     controlPoints.push_back(p);
     cp_n = static_cast<int>(std::ssize(controlPoints)) - 1;
     isConvexHullUpdated = false;
 }
 
-void Bspline::addPointAndKnots(const Point& p)
+void Bspline::addPointAndKnots(const Point& p) // control point
 {
     addPoint(p);
     makeKnots();
 }
 
-void Bspline::deleteLastPoint()
+void Bspline::addInterpolationPoint(const Point& p)
+{
+    interpolationPoints.push_back(p);
+    cp_n = static_cast<int>(std::ssize(interpolationPoints)) - 1;
+    isConvexHullUpdated = false;
+    globalCurveInterpolation();
+}
+
+void Bspline::deleteLastPoint() // control point
 {
     controlPoints.pop_back();
     cp_n = static_cast<int>(std::ssize(controlPoints)) - 1;
     isConvexHullUpdated = false;
 }
 
-void Bspline::deleteLastPointAndKnots()
+void Bspline::deleteLastPointAndKnots() // control point
 {
     if (controlPoints.size() == 0)
         return;
 
     deleteLastPoint();
     makeKnots();
+}
+
+void Bspline::deleteLastInterpolationPoint()
+{
+    if (interpolationPoints.size() == 0)
+    {
+        return;
+    }
+
+    interpolationPoints.pop_back();
+    cp_n = static_cast<int>(std::ssize(interpolationPoints)) - 1;
+    isConvexHullUpdated = false;
+    globalCurveInterpolation();
 }
 
 Point Bspline::getPoint(int i) const
@@ -452,7 +475,8 @@ void Bspline::drawCurve(sf::RenderWindow& window, sf::Color col)
     else // draw control points until the curve satisfies m = n + p + 1
     {
         auto wSize{ window.getSize() };
-        for (auto& p : controlPoints)
+        //for (auto& p : controlPoints)
+        for (auto& p : interpolationPoints)
         {
             sf::CircleShape c{ 5 };
             c.setFillColor(col);
@@ -1364,10 +1388,10 @@ void Bspline::globalCurveInterpolation()
     // Output: m, U, P
     //     U: knot vector
     //     P: control points (solution)
-
-    if (interpolationPoints.size() < 1)
+    size_t m{ interpolationPoints.size() + p_degree };
+    if (m < (p_degree + 1) * 2)
     {
-        std::cerr << "interpolation points empty\n";
+        std::cerr << "interpolation points not enough\n";
         return;
     }
 
@@ -1380,19 +1404,21 @@ void Bspline::globalCurveInterpolation()
     
     // 3. initialize array A to 0
     std::vector<std::vector<double>> A;
-    A.resize(interpolationPoints.size() + 1);
+    A.resize(interpolationPoints.size());
 
     for (auto& x : A)
     {
-        x.resize(interpolationPoints.size() + 1);
+        x.resize(interpolationPoints.size());
     }
+
+    auto vectorAssign = [&](size_t i, size_t offset) {for (size_t col{ 0 }; col < basis.size(); ++col) { A[i][col + offset] = basis[col]; }};
 
     for (size_t i{}; i < interpolationPoints.size(); ++i)
     {
         // Set up coefficient matrix
         int span{ findKnotSpan(u_bar_k[i]) };
         basisFuns(span, u_bar_k[i]);
-        A[i] = basis;
+        vectorAssign(i, span - p_degree);
     }
 
     std::vector<int> Pm(interpolationPoints.size()); // permutation matrix
@@ -1410,7 +1436,7 @@ void Bspline::find_u_bar_k(std::vector<double>& uk)
     // Output: uk
 
     // chord length method: Eq. (9.4), (9.5)
-    if (interpolationPoints.size() <= 1)
+    if (interpolationPoints.size() <= 2)
     {
         std::cerr << "interpolation points are not enough\n";
         return;
@@ -1435,7 +1461,9 @@ void Bspline::find_u_bar_k(std::vector<double>& uk)
 
 void Bspline::find_U(const std::vector<double>& uk, size_t n)
 {
-    //Eq. (9.8)
+    // Input: uk (u_bar_k), n : number of interpolation points
+    // Output: knot vector
+    // Eq. (9.8)
 
     if (uk.size() < 2)
     {
@@ -1443,7 +1471,7 @@ void Bspline::find_U(const std::vector<double>& uk, size_t n)
         return;
     }
 
-    size_t m{ n + p_degree + 1 };
+    size_t m{ n + p_degree };
 
     knotVector.resize(m + 1);
 
@@ -1457,7 +1485,7 @@ void Bspline::find_U(const std::vector<double>& uk, size_t n)
         knotVector[i] = 1.0;
     }
 
-    for (size_t j{ 1 }; j <= n - p_degree; ++j)
+    for (size_t j{ 1 }; j < n - p_degree; ++j)
     {
         double sum{};
         for (size_t i{ j }; i <= j + p_degree - 1; ++i)
@@ -1480,11 +1508,11 @@ bool Bspline::LUPDecompose(std::vector<std::vector<double>>& A, size_t N, std::v
      */
 
 
-    std::vector<double> ptr;
+    std::vector<double> ptr(N);
 
     const double Tol{ 1e-6 };
 
-    for (int i{}; i <= N; ++i)
+    for (int i{}; i < N; ++i)
     {
         P[i] = i;
     } //Unit permutation matrix, P[N] initialized with N
@@ -1537,6 +1565,7 @@ void Bspline::LUPSolve(const std::vector<std::vector<double>>& A, const std::vec
      */
 
     size_t N{ A.size() };
+    controlPoints.resize(N);
 
     for (size_t i{}; i < N; i++) {
         controlPoints[i].y = interpolationPoints[P[i]].y;
@@ -1549,8 +1578,8 @@ void Bspline::LUPSolve(const std::vector<std::vector<double>>& A, const std::vec
         }
     }
 
-    for (size_t i{ N - 1 }; i >= 0; i--) {
-        for (size_t k{ i + 1 }; k < N; k++)
+    for (size_t i{ N - 1 }; i != -1; --i) {
+        for (size_t k{ i + 1 }; k < N; ++k)
         {
             controlPoints[i].x -= A[i][k] * controlPoints[k].x;
             controlPoints[i].y -= A[i][k] * controlPoints[k].y;
