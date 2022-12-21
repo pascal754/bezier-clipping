@@ -93,7 +93,12 @@ void Bspline::chageDegree(int degree)
     basis.resize(p_degree + 1);
     left.resize(p_degree + 1);
     right.resize(p_degree + 1);
-    makeKnots();
+
+    // for interpolation mode
+    //makeKnots();
+    convexHull.clear();
+    isConvexHullUpdated = false;
+    globalCurveInterpolation();
 }
 
 void loadPoints(Bspline& curve1, Bspline& curve2, std::string_view filePathName)
