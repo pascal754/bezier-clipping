@@ -1,0 +1,1 @@
+C:\Users\neo\source\repos\bezier-clipping\test_interpolation\x64\Debug\test_interpolation.vcxproj.CopyComplete

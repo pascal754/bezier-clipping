@@ -42,12 +42,12 @@ public:
     void clear();
     void chageDegree(int degree);
     void find_u_bar_k(std::vector<double>& uk);
-    void find_U(const std::vector<double>& uk, size_t n);
+    void find_U(const std::vector<double>& uk);
     static bool DEBUG;
     friend void loadPoints(Bspline& curve1, Bspline& curve2, std::string_view filePathName);
     friend void savePoints(const Bspline& curve1, const Bspline& curve2, std::string_view filePathName);
-    void LUPSolve(const std::vector<std::vector<double>>& A, const std::vector<int>& P);
-    bool LUPDecompose(std::vector<std::vector<double>>& A, size_t N, std::vector<int>& P);
+    void LUPSolve(const std::vector<std::vector<double>>& A, const std::vector<int>& Pm);
+    bool LUPDecompose(std::vector<std::vector<double>>& A, std::vector<int>& Pm);
 private:
     void deleteLastPoint();
     void searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& iter, bool lineDetection); // internal call

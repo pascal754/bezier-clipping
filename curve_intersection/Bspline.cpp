@@ -1376,21 +1376,20 @@ void Bspline::printInfo()
 }
 
 void Bspline::globalCurveInterpolation()
-// int n, const std::vector<Point>& Q)
-// int r, int p, int& m, std::vector<double>& U, std::vector<Point>& P)
 {
     // Algorithm A9.1 pp. 369
     // Global interpolation through n + 1 points
-    // Input: n, Q, r, p
+    // Input: n, Q
     //     n: Q_0 ~ Q_n
     //     Q: interpolation points
     //
-    // Output: m, U, P
+    // Output: U, P
     //     U: knot vector
     //     P: control points (solution)
     size_t m{ interpolationPoints.size() + p_degree };
     if (m < (p_degree + 1) * 2)
     {
+        controlPoints.clear();
         std::cerr << "interpolation points not enough\n";
         return;
     }
@@ -1400,7 +1399,7 @@ void Bspline::globalCurveInterpolation()
     find_u_bar_k(u_bar_k);
 
     // 2. compute U
-    find_U(u_bar_k, interpolationPoints.size());
+    find_U(u_bar_k);
     
     // 3. initialize array A to 0
     std::vector<std::vector<double>> A;
@@ -1421,9 +1420,9 @@ void Bspline::globalCurveInterpolation()
         vectorAssign(i, span - p_degree);
     }
 
-    std::vector<int> Pm(interpolationPoints.size()); // permutation matrix
+    std::vector<int> Pm(interpolationPoints.size() + 1); // permutation matrix
 
-    if (!LUPDecompose(A, interpolationPoints.size(), Pm)) {
+    if (!LUPDecompose(A, Pm)) {
         std::cerr << "LUDecomposition failed\n";
         controlPoints.clear();
         return;
@@ -1439,7 +1438,7 @@ void Bspline::find_u_bar_k(std::vector<double>& uk)
     // chord length method: Eq. (9.4), (9.5)
     if (interpolationPoints.size() <= 2)
     {
-        std::cerr << "interpolation points are not enough\n";
+        std::cerr << "find_u_bar_k: interpolation points are not enough\n";
         return;
     }
 
@@ -1460,18 +1459,13 @@ void Bspline::find_u_bar_k(std::vector<double>& uk)
     }
 }
 
-void Bspline::find_U(const std::vector<double>& uk, size_t n)
+void Bspline::find_U(const std::vector<double>& uk)
 {
     // Input: uk (u_bar_k), n : number of interpolation points
     // Output: knot vector
     // Eq. (9.8)
 
-    if (uk.size() < 2)
-    {
-        std::cerr << "the size of u_bar_k < 2\n";
-        return;
-    }
-
+    size_t n{ interpolationPoints.size() };
     size_t m{ n + p_degree };
 
     knotVector.resize(m + 1);
@@ -1497,25 +1491,29 @@ void Bspline::find_U(const std::vector<double>& uk, size_t n)
     }
 }
 
-bool Bspline::LUPDecompose(std::vector<std::vector<double>>& A, size_t N, std::vector<int>& P) {
+bool Bspline::LUPDecompose(std::vector<std::vector<double>>& A, std::vector<int>& Pm) {
     //bool LUPDecompose(vedouble * *A, int N, double Tol, int* P)
     // https://en.wikipedia.org/wiki/LU_decomposition
     /* INPUT: A - array of pointers to rows of a square matrix having dimension N
-     *        Tol - small tolerance number to detect failure when the matrix is near degenerate
+     
      * OUTPUT: Matrix A is changed, it contains a copy of both matrices L-E and U as A=(L-E)+U such that P*A=L*U.
      *        The permutation matrix is not stored as a matrix, but in an integer vector P of size N+1
      *        containing column indexes where the permutation matrix has "1". The last element P[N]=S+N,
      *        where S is the number of row exchanges needed for determinant computation, det(P)=(-1)^S
+     * 
+     * Tol: small tolerance number to detect failure when the matrix is near degenerate
      */
 
 
+
+    size_t N{ interpolationPoints.size() };
     std::vector<double> ptr;
 
     const double Tol{ 1e-6 };
 
-    for (int i{}; i < N; ++i)
+    for (int i{}; i <= N; ++i)
     {
-        P[i] = i;
+        Pm[i] = i;
     } //Unit permutation matrix, P[N] initialized with N
 
     for (size_t i{}; i < N; ++i) {
@@ -1533,9 +1531,9 @@ bool Bspline::LUPDecompose(std::vector<std::vector<double>>& A, size_t N, std::v
 
         if (imax != i) {
             //pivoting P
-            int temp{ P[i] };
-            P[i] = P[imax];
-            P[imax] = temp;
+            int temp{ Pm[i] };
+            Pm[i] = Pm[imax];
+            Pm[imax] = temp;
 
             //pivoting rows of A
             ptr = A[i];
@@ -1543,7 +1541,7 @@ bool Bspline::LUPDecompose(std::vector<std::vector<double>>& A, size_t N, std::v
             A[imax] = ptr;
 
             //counting pivots starting from N (for determinant)
-            ++P[N];
+            ++Pm[N];
         }
 
         for (size_t j{ i + 1 }; j < N; ++j) {
@@ -1559,18 +1557,18 @@ bool Bspline::LUPDecompose(std::vector<std::vector<double>>& A, size_t N, std::v
     return true;  //decomposition done 
 }
 
-void Bspline::LUPSolve(const std::vector<std::vector<double>>& A, const std::vector<int>& P) {
+void Bspline::LUPSolve(const std::vector<std::vector<double>>& A, const std::vector<int>& Pm) {
     // https://en.wikipedia.org/wiki/LU_decomposition
-    /* INPUT: A,P filled in LUPDecompose; b - rhs vector; N - dimension
-     * OUTPUT: x - solution vector of A*x=b
+    /* INPUT: A,P filled in LUPDecompose; b(interpolation points) - rhs vector; N - dimension
+     * OUTPUT: x(control points) - solution vector of A*x=b
      */
 
     size_t N{ A.size() };
     controlPoints.resize(N);
 
     for (size_t i{}; i < N; i++) {
-        controlPoints[i].y = interpolationPoints[P[i]].y;
-        controlPoints[i].x = interpolationPoints[P[i]].x;
+        controlPoints[i].y = interpolationPoints[Pm[i]].y;
+        controlPoints[i].x = interpolationPoints[Pm[i]].x;
 
         for (size_t k{}; k < i; k++)
         {

@@ -1,0 +1,11 @@
+{
+    "Version": "1.1",
+    "Data": {
+        "Source": "c:\\users\\neo\\source\\repos\\bezier-clipping\\curve_intersection\\bspline.ixx",
+        "ProvidedModule": "Bspline",
+        "ImportedModules": [
+            "Point"
+        ],
+        "ImportedHeaderUnits": []
+    }
+}

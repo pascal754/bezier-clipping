@@ -1,0 +1,12 @@
+{
+    "Version": "1.1",
+    "Data": {
+        "Source": "c:\\users\\neo\\source\\repos\\bezier-clipping\\test_interpolation\\main.cpp",
+        "ProvidedModule": "",
+        "ImportedModules": [
+            "Point",
+            "Bspline"
+        ],
+        "ImportedHeaderUnits": []
+    }
+}
