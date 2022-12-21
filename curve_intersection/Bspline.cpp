@@ -31,7 +31,10 @@ int Bspline::findKnotSpan(double u) const
 {
     if (u < knotVector.front() || u > knotVector.back())
     {
-        if (DEBUG) { std::cout << "findKnotSpan() u is outside of range\n"; }
+        if (DEBUG) { std::cout << "findKnotSpan() u is outside of range: " << u << '\n'; }
+
+        std::cerr << std::format("findKnotSpan() u is outside of range: {:.20f}\n", u);
+
         throw std::runtime_error("findKnotSpan() u is outside of range");
     }
 
@@ -1415,7 +1418,15 @@ void Bspline::globalCurveInterpolation()
     for (size_t i{}; i < interpolationPoints.size(); ++i)
     {
         // Set up coefficient matrix
-        int span{ findKnotSpan(u_bar_k[i]) };
+        int span{};
+        try {
+            span = findKnotSpan(u_bar_k[i]);
+        }
+        catch (const std::exception& e) {
+            std::cerr << e.what();
+            std::cerr << ": global interpolation failed\n";
+            return;
+        }
         basisFuns(span, u_bar_k[i]);
         vectorAssign(i, span - p_degree);
     }
@@ -1456,6 +1467,10 @@ void Bspline::find_u_bar_k(std::vector<double>& u_bar_k)
     for (size_t i{ 1 }; i < interpolationPoints.size() - 1; ++i)
     {
         u_bar_k[i] = u_bar_k[i - 1] + std::hypot(interpolationPoints[i].x - interpolationPoints[i - 1].x, interpolationPoints[i].y - interpolationPoints[i - 1].y) / d;
+        if (u_bar_k[i] > 1.0)
+        {
+            std::cerr << std::format("u_bar_k is larger > 1.0: {:.20f}\n", u_bar_k[i]);
+        }
     }
 }
 
