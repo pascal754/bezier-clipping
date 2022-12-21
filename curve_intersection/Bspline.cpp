@@ -1431,9 +1431,9 @@ void Bspline::globalCurveInterpolation()
     LUPSolve(A, Pm);
 }
 
-void Bspline::find_u_bar_k(std::vector<double>& uk)
+void Bspline::find_u_bar_k(std::vector<double>& u_bar_k)
 {
-    // Output: uk
+    // Output: u_bar_k
 
     // chord length method: Eq. (9.4), (9.5)
     if (interpolationPoints.size() <= 2)
@@ -1448,21 +1448,21 @@ void Bspline::find_u_bar_k(std::vector<double>& uk)
         d += std::hypot(interpolationPoints[i].x - interpolationPoints[i - 1].x, interpolationPoints[i].y - interpolationPoints[i - 1].y);
     }
 
-    uk.resize(interpolationPoints.size());
+    u_bar_k.resize(interpolationPoints.size());
 
-    uk.front() = 0.0;
-    uk.back() = 1.0;
+    u_bar_k.front() = 0.0;
+    u_bar_k.back() = 1.0;
 
     for (size_t i{ 1 }; i < interpolationPoints.size() - 1; ++i)
     {
-        uk[i] = uk[i - 1] + std::hypot(interpolationPoints[i].x - interpolationPoints[i - 1].x, interpolationPoints[i].y - interpolationPoints[i - 1].y) / d;
+        u_bar_k[i] = u_bar_k[i - 1] + std::hypot(interpolationPoints[i].x - interpolationPoints[i - 1].x, interpolationPoints[i].y - interpolationPoints[i - 1].y) / d;
     }
 }
 
-void Bspline::find_U(const std::vector<double>& uk)
+void Bspline::find_U(const std::vector<double>& u_bar_k)
 {
-    // Input: uk (u_bar_k), n : number of interpolation points
-    // Output: knot vector
+    // Input: u_bar_k
+    // Output: change knotVector
     // Eq. (9.8)
 
     size_t n{ interpolationPoints.size() };
@@ -1485,7 +1485,7 @@ void Bspline::find_U(const std::vector<double>& uk)
         double sum{};
         for (size_t i{ j }; i <= j + p_degree - 1; ++i)
         {
-            sum += uk[i];
+            sum += u_bar_k[i];
         }
         knotVector[j + p_degree] = sum / p_degree;
     }

@@ -41,8 +41,8 @@ public:
     bool checkNumbers() const; // check m = n + p + 1
     void clear();
     void chageDegree(int degree);
-    void find_u_bar_k(std::vector<double>& uk);
-    void find_U(const std::vector<double>& uk);
+    void find_u_bar_k(std::vector<double>& u_bar_k);
+    void find_U(const std::vector<double>& u_bar_k);
     static bool DEBUG;
     friend void loadPoints(Bspline& curve1, Bspline& curve2, std::string_view filePathName);
     friend void savePoints(const Bspline& curve1, const Bspline& curve2, std::string_view filePathName);
