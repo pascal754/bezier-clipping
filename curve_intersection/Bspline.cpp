@@ -1425,6 +1425,7 @@ void Bspline::globalCurveInterpolation()
 
     if (!LUPDecompose(A, interpolationPoints.size(), Pm)) {
         std::cerr << "LUDecomposition failed\n";
+        controlPoints.clear();
         return;
     }
 
@@ -1508,7 +1509,7 @@ bool Bspline::LUPDecompose(std::vector<std::vector<double>>& A, size_t N, std::v
      */
 
 
-    std::vector<double> ptr(N);
+    std::vector<double> ptr;
 
     const double Tol{ 1e-6 };
 
