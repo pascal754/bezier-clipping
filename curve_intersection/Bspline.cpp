@@ -124,15 +124,19 @@ void loadPoints(Bspline& curve1, Bspline& curve2, std::string_view filePathName)
                 {
                     break;
                 }
-                curve1.addPointAndKnots(Point{ std::stod(xCoord), std::stod(yCoord) });
+                //curve1.addPointAndKnots(Point{ std::stod(xCoord), std::stod(yCoord) });
+                curve1.addInterpolationPoint(Point{ std::stod(xCoord), std::stod(yCoord) });
                 std::cout << xCoord << ' ' << yCoord << '\n';
             }
+            curve1.globalCurveInterpolation();
 
             while (dataFile >> xCoord >> yCoord)
             {
-                curve2.addPointAndKnots(Point{ std::stod(xCoord), std::stod(yCoord) });
+                //curve2.addPointAndKnots(Point{ std::stod(xCoord), std::stod(yCoord) });
+                curve2.addInterpolationPoint(Point{ std::stod(xCoord), std::stod(yCoord) });
                 std::cout << xCoord << ' ' << yCoord << '\n';
             }
+            curve2.globalCurveInterpolation();
         }
     }
     catch (...)
@@ -154,13 +158,15 @@ void savePoints(const Bspline& curve1, const Bspline& curve2, std::string_view f
     try
     {
         dataFile << "A A\n";
-        for (const auto& p : curve1.controlPoints)
+        //for (const auto& p : curve1.controlPoints)
+        for (const auto& p : curve1.interpolationPoints)
         {
             dataFile << p.x << ' ' << p.y << '\n';
         }
 
         dataFile << "\nB B\n";
-        for (const auto& p : curve2.controlPoints)
+        //for (const auto& p : curve2.controlPoints)
+        for (const auto& p : curve2.interpolationPoints)
         {
             dataFile << p.x << ' ' << p.y << '\n';
         }
