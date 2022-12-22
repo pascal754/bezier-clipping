@@ -18,7 +18,7 @@
 ## Development Tools
 
 - Microsoft Visual Studio Community 2022 (64-bit) - Preview
-Version 17.4.0 Preview 2.0
-C++20
+Version 17.5.0 Preview 2.0
+C++latest(modules)
 
 - imgui-sfml 2.5#1 via vcpkg
