@@ -486,7 +486,7 @@ void Bspline::drawCurve(sf::RenderWindow& window, sf::Color col)
             window.draw(curve);
         }
     }
-    else // draw control points until the curve satisfies m = n + p + 1
+    else // draw control points until the curve satisfies m = n + p + 1 -> draw interpolation points
     {
         auto wSize{ window.getSize() };
         //for (auto& p : controlPoints)
