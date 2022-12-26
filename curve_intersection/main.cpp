@@ -274,35 +274,27 @@ auto main() -> int
                     {
                         ptList.clear();
                     }
+                    
+                    if (Bspline::DEBUG)
+                    {
+                        Bspline::logFile.open("calc.log");
+                        if (!Bspline::logFile.good())
+                        {
+                            std::cerr << "file open error\n";
+                            Bspline::DEBUG = false;
+                        }
+                    }
                     if (decomposeFirst)
                     {
-                        if (Bspline::DEBUG) {
-                            Bspline::logFile.open("calc.log");
-                            if (!Bspline::logFile.good())
-                            {
-                                std::cerr << "file open error\n";
-                                Bspline::DEBUG = false;
-                            }
-                        }
                         curve1.bezierIntersection(curve2, ptList, decomp_num, lineDetection);
-                        if (Bspline::DEBUG) {
-                            Bspline::logFile.close();
-                        }
                     }
                     else
                     {
-                        if (Bspline::DEBUG) {
-                            Bspline::logFile.open("calc.log");
-                            if (!Bspline::logFile.good())
-                            {
-                                std::cerr << "file open error\n";
-                                Bspline::DEBUG = false;
-                            }
-                        }
                         curve1.findIntersection(curve2, ptList, decomp_num, lineDetection);
-                        if (Bspline::DEBUG) {
-                            Bspline::logFile.close();
-                        }
+                    }
+
+                    if (Bspline::DEBUG) {
+                        Bspline::logFile.close();
                     }
                 }
 
