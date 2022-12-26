@@ -5,6 +5,7 @@ module;
 
 #include <optional>
 #include <vector>
+#include <fstream>
 #include <string_view>
 #include <SFML/Graphics.hpp>
 
@@ -48,6 +49,7 @@ public:
     friend void savePoints(const Bspline& curve1, const Bspline& curve2, std::string_view filePathName);
     void LUPSolve(const std::vector<std::vector<double>>& A, const std::vector<int>& Pm);
     bool LUPDecompose(std::vector<std::vector<double>>& A, std::vector<int>& Pm);
+    static std::ofstream logFile;
 private:
     void deleteLastPoint();
     void searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& iter, bool lineDetection); // internal call
