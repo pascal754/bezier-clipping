@@ -749,21 +749,28 @@ void Bspline::findIntersection(Bspline crv, std::vector<Point>& iPoints, int& it
 
         std::cout << "the number of intersection: " << iPoints.size() << '\n';
 
-        if (iPoints.size() == 0)
+        for (int i{}; i < iPoints.size(); ++i)
         {
-            std::cout << "No intersection\n";
-        }
-        else
-        {
-            for (int i{}; i < iPoints.size(); ++i)
-            {
-                std::cout << std::format("***intersection point #{}: ", i + 1);
-                std::cout << iPoints[i] << '\n';
-            }
+            std::cout << std::format("***intersection point #{}: ", i + 1);
+            std::cout << iPoints[i] << '\n';
         }
     }
     else
         std::cout << "m = n + p + 1 not satisfied\n";
+
+    if (DEBUG)
+    {
+        logFile << '\t' << iter << " decomposition(s)\n";
+
+        logFile << "the number of intersection: " << iPoints.size() << '\n';
+
+        for (int i{}; i < iPoints.size(); ++i)
+        {
+            logFile << std::format("***intersection point #{}: ", i + 1);
+            logFile << iPoints[i] << '\n';
+        }
+
+    }
 }
 
 void Bspline::findLineThruEndPoints()
