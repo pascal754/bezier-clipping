@@ -9,12 +9,6 @@
 
 - Not for overlapping curves or self intersection
 
-## With Debug checked
-
-- print verbose debug information
-
-- to save to a file: command > output.txt may be preferred
-
 ## Development Tools
 
 - Microsoft Visual Studio Community 2022 (64-bit) - Preview
