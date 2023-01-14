@@ -69,7 +69,7 @@ private:
     static const int max_num_intersection_points;
 
     int p_degree{}; // degree
-    int cp_n{ -1 }; // n + 1: # of control pts
+    int cp_n{ -1 }; // cp_n + 1: # of control pts
     std::vector<Point> controlPoints;
     std::vector<Point> interpolationPoints;
     std::vector<double> knotVector;

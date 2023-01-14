@@ -306,7 +306,6 @@ auto main() -> int
                             if (!Bspline::logFile.good())
                             {
                                 std::cerr << "file open error\n";
-                                Bspline::DEBUG = false;
                             }
                         }
                         curve1.findIntersection(curve2, ptList, decomp_num, lineDetection);

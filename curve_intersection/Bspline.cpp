@@ -19,8 +19,6 @@ module;
 
 module Bspline;
 
-
-
 bool Bspline::DEBUG{ false };
 const double Bspline::epsilon{ 1e-9 }; // epsilon is for approximate zero and should be much less than u_epsilon
 const double Bspline::u_epsilon{ 0.0001 }; // for knot values
@@ -1370,7 +1368,7 @@ bool Bspline::isPointOnLineSegment(const Point& pt) const
     return false;
 }
 
-void Bspline::printInfo()
+void Bspline::printInfo() // debug only
 {
     findConvexHull();
 
