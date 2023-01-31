@@ -21,6 +21,6 @@ public:
     double findDistance(const Point& pt) const;
     double x{}, y{};
     double angle{};
-private:
+//private:
     // Color col;
 };
