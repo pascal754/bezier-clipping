@@ -22,8 +22,8 @@ bool Bspline::DEBUG{ false };
 const double Bspline::epsilon{ 1e-9 }; // epsilon is for approximate zero and should be much less than u_epsilon
 const double Bspline::u_epsilon{ 0.0001 }; // for knot values
 const double Bspline::u1_epsilon{ u_epsilon / 10.0 }; // for delta u1
-const int Bspline::max_iteration{ 5'000'000 }; // maximum iteration for overlapping curves
-const int Bspline::max_num_intersection_points{ 5'000'000 };
+const int Bspline::max_iteration{ 50'000 }; // maximum iteration for overlapping curves
+const int Bspline::max_num_intersection_points{ 50'000 };
 std::ofstream Bspline::logFile;
 
 int Bspline::findKnotSpan(double u) const
@@ -1002,8 +1002,7 @@ void Bspline::searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& 
         }
 
         // check whether converging point is on the control points of the other curve
-        crv.findConvexHull();
-        for (auto& x : crv.convexHull) // or crv.controlPoints
+        for (auto& x : crv.controlPoints) // or crv.controlPoints
         {
             if (pt1.hasSameCoordWithTolerance(x))
             {
@@ -1013,6 +1012,7 @@ void Bspline::searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& 
             }
         }
 
+        crv.findConvexHull();
         if (crv.convexHull.size() == 2 && crv.isPointOnLineSegment(pt1))
         {
             if (DEBUG) { logFile << "=== intersection found between a point and a line segment ===\n"; }
