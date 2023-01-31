@@ -4,7 +4,6 @@
 
 #include <iostream>
 #include <vector>
-#include <chrono>
 #include <array>
 #include <algorithm>
 #include <cstring>
@@ -22,6 +21,7 @@ auto main() -> int
 {
     try
     {
+        std::ios_base::sync_with_stdio(false);
         int decomp_num{}; // save the number of decomposition of curves
         int degreeA{ 3 }, degreeB{ 3 };
         Bspline curve1{ degreeA }, curve2{ degreeB }; // p, degree of the curves
@@ -145,8 +145,8 @@ auto main() -> int
                     std::string filePathName, fileName;
                     if (launchFileDialog('o', filePathName, fileName))
                     {
-                        curve1.chageDegree(degreeA);
-                        curve2.chageDegree(degreeB);
+                        curve1.changeDegree(degreeA);
+                        curve2.changeDegree(degreeB);
                         loadPoints(curve1, curve2, filePathName);
                         ptList.clear();
                     }
@@ -199,7 +199,7 @@ auto main() -> int
                     curve1EditMode = false;
                     curve2EditMode = false;
                     degreeA = std::clamp(degreeA, 1, 10);
-                    curve1.chageDegree(degreeA);
+                    curve1.changeDegree(degreeA);
                     ptList.clear();
                 }
 
@@ -238,7 +238,7 @@ auto main() -> int
                     curve1EditMode = false;
                     curve2EditMode = false;
                     degreeB = std::clamp(degreeB, 1, 10);
-                    curve2.chageDegree(degreeB);
+                    curve2.changeDegree(degreeB);
                     ptList.clear();
                 }
 

@@ -41,7 +41,8 @@ public:
     int findKnotSpan(double u) const;
     bool checkNumbers() const; // check m = n + p + 1
     void clear();
-    void chageDegree(int degree);
+    void clearControlPoints();
+    void changeDegree(int degree);
     void find_u_bar_k(std::vector<double>& u_bar_k);
     void find_U(const std::vector<double>& u_bar_k);
     static bool DEBUG;
@@ -60,6 +61,8 @@ private:
     void makeKnots();
     void findLineThruEndPoints();
     void findMinMaxDistance(); // from line through cp_0 and cp_n
+    void findMinMaxDistanceFromRotatedLine(); // from 90 degree rotated line
+    void makeDistanceCurve(Bspline& distanceCurve, const Bspline& crv, double& min, double& max);
     bool isThereLineIntersection(double y, double y1, double y2) const;
 
     static const double epsilon;
@@ -76,6 +79,6 @@ private:
     std::vector<double> basis, left, right;
     std::vector<Point> convexHull;
     double coef_a{}, coef_b{}, coef_c{}; // ax + by + c = 0 line through the end points (normalized form: a^2 + b^2 = 1)
-    double minDist{}, maxDist{}; // minimum and maximum distance of control points from the line ax + by + c = 0
+    double minDist{}, maxDist{}; // minimum and maximum distance of control points from the line, ax + by + c = 0
     bool isConvexHullUpdated{ false }; // prevent the same calculations once convex hull is updated
 };
