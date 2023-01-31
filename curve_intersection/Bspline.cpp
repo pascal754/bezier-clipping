@@ -1175,7 +1175,7 @@ void Bspline::searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& 
 
     if (min > maxDist || max < minDist) // outside the clipping lines: no intersection
     {
-        if ((min - maxDist) < epsilon || (minDist - max) < epsilon) // check whether end points are touching
+        if (std::abs(min - maxDist) < epsilon || std::abs(minDist - max) < epsilon) // check whether end points are touching
         {
             if (controlPoints.front().hasSameCoordWithTolerance(crv.controlPoints.front()) || controlPoints.front().hasSameCoordWithTolerance(crv.controlPoints.back()))
             {
@@ -1384,24 +1384,37 @@ void Bspline::bezierIntersection(Bspline bs, std::vector<Point>& iPoints, int& d
         for (size_t j{}; j < bezierLists[1].size(); ++j)
         {
             if (bezierLists[0][i].has_value() && bezierLists[1][j].has_value())
+            {
+                ++dNum;
                 bezierLists[0][i]->searchIntersection(*bezierLists[1][j], iPoints, dNum, lineDetection);
+            }
         }
     }
 
     std::cout << '\t' << dNum << " decomposition(s)\n";
 
+    if (DEBUG) { logFile << '\t' << dNum << " decomposition(s)\n"; }
+
     std::cout << "the number of intersection: " << iPoints.size() << '\n';
+
+    if (DEBUG) { logFile << "the number of intersection: " << iPoints.size() << '\n'; }
 
     if (iPoints.size() == 0)
     {
         std::cout << "No intersection\n";
+        if (DEBUG) { logFile << "No intersection\n"; }
     }
     else
     {
         for (int i{}; i < iPoints.size(); ++i)
         {
             std::cout << std::format("***intersection point #{}: ", i + 1);
+
+            if (DEBUG) { logFile << std::format("***intersection point #{}: ", i + 1); }
+
             std::cout << iPoints[i] << '\n';
+
+            if (DEBUG) { logFile << iPoints[i] << '\n'; }
         }
     }
 } //end bezierIntersection
