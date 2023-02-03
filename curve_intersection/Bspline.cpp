@@ -881,6 +881,8 @@ void Bspline::findMinMaxDistanceFromRotatedLine()
 
 void Bspline::makeDistanceCurve(Bspline& distanceCurve, const Bspline& crv, double& min, double& max)
 {
+    isConvexHullUpdated = false;
+
     double d{ coef_a * crv.controlPoints.front().x + coef_b * crv.controlPoints.front().y + coef_c };
     min = max = d;
 
