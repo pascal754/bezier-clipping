@@ -270,10 +270,7 @@ auto main() -> int
                     window.display();
 
                     decomp_num = 0;
-                    if (ptList.size() != 0)
-                    {
-                        ptList.clear();
-                    }
+                    ptList.clear();
                     
                     if (Bspline::DEBUG)
                     {
