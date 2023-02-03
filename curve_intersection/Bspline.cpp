@@ -1197,14 +1197,18 @@ void Bspline::searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& 
         {
             if (controlPoints.front().hasSameCoordWithTolerance(crv.controlPoints.front()) || controlPoints.front().hasSameCoordWithTolerance(crv.controlPoints.back()))
             {
-                if (DEBUG) { logFile << "=== Intersection found at end points === \n"; }
-                if (DEBUG) { logFile << std::format ("({}, {})\n", controlPoints.front().x, controlPoints.front().y); }
+                if (DEBUG) {
+                    logFile << "=== Intersection found at end points === \n";
+                    logFile << std::format ("({}, {})\n", controlPoints.front().x, controlPoints.front().y);
+                }
                 iPoints.push_back(controlPoints.front());
             }
             else if (controlPoints.back().hasSameCoordWithTolerance(crv.controlPoints.front()) || controlPoints.back().hasSameCoordWithTolerance(crv.controlPoints.back()))
             {
-                if (DEBUG) { logFile << "=== Intersection found at end points === \n"; }
-                if (DEBUG) { logFile << std::format("({}, {})\n", controlPoints.back().x, controlPoints.back().y); }
+                if (DEBUG) {
+                    logFile << "=== Intersection found at end points === \n";
+                    logFile << std::format("({}, {})\n", controlPoints.back().x, controlPoints.back().y);
+                }
                 iPoints.push_back(controlPoints.back());
             }
             else if (convexHull.size() == 2)
