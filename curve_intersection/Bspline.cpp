@@ -1136,9 +1136,18 @@ void Bspline::searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& 
         // update distance curve
         makeDistanceCurve(distanceCurve, crv, min, max);
 
-        if (DEBUG) { logFile << "Two line segments are on the same line rotating clipping lines 90 degrees.\n"; }
-        if (DEBUG) { logFile << std::format("min, max of clipping lines of curve A: {}, {}\n", minDist, maxDist); }
-        if (DEBUG) { logFile << std::format("minimum and maximum of distance curve: {}, {}\n", min, max); }
+        if (DEBUG)
+        {
+            logFile << "Two line segments are on the same line rotating clipping lines 90 degrees.\n";
+            logFile << std::format("min, max of clipping lines of curve A: {}, {}\n", minDist, maxDist);
+            logFile << std::format("minimum and maximum of distance curve: {}, {}\n", min, max);
+        }
+    }
+
+    if (DEBUG)
+    {
+        logFile << "distance curve information:\n";
+        distanceCurve.printInfo();
     }
 
     // adjust distance curve
@@ -1160,11 +1169,25 @@ void Bspline::searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& 
     if (std::abs(min - minDist) < epsilon)
     {
         min = minDist;
+        if (DEBUG) { logFile << "min adjusted to minDist\n"; }
+    }
+
+    if (std::abs(min - maxDist) < epsilon)
+    {
+        min = maxDist;
+        if (DEBUG) { logFile << "min adjusted to maxDist\n"; }
     }
 
     if (std::abs(max - maxDist) < epsilon)
     {
         max = maxDist;
+        if (DEBUG) { logFile << "max adjusted to maxDist\n"; }
+    }
+
+    if (std::abs(max - minDist) < epsilon)
+    {
+        max = minDist;
+        if (DEBUG) { logFile << "max adjusted to minDist\n"; }
     }
 
 
