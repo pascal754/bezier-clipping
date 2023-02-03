@@ -56,7 +56,7 @@ private:
     void searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& iter, bool lineDetection); // internal call
     void addPoint(const Point& p);
     int findFirstPointOfConvexHull() const;
-    bool isPointOnLineSegment(const Point& pt) const;
+    bool isPointOnLineSegment(const Point& pt);
     int findKnotMult(int i) const;
     void makeKnots();
     void findLineThruEndPoints();
