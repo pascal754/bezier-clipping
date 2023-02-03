@@ -1147,16 +1147,24 @@ void Bspline::searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& 
         if (std::abs(cp.y - minDist) < epsilon)
         {
             cp.y = minDist;
-            min = minDist;
             if (DEBUG) { logFile << "y value of distance curve adjusted to minDist\n"; }
         }
 
         if (std::abs(cp.y - maxDist) < epsilon)
         {
             cp.y = maxDist;
-            max = maxDist;
             if (DEBUG) { logFile << "y value of distance curve adjusted to maxDist\n"; }
         }
+    }
+
+    if (std::abs(min - minDist) < epsilon)
+    {
+        min = minDist;
+    }
+
+    if (std::abs(max - maxDist) < epsilon)
+    {
+        max = maxDist;
     }
 
 
