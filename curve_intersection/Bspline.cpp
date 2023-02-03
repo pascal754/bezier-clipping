@@ -19,9 +19,10 @@ module;
 module Bspline;
 
 bool Bspline::DEBUG{ false };
-const double Bspline::epsilon{ 1e-5 }; // epsilon is for approximate zero and should be much less than u_epsilon
+const double Bspline::epsilon{ 1e-9 }; // epsilon is for approximate zero and should be much less than u_epsilon
 const double Bspline::u_epsilon{ 0.0001 }; // for knot values
-const double Bspline::u1_epsilon{ u_epsilon / 10.0 }; // for delta u1
+const double Bspline::u1_epsilon{ u_epsilon / 10.0 };
+const double Bspline::u2_epsilon{ u1_epsilon / 10.0 };
 const int Bspline::max_iteration{ 500'000 }; // maximum iteration for overlapping curves
 const int Bspline::max_num_intersection_points{ 500'000 };
 std::ofstream Bspline::logFile;
@@ -38,7 +39,7 @@ int Bspline::findKnotSpan(double u) const
     }
 
     //algorithm A2.1 FindSpan pp68
-    if (u == knotVector[cp_n + 1]) // special case // ? (std::abs(u - knotVector[cp_n + 1]) < epsilon) 
+    if (u == knotVector[cp_n + 1]) // special case
         return cp_n;
 
     int low{ p_degree };
@@ -748,39 +749,49 @@ std::optional<Bspline> Bspline::decompose(double u1, double u2) const
 
 void Bspline::findIntersection(Bspline crv, std::vector<Point>& iPoints, int& iter, bool lineDetection)
 {
-    if (checkNumbers() && crv.checkNumbers())
+    try
     {
-        searchIntersection(crv, iPoints, iter, lineDetection);
-
-        std::cout << '\t' << iter << " decomposition(s)\n";
-
-        std::cout << "the number of intersection: " << iPoints.size() << '\n';
-
-        for (int i{}; i < iPoints.size(); ++i)
+        if (checkNumbers() && crv.checkNumbers())
         {
-            std::cout << std::format("***intersection point #{}: ", i + 1);
-            std::cout << iPoints[i] << '\n';
+            searchIntersection(crv, iPoints, iter, lineDetection);
+
+            std::cout << '\t' << iter << " decomposition(s)\n";
+
+            std::cout << "the number of intersection: " << iPoints.size() << '\n';
+
+            if (iPoints.size() < 1'000)
+            {
+                for (int i{}; i < iPoints.size(); ++i)
+                {
+                    std::cout << std::format("***intersection point #{}: ", i + 1);
+                    std::cout << iPoints[i] << '\n';
+                }
+            }
+
+            std::cout << '\t' << iter << " decomposition(s)\n";
+        }
+        else
+        {
+            std::cout << "m = n + p + 1 not satisfied\n";
         }
 
-        std::cout << '\t' << iter << " decomposition(s)\n";
-    }
-    else
-    {
-        std::cout << "m = n + p + 1 not satisfied\n";
-    }
-
-    if (DEBUG)
-    {
-        logFile << '\t' << iter << " decomposition(s)\n";
-
-        logFile << "the number of intersection: " << iPoints.size() << '\n';
-
-        for (int i{}; i < iPoints.size(); ++i)
+        if (DEBUG)
         {
-            logFile << std::format("***intersection point #{}: ", i + 1);
-            logFile << iPoints[i] << '\n';
-        }
+            logFile << '\t' << iter << " decomposition(s)\n";
 
+            logFile << "the number of intersection: " << iPoints.size() << '\n';
+
+            for (int i{}; i < iPoints.size(); ++i)
+            {
+                logFile << std::format("***intersection point #{}: ", i + 1);
+                logFile << iPoints[i] << '\n';
+            }
+
+        }
+    }
+    catch (const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
     }
 }
 
@@ -986,9 +997,9 @@ void Bspline::searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& 
         if (DEBUG) { logFile << "one curve becoming a point. continuing ...\n"; }
     }
 
-    if (deltaU1 < epsilon && deltaU2 < epsilon)
+    if (deltaU1 < u2_epsilon && deltaU2 < u2_epsilon)
     {
-        if (DEBUG) { logFile << "deltaU1 < epsilon and deltaU2 < epsilon. no more iteration. return\n"; }
+        if (DEBUG) { logFile << "deltaU1 < u2_epsilon and deltaU2 < u2_epsilon. no more iteration. return\n"; }
         return;
     }
 
@@ -1111,14 +1122,13 @@ void Bspline::searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& 
 
     Bspline distanceCurve{ Bspline(crv.p_degree, crv.knotVector) };
     
-    double min, max;
+    double min{}, max{};
 
     makeDistanceCurve(distanceCurve, crv, min, max);
-
     if (DEBUG) { logFile << std::format("minimum and maximum of distance curve: {}, {}\n", min, max); }
 
     // check whether two line segments on the same line
-    if (std::abs(maxDist - minDist) < epsilon && std::abs(max - min) < epsilon && std::abs(minDist - min) < epsilon)
+    if (std::abs(maxDist - minDist) < u2_epsilon && std::abs(max - min) < u2_epsilon && std::abs(minDist - min) < u2_epsilon)
     {
         // recalculate distance from 90 degree rotated line
         findMinMaxDistanceFromRotatedLine();
@@ -1131,9 +1141,28 @@ void Bspline::searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& 
         if (DEBUG) { logFile << std::format("minimum and maximum of distance curve: {}, {}\n", min, max); }
     }
 
+    // adjust distance curve
+    for (auto& cp : distanceCurve.controlPoints)
+    {
+        if (std::abs(cp.y - minDist) < epsilon)
+        {
+            cp.y = minDist;
+            min = minDist;
+            if (DEBUG) { logFile << "y value of distance curve adjusted to minDist\n"; }
+        }
+
+        if (std::abs(cp.y - maxDist) < epsilon)
+        {
+            cp.y = maxDist;
+            max = maxDist;
+            if (DEBUG) { logFile << "y value of distance curve adjusted to maxDist\n"; }
+        }
+    }
+
+
     if (min > maxDist || max < minDist) // outside the clipping lines: no intersection
     {
-        if (std::abs(min - maxDist) < epsilon || std::abs(minDist - max) < epsilon) // check whether end points are touching
+        if (std::abs(min - maxDist) < u2_epsilon || std::abs(minDist - max) < u2_epsilon) // check whether end points are touching
         {
             if (controlPoints.front().hasSameCoordWithTolerance(crv.controlPoints.front()) || controlPoints.front().hasSameCoordWithTolerance(crv.controlPoints.back()))
             {
@@ -1332,69 +1361,82 @@ void Bspline::searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& 
 // decompose each curve on knot and find intersection for combination
 void Bspline::bezierIntersection(Bspline bs, std::vector<Point>& iPoints, int& dNum, bool lineDetection)
 {
-    if (!checkNumbers() || !bs.checkNumbers())
+    try
     {
-        std::cout << "m = n + p + 1 not satisfied\n";
-        return;
-    }
-
-    std::vector<std::optional<Bspline>> bezierLists[2];
-
-    for (int i{ p_degree }; i <= cp_n; ++i)
-    {
-
-        bezierLists[0].push_back(decompose(knotVector[i], knotVector[i + 1]));
-        ++dNum;
-
-    }
-
-    for (int i{ bs.p_degree }; i <= bs.cp_n; ++i)
-    {
-
-        bezierLists[1].push_back(bs.decompose(bs.knotVector[i], bs.knotVector[i + 1]));
-        ++dNum;
-    }
-
-
-    for (size_t i{}; i < bezierLists[0].size(); ++i) {
-        for (size_t j{}; j < bezierLists[1].size(); ++j)
+        if (!checkNumbers() || !bs.checkNumbers())
         {
-            if (bezierLists[0][i].has_value() && bezierLists[1][j].has_value())
+            std::cout << "m = n + p + 1 not satisfied\n";
+            return;
+        }
+
+        std::vector<std::optional<Bspline>> bezierLists[2];
+
+        for (int i{ p_degree }; i <= cp_n; ++i)
+        {
+
+            bezierLists[0].push_back(decompose(knotVector[i], knotVector[i + 1]));
+            ++dNum;
+
+        }
+
+        for (int i{ bs.p_degree }; i <= bs.cp_n; ++i)
+        {
+
+            bezierLists[1].push_back(bs.decompose(bs.knotVector[i], bs.knotVector[i + 1]));
+            ++dNum;
+        }
+
+
+        for (size_t i{}; i < bezierLists[0].size(); ++i) {
+            for (size_t j{}; j < bezierLists[1].size(); ++j)
             {
-                ++dNum;
-                bezierLists[0][i]->searchIntersection(*bezierLists[1][j], iPoints, dNum, lineDetection);
+                if (bezierLists[0][i].has_value() && bezierLists[1][j].has_value())
+                {
+                    ++dNum;
+                    bezierLists[0][i]->searchIntersection(*bezierLists[1][j], iPoints, dNum, lineDetection);
+                }
             }
         }
-    }
 
-    std::cout << '\t' << dNum << " decomposition(s)\n";
+        std::cout << '\t' << dNum << " decomposition(s)\n";
 
-    if (DEBUG) { logFile << '\t' << dNum << " decomposition(s)\n"; }
+        if (DEBUG) { logFile << '\t' << dNum << " decomposition(s)\n"; }
 
-    std::cout << "the number of intersection: " << iPoints.size() << '\n';
+        std::cout << "the number of intersection: " << iPoints.size() << '\n';
 
-    if (DEBUG) { logFile << "the number of intersection: " << iPoints.size() << '\n'; }
+        if (DEBUG) { logFile << "the number of intersection: " << iPoints.size() << '\n'; }
 
-    if (iPoints.size() == 0)
-    {
-        std::cout << "No intersection\n";
-        if (DEBUG) { logFile << "No intersection\n"; }
-    }
-    else
-    {
-        for (int i{}; i < iPoints.size(); ++i)
+        if (iPoints.size() == 0)
         {
-            std::cout << std::format("***intersection point #{}: ", i + 1);
-
-            if (DEBUG) { logFile << std::format("***intersection point #{}: ", i + 1); }
-
-            std::cout << iPoints[i] << '\n';
-
-            if (DEBUG) { logFile << iPoints[i] << '\n'; }
+            std::cout << "No intersection\n";
+            if (DEBUG) { logFile << "No intersection\n"; }
         }
-    }
+        else
+        {
+            if (iPoints.size() < 1'000)
+            {
+                for (int i{}; i < iPoints.size(); ++i)
+                {
+                    std::cout << std::format("***intersection point #{}: ", i + 1);
+                    std::cout << iPoints[i] << '\n';
+                }
+            }
+            if (DEBUG)
+            {
+                for (int i{}; i < iPoints.size(); ++i)
+                {
+                    logFile << std::format("***intersection point #{}: ", i + 1);
+                    logFile << iPoints[i] << '\n';
+                }
+            }
+        }
 
-    std::cout << '\t' << dNum << " decomposition(s)\n";
+        std::cout << '\t' << dNum << " decomposition(s)\n";
+    }
+    catch (const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
 } //end bezierIntersection
 
 

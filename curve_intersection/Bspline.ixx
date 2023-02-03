@@ -68,6 +68,7 @@ private:
     static const double epsilon;
     static const double u_epsilon;
     static const double u1_epsilon;
+    static const double u2_epsilon;
     static const int max_iteration;
     static const int max_num_intersection_points;
 
