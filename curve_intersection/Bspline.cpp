@@ -1033,6 +1033,7 @@ void Bspline::searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& 
             }
             else if (convexHull.size() == 1 && crv.convexHull.size() == 2) // point vs. line
             {
+                if (DEBUG) {logFile << "curve A : point, curve B : line\n"; }
                 if (crv.isPointOnLineSegment(convexHull.front()))
                 {
                     if (DEBUG)
@@ -1046,6 +1047,7 @@ void Bspline::searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& 
             }
             else if (convexHull.size() == 2 && crv.convexHull.size() == 1) // line vs. point
             {
+                if (DEBUG) { logFile << "curve A : line, curve B : point\n"; }
                 if (isPointOnLineSegment(crv.convexHull.front()))
                 {
                     if (DEBUG)
