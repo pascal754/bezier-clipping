@@ -71,6 +71,7 @@ private:
     static const double u2_epsilon;
     static const int max_iteration;
     static const int max_num_intersection_points;
+    static int recursionDepth;
 
     int p_degree{}; // degree
     int cp_n{ -1 }; // cp_n + 1: # of control pts

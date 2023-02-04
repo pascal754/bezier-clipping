@@ -26,6 +26,7 @@ const double Bspline::u2_epsilon{ u1_epsilon / 10.0 };
 const int Bspline::max_iteration{ 500'000 }; // maximum iteration for overlapping curves
 const int Bspline::max_num_intersection_points{ 500'000 };
 std::ofstream Bspline::logFile;
+int Bspline::recursionDepth{};
 
 int Bspline::findKnotSpan(double u) const
 {
@@ -907,6 +908,7 @@ void Bspline::searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& 
     if (DEBUG)
     {
         logFile << std::format("\n~~~ Iteration #{} ~~~\n", dNum);
+        logFile << "recursion depth: " << recursionDepth << '\n';
         logFile << std::format("curve A u1: {}, u2: {}, deltaU: {}\n", knotVector.front(), knotVector.back(), knotVector.back() - knotVector.front());
         logFile << std::format("curve B u1: {}, u2: {}, deltaU: {}\n", crv.knotVector.front(), crv.knotVector.back(), crv.knotVector.back() - crv.knotVector.front());
         logFile << "curve A:\n";
@@ -1010,106 +1012,96 @@ void Bspline::searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& 
     // off: try to find intersection, the number of iteration is limited by Bspline::max_iteration or Bspline::max_num_intersection_points whichever comes first
     if (lineDetection)
     {
-        findConvexHull();
-        crv.findConvexHull();
-
         if (convexHull.size() <= 2 && crv.convexHull.size() <= 2) // two line segments or points
         {
-            if (DEBUG) { logFile << "line detection\n"; }
-
+            if (DEBUG) { logFile << "point and line detection\n"; }
+            findConvexHull();
+            crv.findConvexHull();
             findLineThruEndPoints();
             crv.findLineThruEndPoints();
-            double d{ coef_a * crv.coef_b - crv.coef_a * coef_b };
+            //double d{ coef_a * crv.coef_b - crv.coef_a * coef_b };
 
-            // check whether they are points
-            if (convexHull.size() == 1) // convexHull.front().hasSameCoord(convexHull.back()))
+            if (convexHull.size() == 1 && crv.convexHull.size() == 1) // point vs. point
             {
-                std::cout << "curve A is a point\n";
-                if (crv.convexHull.size() == 1) // crv.convexHull.front().hasSameCoord(crv.convexHull.back())) // point vs. point
+                if (DEBUG) { logFile << "curve A and curve B are points\n"; }
+                if (convexHull.front().hasSameCoordWithTolerance(crv.convexHull.front()))
                 {
-                    std::cout << "curve B is a point\n";
-                    if (convexHull.front().hasSameCoordWithTolerance(crv.convexHull.front()))
-                    {
-                        iPoints.push_back(convexHull.front());
-                        std::cout << "=== intersection found: two points coincide with each other ===\n";
-                        return;
-                    }
-                    else
-                    {
-                        std::cout << "two points do not coincide with each other. continuing.\n";
-                    }
+                    iPoints.push_back(convexHull.front());
+                    if (DEBUG) { logFile << "=== intersection found: two points coincide with each other ===\n"; }
                 }
-                else // point vs. line
-                {
-                    if (crv.isPointOnLineSegment(convexHull.front()))
-                    {
-                        std::cout << "=== intersection found between a point and a line ===\n";
-                        std::cout << std::format("intersection point: ({}, {})\n", convexHull.front().x, convexHull.front().y);
-                        iPoints.push_back(convexHull.front());
-                        return;
-                    }
-                    else
-                    {
-                        std::cout << "a point is outside the line. continuing\n";
-                    }
-                }
+                return;
             }
-            else if (crv.convexHull.size() == 1) // (crv.convexHull.front().hasSameCoord(crv.convexHull.back())) // line vs. point
+            else if (convexHull.size() == 1 && crv.convexHull.size() == 2) // point vs. line
             {
-                std::cout << "curve B is a point\n";
+                if (crv.isPointOnLineSegment(convexHull.front()))
+                {
+                    if (DEBUG)
+                    {
+                        logFile << "=== intersection found between a point and a line ===\n";
+                        logFile << std::format("intersection point: ({}, {})\n", convexHull.front().x, convexHull.front().y);
+                    }
+                    iPoints.push_back(convexHull.front());
+                }
+                return;
+            }
+            else if (convexHull.size() == 2 && crv.convexHull.size() == 1) // line vs. point
+            {
                 if (isPointOnLineSegment(crv.convexHull.front()))
                 {
-                    std::cout << "=== intersection found between a point and a line ===\n";
-                    std::cout << std::format("intersection point: ({}, {})\n", crv.convexHull.front().x, crv.convexHull.front().y);
+                    if (DEBUG)
+                    {
+                        logFile << "=== intersection found between a point and a line ===\n";
+                        logFile << std::format("intersection point: ({}, {})\n", crv.convexHull.front().x, crv.convexHull.front().y);
+                    }
                     iPoints.push_back(crv.convexHull.front());
-                    return;
-                }
-                else
-                {
-                    std::cout << "no intersection between a point and a line. continuing\n";
-                }
-            }
-
-            // line vs line
-            if (d == 0.0)
-            {
-                if (coef_c == crv.coef_c)
-                {
-                    if (crv.isPointOnLineSegment(convexHull.front()) || crv.isPointOnLineSegment(convexHull.back()) ||
-                        isPointOnLineSegment(crv.convexHull.front()) || isPointOnLineSegment(crv.convexHull.back())
-                        )
-                    {
-                        std::cout << "searchIntersection() *** two line segments are touching or (partially) overlapping ***\n";
-                    }
-                    else
-                    {
-                        std::cout << "searchIntersection() two line segments are on the same line(not overlapping)\n";
-                    }
-                }
-                else
-                {
-                    std::cout << "searchIntersection(); two line segments are parallel\n";
                 }
                 return;
             }
-            else
-            {
-                Point ip{ (coef_b * crv.coef_c - crv.coef_b * coef_c) / d, (crv.coef_a * coef_c - coef_a * crv.coef_c) / d };
+            //else if (convexHull.size() == 2 && crv.convexHull.size() == 2) // line vs line
+            //{
+            //    if (d == 0.0)
+            //    {
+            //        if (coef_c == crv.coef_c)
+            //        {
+            //            /*if (crv.isPointOnLineSegment(convexHull.front()) || crv.isPointOnLineSegment(convexHull.back()) ||
+            //                isPointOnLineSegment(crv.convexHull.front()) || isPointOnLineSegment(crv.convexHull.back())
+            //                )
+            //            {
+            //                std::cout << "searchIntersection() *** two line segments are touching or (partially) overlapping ***\n";
+            //            }
+            //            else
+            //            {
+            //                std::cout << "searchIntersection() two line segments are on the same line(not overlapping)\n";
+            //            }*/
+            //        }
+            //        else
+            //        {
+            //            if (DEBUG) { logFile << "searchIntersection(); two line segments are parallel\n"; }
+            //        }
+            //        return;
+            //    }
+            //    else
+            //    {
+            //        Point ip{ (coef_b * crv.coef_c - crv.coef_b * coef_c) / d, (crv.coef_a * coef_c - coef_a * crv.coef_c) / d };
 
-                if (DEBUG) { logFile << std::format("candidate point: ({}, {})\n", ip.x, ip.y); }
+            //        if (DEBUG) { logFile << std::format("calculated point: ({}, {})\n", ip.x, ip.y); }
 
-                if (isPointOnLineSegment(ip) && crv.isPointOnLineSegment(ip))
-                {
-                    std::cout << "=== intersection found: two line segments ===\n";
-                    std::cout << std::format("intersection point: ({}, {})\n", ip.x, ip.y);
-                    iPoints.push_back(ip);
-                }
-                else
-                {
-                    std::cout << "no intersection between two line segments\n";
-                }
-                return;
-            }
+            //        if (isPointOnLineSegment(ip) && crv.isPointOnLineSegment(ip))
+            //        {
+            //            if (DEBUG)
+            //            {
+            //                logFile << "=== intersection found: two line segments ===\n";
+            //                logFile << std::format("intersection point: ({}, {})\n", ip.x, ip.y);
+            //            }
+            //            iPoints.push_back(ip);
+            //        }
+            //        else
+            //        {
+            //            if (DEBUG) { logFile << "no intersection between two line segments\n"; }
+            //        }
+            //        return;
+            //    }
+            //}
         }
     }// end of two line segments
 
@@ -1214,12 +1206,16 @@ void Bspline::searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& 
         if (bs1)
         {
             ++dNum;
+            ++recursionDepth;
             bs1->searchIntersection(*this, iPoints, dNum, lineDetection);
+            --recursionDepth;
         }
         auto bs2{ crv.decompose(crv.knotVector[0] + deltaU2 / 2.0, crv.knotVector[crv.cp_n + 1]) };
         if (bs2) {
             ++dNum;
+            ++recursionDepth;
             bs2->searchIntersection(*this, iPoints, dNum, lineDetection);
+            --recursionDepth;
         }
 
         return;
@@ -1324,12 +1320,16 @@ void Bspline::searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& 
         if (bs1)
         {
             ++dNum;
+            ++recursionDepth;
             bs1->searchIntersection(*this, iPoints, dNum, lineDetection);
+            --recursionDepth;
         }
         auto bs2{ crv.decompose(crv.knotVector[0] + deltaU2 / 2.0, crv.knotVector[crv.cp_n + 1]) };
         if (bs2) {
             ++dNum;
+            ++recursionDepth;
             bs2->searchIntersection(*this, iPoints, dNum, lineDetection);
+            --recursionDepth;
         }
         return;
     }
@@ -1340,7 +1340,9 @@ void Bspline::searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& 
         if (decomposedC2)
         {
             ++dNum;
+            ++recursionDepth;
             decomposedC2->searchIntersection(*this, iPoints, dNum, lineDetection);
+            --recursionDepth;
         }
         return;
     }
