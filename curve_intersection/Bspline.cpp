@@ -1153,88 +1153,38 @@ void Bspline::searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& 
     }
 
     // adjust distance curve
+    bool adjusted{};
     for (auto& cp : distanceCurve.controlPoints)
     {
-        if (std::abs(cp.y - minDist) < epsilon)
+        if (cp.y != minDist && std::abs(cp.y - minDist) < epsilon)
         {
             cp.y = minDist;
             distanceCurve.isConvexHullUpdated = false;
+            adjusted = true;
             if (DEBUG) { logFile << "y value of distance curve adjusted to minDist\n"; }
         }
-
-        if (std::abs(cp.y - maxDist) < epsilon)
+        else if (cp.y != maxDist && std::abs(cp.y - maxDist) < epsilon)
         {
             cp.y = maxDist;
             distanceCurve.isConvexHullUpdated = false;
+            adjusted = true;
             if (DEBUG) { logFile << "y value of distance curve adjusted to maxDist\n"; }
         }
     }
 
-    if (std::abs(min - minDist) < epsilon)
+    if (adjusted)
     {
-        min = minDist;
-        if (DEBUG) { logFile << "min adjusted to minDist\n"; }
-    }
+        auto comp = [](const Point& a, const Point& b) -> bool {return a.y < b.y; };
+        const auto [small, big] = std::minmax_element(distanceCurve.controlPoints.begin(), distanceCurve.controlPoints.end(), comp);
+        min = small->y;
+        max = big->y;
 
-    if (std::abs(min - maxDist) < epsilon)
-    {
-        min = maxDist;
-        if (DEBUG) { logFile << "min adjusted to maxDist\n"; }
+        if (DEBUG) { logFile << std::format("minimum and maximum of distance curve: {}, {}\n", min, max); }
     }
-
-    if (std::abs(max - maxDist) < epsilon)
-    {
-        max = maxDist;
-        if (DEBUG) { logFile << "max adjusted to maxDist\n"; }
-    }
-
-    if (std::abs(max - minDist) < epsilon)
-    {
-        max = minDist;
-        if (DEBUG) { logFile << "max adjusted to minDist\n"; }
-    }
-
 
     if (min > maxDist || max < minDist) // outside the clipping lines: no intersection
     {
-        if (std::abs(min - maxDist) < u2_epsilon || std::abs(minDist - max) < u2_epsilon) // check whether end points are touching
-        {
-            if (controlPoints.front().hasSameCoordWithTolerance(crv.controlPoints.front()) || controlPoints.front().hasSameCoordWithTolerance(crv.controlPoints.back()))
-            {
-                if (DEBUG) {
-                    logFile << "=== Intersection found at end points === \n";
-                    logFile << std::format ("({}, {})\n", controlPoints.front().x, controlPoints.front().y);
-                }
-                iPoints.push_back(controlPoints.front());
-            }
-            else if (controlPoints.back().hasSameCoordWithTolerance(crv.controlPoints.front()) || controlPoints.back().hasSameCoordWithTolerance(crv.controlPoints.back()))
-            {
-                if (DEBUG) {
-                    logFile << "=== Intersection found at end points === \n";
-                    logFile << std::format("({}, {})\n", controlPoints.back().x, controlPoints.back().y);
-                }
-                iPoints.push_back(controlPoints.back());
-            }
-            else if (convexHull.size() == 2)
-            {
-                if (isPointOnLineSegment(crv.controlPoints.front()))
-                {
-                    if (DEBUG) { logFile << "=== Intersection found at end points === \n"; }
-                    iPoints.push_back(crv.controlPoints.front());
-                }
-
-                else if (isPointOnLineSegment(crv.controlPoints.back()))
-                {
-                    if (DEBUG) { logFile << "=== Intersection found at end points === \n"; }
-                    iPoints.push_back(crv.controlPoints.back());
-                }
-            }
-        }
-        else
-        {
-            if (DEBUG) { logFile << "curve B is outside the clipping lines\n"; }
-        }
-
+        if (DEBUG) { logFile << "curve B is outside the clipping lines\n"; }
         return;
     }
 
@@ -1256,7 +1206,7 @@ void Bspline::searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& 
     Point pt2{ distanceCurve.controlPoints.back() };
 
     // at least one of two end points are inside the clipping lines
-    if ((minDist < pt.y && pt.y < maxDist) || (minDist < pt2.y && pt2.y < maxDist))  // on boundary decompose curve B. cf) if ((minDist <= pt.y && pt.y <= maxDist) || (minDist <= pt2.y && pt2.y <= maxDist)) on boundary decompose curve A
+    if ((minDist < pt.y && pt.y < maxDist) || (minDist < pt2.y && pt2.y < maxDist))
     {
         if (DEBUG) { logFile << "halving curve B\n"; }
 
