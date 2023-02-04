@@ -7,7 +7,7 @@
 
 ## Limitation
 
-- Not for overlapping curves or self intersection
+- Not for self intersection
 
 ## Development Tools
 
