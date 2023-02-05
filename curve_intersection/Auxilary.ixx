@@ -19,7 +19,7 @@ export void cleanIntersectionPoints(std::vector<Point>& iPoints)
         pt.y = std::round(pt.y);
     }
 
-    auto comp = [](const Point& a, const Point& b) -> bool
+    /*auto comp = [](const Point& a, const Point& b) -> bool
     {
         if (a.x < b.x)
             return true;
@@ -27,9 +27,9 @@ export void cleanIntersectionPoints(std::vector<Point>& iPoints)
             return true;
         else
             return false;
-    };
+    };*/
 
-    std::sort(iPoints.begin(), iPoints.end(), comp);
+    std::sort(iPoints.begin(), iPoints.end());
 
     iPoints.erase(std::unique(iPoints.begin(), iPoints.end()), iPoints.end());
 }

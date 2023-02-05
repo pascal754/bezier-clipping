@@ -20,7 +20,20 @@ public:
     bool hasSameCoordWithTolerance(const Point& pt) const;
     double findDistance(const Point& pt) const;
     bool operator==(const Point& other) const { return x == other.x && y == other.y; }
-    double x{}, y{};
+    auto operator<=>(const Point& other) const
+    {
+        // perform a three-way comparison between the
+        // x's. If that result != 0 (that is, the x's
+        // differ), then that's the result of the
+        // overall comparison
+        if (auto c = x <=> other.x; c != 0) return c;
+
+        // otherwise, proceed to comparing the next
+        // pair of elements
+        return y <=> other.y;
+    }
+    double x{};
+    double y{};
     double angle{};
 //private:
     // Color col;
