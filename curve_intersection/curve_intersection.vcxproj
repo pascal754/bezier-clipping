@@ -171,6 +171,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Auxilary.ixx" />
     <ClCompile Include="Bspline.cpp" />
     <ClCompile Include="Bspline.ixx" />
     <ClCompile Include="FileDialog.ixx" />

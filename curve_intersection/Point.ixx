@@ -19,6 +19,7 @@ public:
     bool hasSameCoord(const Point& pt) const;
     bool hasSameCoordWithTolerance(const Point& pt) const;
     double findDistance(const Point& pt) const;
+    bool operator==(const Point& other) const { return x == other.x && y == other.y; }
     double x{}, y{};
     double angle{};
 //private:
