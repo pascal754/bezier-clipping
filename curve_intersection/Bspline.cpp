@@ -18,6 +18,8 @@ module;
 
 module Bspline;
 
+import Auxilary;
+
 bool Bspline::DEBUG{ false };
 const double Bspline::epsilon{ 1e-9 }; // epsilon is for approximate zero and should be much less than u_epsilon
 const double Bspline::u_epsilon{ 0.0001 }; // for knot values
@@ -752,43 +754,15 @@ void Bspline::findIntersection(Bspline crv, std::vector<Point>& iPoints, int& it
 {
     try
     {
-        if (checkNumbers() && crv.checkNumbers())
-        {
-            searchIntersection(crv, iPoints, iter, lineDetection);
-
-            std::cout << '\t' << iter << " decomposition(s)\n";
-
-            std::cout << "the number of intersection: " << iPoints.size() << '\n';
-
-            if (iPoints.size() < 1'000)
-            {
-                for (int i{}; i < iPoints.size(); ++i)
-                {
-                    std::cout << std::format("***intersection point #{}: ", i + 1);
-                    std::cout << iPoints[i] << '\n';
-                }
-            }
-
-            std::cout << '\t' << iter << " decomposition(s)\n";
-        }
-        else
+        if (!checkNumbers() || !crv.checkNumbers())
         {
             std::cout << "m = n + p + 1 not satisfied\n";
+            return;
         }
 
-        if (DEBUG)
-        {
-            logFile << '\t' << iter << " decomposition(s)\n";
+        searchIntersection(crv, iPoints, iter, lineDetection);
 
-            logFile << "the number of intersection: " << iPoints.size() << '\n';
-
-            for (int i{}; i < iPoints.size(); ++i)
-            {
-                logFile << std::format("***intersection point #{}: ", i + 1);
-                logFile << iPoints[i] << '\n';
-            }
-
-        }
+        printResult(iter, iPoints, DEBUG, logFile);
     }
     catch (const std::exception& e)
     {
@@ -1010,8 +984,8 @@ void Bspline::searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& 
     // line or point detection
     // on: simple line intersection between straight lines, no recursive solution
     // off: try to find intersection, the number of iteration is limited by Bspline::max_iteration or Bspline::max_num_intersection_points whichever comes first
-    // if (lineDetection)
-    // {
+    //if (lineDetection)
+    //{
         if (convexHull.size() <= 2 && crv.convexHull.size() <= 2) // two line segments or points
         {
             if (DEBUG) { logFile << "point and line detection\n"; }
@@ -1105,7 +1079,7 @@ void Bspline::searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& 
             //    }
             //}
         }
-    // }// end of two line segments
+    //}// end of detection
 
     findMinMaxDistance();
 
@@ -1366,19 +1340,15 @@ void Bspline::bezierIntersection(Bspline bs, std::vector<Point>& iPoints, int& d
 
         for (int i{ p_degree }; i <= cp_n; ++i)
         {
-
             bezierLists[0].push_back(decompose(knotVector[i], knotVector[i + 1]));
             ++dNum;
-
         }
 
         for (int i{ bs.p_degree }; i <= bs.cp_n; ++i)
         {
-
             bezierLists[1].push_back(bs.decompose(bs.knotVector[i], bs.knotVector[i + 1]));
             ++dNum;
         }
-
 
         for (size_t i{}; i < bezierLists[0].size(); ++i) {
             for (size_t j{}; j < bezierLists[1].size(); ++j)
@@ -1391,40 +1361,7 @@ void Bspline::bezierIntersection(Bspline bs, std::vector<Point>& iPoints, int& d
             }
         }
 
-        std::cout << '\t' << dNum << " decomposition(s)\n";
-
-        if (DEBUG) { logFile << '\t' << dNum << " decomposition(s)\n"; }
-
-        std::cout << "the number of intersection: " << iPoints.size() << '\n';
-
-        if (DEBUG) { logFile << "the number of intersection: " << iPoints.size() << '\n'; }
-
-        if (iPoints.size() == 0)
-        {
-            std::cout << "No intersection\n";
-            if (DEBUG) { logFile << "No intersection\n"; }
-        }
-        else
-        {
-            if (iPoints.size() < 1'000)
-            {
-                for (int i{}; i < iPoints.size(); ++i)
-                {
-                    std::cout << std::format("***intersection point #{}: ", i + 1);
-                    std::cout << iPoints[i] << '\n';
-                }
-            }
-            if (DEBUG)
-            {
-                for (int i{}; i < iPoints.size(); ++i)
-                {
-                    logFile << std::format("***intersection point #{}: ", i + 1);
-                    logFile << iPoints[i] << '\n';
-                }
-            }
-        }
-
-        std::cout << '\t' << dNum << " decomposition(s)\n";
+        printResult(dNum, iPoints, DEBUG, logFile);
     }
     catch (const std::exception& e)
     {

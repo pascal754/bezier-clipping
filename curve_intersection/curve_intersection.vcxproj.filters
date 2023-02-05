@@ -36,5 +36,8 @@
     <ClCompile Include="Bspline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Auxilary.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
