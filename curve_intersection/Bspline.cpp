@@ -996,7 +996,7 @@ void Bspline::searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& 
         return;
     }
 
-    if (deltaU1 < u1_epsilon) // (deltaU1 < u_epsilon)
+    if (deltaU1 < u1_epsilon)
     {
         if (DEBUG) { logFile << "one curve becoming a point. continuing ...\n"; }
     }
@@ -1010,8 +1010,8 @@ void Bspline::searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& 
     // line or point detection
     // on: simple line intersection between straight lines, no recursive solution
     // off: try to find intersection, the number of iteration is limited by Bspline::max_iteration or Bspline::max_num_intersection_points whichever comes first
-    if (lineDetection)
-    {
+    // if (lineDetection)
+    // {
         if (convexHull.size() <= 2 && crv.convexHull.size() <= 2) // two line segments or points
         {
             if (DEBUG) { logFile << "point and line detection\n"; }
@@ -1105,7 +1105,7 @@ void Bspline::searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& 
             //    }
             //}
         }
-    }// end of two line segments
+    // }// end of two line segments
 
     findMinMaxDistance();
 
@@ -1444,10 +1444,15 @@ bool Bspline::isThereLineIntersection(double y, double y1, double y2) const
 bool Bspline::isPointOnLineSegment(const Point& pt)
 {
     // find the intersection point between the given line and the perpendicular line passing through the point
-    double x{ coef_b * coef_b * pt.x - coef_a * coef_b * pt.y - coef_a * coef_c };
-    double y{ coef_a * coef_a * pt.y - coef_a * coef_b * pt.x - coef_b * coef_c };
+    /*double x{ coef_b * coef_b * pt.x - coef_a * coef_b * pt.y - coef_a * coef_c };
+    double y{ coef_a * coef_a * pt.y - coef_a * coef_b * pt.x - coef_b * coef_c };*/
 
-    if (DEBUG) { logFile << std::format("calculated point: ({}, {})\n", x, y); }
+
+    //if (DEBUG) { logFile << std::format("calculated point: ({}, {})\n", x, y); }
+
+    auto d{ coef_a * pt.x + coef_b * pt.y + coef_c };
+
+    if (DEBUG) {logFile << "distance from the line: " << d << '\n'; }
 
     auto min_x{ std::min(controlPoints.front().x, controlPoints.back().x) };
     auto max_x{ std::max(controlPoints.front().x, controlPoints.back().x) };
@@ -1458,21 +1463,23 @@ bool Bspline::isPointOnLineSegment(const Point& pt)
     // B: the point is inside the line segment
     // due to floating point error check again the point is on either end points of the line segment
 
-    findConvexHull();
+    //findConvexHull();
 
-    if (
+    /*if (
         (
             (std::abs(pt.x - x) < Point::epsilon && std::abs(pt.y - y) < Point::epsilon) &&
             (min_x - Point::epsilon) < x && x < (max_x + Point::epsilon) && (min_y - Point::epsilon) < y && y < (max_y + Point::epsilon)
             ) ||
         pt.hasSameCoordWithTolerance(convexHull.front()) ||
         pt.hasSameCoordWithTolerance(convexHull.back())
-        )
+        )*/
+    if (std::abs(d) < epsilon && (min_x - Point::epsilon) < pt.x && pt.x < (max_x + Point::epsilon) && (min_y - Point::epsilon) < pt.y && pt.y < (max_y + Point::epsilon))
     {
         if (DEBUG) { logFile << "a point is on the line\n"; }
         return true;
     }
 
+    if (DEBUG) { logFile << "a point is not on the line\n"; }
     return false;
 }
 
