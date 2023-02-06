@@ -1147,7 +1147,12 @@ void Bspline::searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& 
         min = small->y;
         max = big->y;
 
-        if (DEBUG) { logFile << std::format("minimum and maximum of distance curve: {}, {}\n", min, max); }
+        if (DEBUG)
+        {
+            logFile << std::format("minimum and maximum of distance curve: {}, {}\n", min, max);
+            logFile << "distance curve information:\n";
+            distanceCurve.printInfo();
+        }
     }
 
     if (min > maxDist || max < minDist) // outside the clipping lines: no intersection
@@ -1157,12 +1162,6 @@ void Bspline::searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& 
     }
 
     distanceCurve.findConvexHull();
-
-    if (DEBUG)
-    {
-        logFile << "distance curve information:\n";
-        distanceCurve.printInfo();
-    }
 
     if (distanceCurve.convexHull.size() < 2)
     {
