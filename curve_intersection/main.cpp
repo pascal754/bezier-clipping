@@ -6,6 +6,7 @@
 #include <vector>
 #include <array>
 #include <algorithm>
+#include <format>
 #include <cstring>
 #include <imgui.h>
 #include <imgui-SFML.h>
@@ -81,13 +82,25 @@ auto main() -> int
                         std::cout << mPos.x << ' ' << window.getSize().y - mPos.y << std::endl;
                         if (curve1EditMode)
                         {
-                            //curve1.addPointAndKnots(Point{ static_cast<double>(mPos.x), static_cast<double>(window.getSize().y - mPos.y) });
-                            curve1.addInterpolationPoint(Point{ static_cast<double>(mPos.x), static_cast<double>(window.getSize().y - mPos.y) });
+                            if (Bspline::controlPointMode)
+                            {
+                                curve1.addPointAndKnots(Point{ static_cast<double>(mPos.x), static_cast<double>(window.getSize().y - mPos.y) });
+                            }
+                            else
+                            {
+                                curve1.addInterpolationPoint(Point{ static_cast<double>(mPos.x), static_cast<double>(window.getSize().y - mPos.y) });
+                            }
                         }
                         if (curve2EditMode)
                         {
-                            //curve2.addPointAndKnots(Point{ static_cast<double>(mPos.x), static_cast<double>(window.getSize().y - mPos.y) });
-                            curve2.addInterpolationPoint(Point{ static_cast<double>(mPos.x), static_cast<double>(window.getSize().y - mPos.y) });
+                            if (Bspline::controlPointMode)
+                            {
+                                curve2.addPointAndKnots(Point{ static_cast<double>(mPos.x), static_cast<double>(window.getSize().y - mPos.y) });
+                            }
+                            else
+                            {
+                                curve2.addInterpolationPoint(Point{ static_cast<double>(mPos.x), static_cast<double>(window.getSize().y - mPos.y) });
+                            }
                         }
                     }
                 }
@@ -164,6 +177,21 @@ auto main() -> int
                     }
                 }
 
+                /*ImGui::Separator();
+                ImGui::NewLine();
+
+                static int e = 0;
+                ImGui::RadioButton("Control Points", &e, 0); ImGui::SameLine();
+                ImGui::RadioButton("Interpolation", &e, 1);
+                if (e == 0)
+                {
+                    Bspline::controlPointMode = true;
+                }
+                else if (e == 1)
+                {
+                    Bspline::controlPointMode = false;
+                }*/
+
                 ImGui::Separator();
                 ImGui::NewLine();
 
@@ -179,8 +207,14 @@ auto main() -> int
                     {
                         ptList.clear();
                     }
-                    //curve1.deleteLastPointAndKnots();
-                    curve1.deleteLastInterpolationPoint();
+                    if (Bspline::controlPointMode)
+                    {
+                        curve1.deleteLastPointAndKnots();
+                    }
+                    else
+                    {
+                        curve1.deleteLastInterpolationPoint();
+                    }
                 }
 
                 if (ImGui::Button("Erase curve A"))
@@ -218,8 +252,14 @@ auto main() -> int
                     {
                         ptList.clear();
                     }
-                    //curve2.deleteLastPointAndKnots();
-                    curve2.deleteLastInterpolationPoint();
+                    if (Bspline::controlPointMode)
+                    {
+                        curve2.deleteLastPointAndKnots();
+                    }
+                    else
+                    {
+                        curve2.deleteLastInterpolationPoint();
+                    }
                 }
 
                 if (ImGui::Button("Erase curve B"))
