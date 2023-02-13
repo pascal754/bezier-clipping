@@ -46,6 +46,7 @@ public:
     void find_u_bar_k(std::vector<double>& u_bar_k);
     void find_U(const std::vector<double>& u_bar_k);
     static bool DEBUG;
+    static bool controlPointMode;
     friend void loadPoints(Bspline& curve1, Bspline& curve2, std::string_view filePathName);
     friend void savePoints(const Bspline& curve1, const Bspline& curve2, std::string_view filePathName);
     void LUPSolve(const std::vector<std::vector<double>>& A, const std::vector<int>& Pm);

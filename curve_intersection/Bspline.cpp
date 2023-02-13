@@ -21,6 +21,7 @@ module Bspline;
 import Auxilary;
 
 bool Bspline::DEBUG{ false };
+bool Bspline::controlPointMode{}; // true: control points, false: interpolation
 const double Bspline::epsilon{ 1e-9 }; // epsilon is for approximate zero and should be much less than u_epsilon
 const double Bspline::u_epsilon{ 0.0001 }; // for knot values
 const double Bspline::u1_epsilon{ u_epsilon / 10.0 };
@@ -105,11 +106,16 @@ void Bspline::changeDegree(int degree)
     left.resize(p_degree + 1);
     right.resize(p_degree + 1);
 
-    // for interpolation mode
-    //makeKnots();
+    if (controlPointMode)
+    {
+        makeKnots();
+    }
     convexHull.clear();
     isConvexHullUpdated = false;
-    globalCurveInterpolation();
+    if (!controlPointMode)
+    {
+        globalCurveInterpolation();
+    }
 }
 
 void loadPoints(Bspline& curve1, Bspline& curve2, std::string_view filePathName)
@@ -502,14 +508,27 @@ void Bspline::drawCurve(sf::RenderWindow& window, sf::Color col)
     }
     else // draw control points until the curve satisfies m = n + p + 1 -> draw interpolation points
     {
-        auto wSize{ window.getSize() };
-        //for (const auto& p : controlPoints)
-        for (const auto& p : interpolationPoints)
+        if (controlPointMode)
         {
-            sf::CircleShape c{ 5 };
-            c.setFillColor(col);
-            c.setPosition(static_cast<float>(p.x) - c.getRadius(), wSize.y - static_cast<float>(p.y) - c.getRadius());
-            window.draw(c);
+            auto wSize{ window.getSize() };
+            for (const auto& p : controlPoints)
+            {
+                sf::CircleShape c{ 5 };
+                c.setFillColor(col);
+                c.setPosition(static_cast<float>(p.x) - c.getRadius(), wSize.y - static_cast<float>(p.y) - c.getRadius());
+                window.draw(c);
+            }
+        }
+        else
+        {
+            auto wSize{ window.getSize() };
+            for (const auto& p : interpolationPoints)
+            {
+                sf::CircleShape c{ 5 };
+                c.setFillColor(col);
+                c.setPosition(static_cast<float>(p.x) - c.getRadius(), wSize.y - static_cast<float>(p.y) - c.getRadius());
+                window.draw(c);
+            }
         }
     }
 }
@@ -1583,7 +1602,8 @@ void Bspline::find_U(const std::vector<double>& u_bar_k)
     }
 }
 
-bool Bspline::LUPDecompose(std::vector<std::vector<double>>& A, std::vector<int>& Pm) {
+bool Bspline::LUPDecompose(std::vector<std::vector<double>>& A, std::vector<int>& Pm)
+{
     //bool LUPDecompose(vedouble **A, int N, double Tol, int* P)
     // https://en.wikipedia.org/wiki/LU_decomposition
     /* INPUT: A - array of pointers to rows of a square matrix having dimension N
@@ -1649,7 +1669,8 @@ bool Bspline::LUPDecompose(std::vector<std::vector<double>>& A, std::vector<int>
     return true;  //decomposition done 
 }
 
-void Bspline::LUPSolve(const std::vector<std::vector<double>>& A, const std::vector<int>& Pm) {
+void Bspline::LUPSolve(const std::vector<std::vector<double>>& A, const std::vector<int>& Pm)
+{
     // https://en.wikipedia.org/wiki/LU_decomposition
     /* INPUT: A,P filled in LUPDecompose; b(interpolation points) - rhs vector; N - dimension
      * OUTPUT: x(control points) - solution vector of A*x=b
