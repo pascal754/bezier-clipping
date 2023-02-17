@@ -16,3 +16,6 @@ Version 17.5.0 Preview 2.0
 C++latest(modules)
 
 - imgui-sfml 2.5#1 via vcpkg
+
+## Sample calculation
+![screenshot](Screenshot_3.png)
