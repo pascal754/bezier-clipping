@@ -1,9 +1,9 @@
-# Intersection algorithm for two B-spline curves
+# Intersection algorithm for two B-spline curves using Bezier clipping
 
-## Find intersection points between two B-spline curves using Bezier clipping
+## Find intersection points between two B-spline curves
 
 - m = n + p + 1 should be satisfied for a curve
-(m: knot vector [0, m], n: control points [0, n], p: degree of curve)
+(m: knot vector [u_0, u_m], n: control points [P_0, P_n], p: degree of curve)
 
 ## Limitation
 
