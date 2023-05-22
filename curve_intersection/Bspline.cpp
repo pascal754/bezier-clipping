@@ -1341,6 +1341,8 @@ void bezierIntersection(const Bspline& crv1, const Bspline& crv2, std::vector<Po
             bezierLists[1].push_back(crv2.decompose(crv2.knotVector[i], crv2.knotVector[i + 1]));
         }
 
+        if (Bspline::DEBUG) { Bspline::logFile << "\nnumber of pre-decompositions: " << bezierLists[0].size() + bezierLists[1].size() << '\n'; }
+
         for (size_t i{}; i < bezierLists[0].size(); ++i) {
             for (size_t j{}; j < bezierLists[1].size(); ++j)
             {
