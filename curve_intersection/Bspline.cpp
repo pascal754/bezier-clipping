@@ -1119,7 +1119,7 @@ void searchIntersection(std::queue<std::pair<Bspline, Bspline>>& bqueue, std::ve
     Point pt{ distanceCurve.controlPoints.front() };
     Point pt2{ distanceCurve.controlPoints.back() };
 
-    // at least one of two end points are inside the clipping lines
+    // at least one of two end points are inside the clipping lines: case 1
     if ((crv1.minDist < pt.y && pt.y < crv1.maxDist) || (crv1.minDist < pt2.y && pt2.y < crv1.maxDist))
     {
         if (Bspline::DEBUG) { Bspline::logFile << "halving curve B\n"; }
@@ -1129,14 +1129,14 @@ void searchIntersection(std::queue<std::pair<Bspline, Bspline>>& bqueue, std::ve
         {
             ++iter;
             bqueue.push(std::pair{ std::move(*bs1), crv1 });
-            if (Bspline::DEBUG) { Bspline::logFile << "a pair of curves added to bqueue\n"; }
+            if (Bspline::DEBUG) { Bspline::logFile << "a pair of curves added to bqueue in case 1\n"; }
         }
 
         auto bs2{ crv2.decompose(crv2.knotVector[0] + deltaU2 / 2.0, crv2.knotVector[crv2.cp_n + 1]) };
         if (bs2) {
             ++iter;
             bqueue.push(std::pair{ std::move(*bs2), std::move(crv1) });
-            if (Bspline::DEBUG) { Bspline::logFile << "a pair of curves added to bqueue\n"; }
+            if (Bspline::DEBUG) { Bspline::logFile << "a pair of curves added to bqueue in case 1\n"; }
         }
 
         return;
@@ -1234,7 +1234,7 @@ void searchIntersection(std::queue<std::pair<Bspline, Bspline>>& bqueue, std::ve
         if (Bspline::DEBUG) { Bspline::logFile << "u_max adjusted to u_m\n"; }
     }
 
-    if ((u_max - u_min) > deltaU2 * 0.8)
+    if ((u_max - u_min) > deltaU2 * 0.8) // case 2
     {
         if (Bspline::DEBUG) { Bspline::logFile << "halving curve B\n"; }
         auto bs1{ crv2.decompose(crv2.knotVector[0], crv2.knotVector[0] + deltaU2 / 2.0) };
@@ -1242,19 +1242,19 @@ void searchIntersection(std::queue<std::pair<Bspline, Bspline>>& bqueue, std::ve
         {
             ++iter;
             bqueue.push(std::pair{ std::move(*bs1), crv1 });
-            if (Bspline::DEBUG) { Bspline::logFile << "a pair of curves added to bqueue\n"; }
+            if (Bspline::DEBUG) { Bspline::logFile << "a pair of curves added to bqueue in case 2\n"; }
         }
 
         auto bs2{ crv2.decompose(crv2.knotVector[0] + deltaU2 / 2.0, crv2.knotVector[crv2.cp_n + 1]) };
         if (bs2) {
             ++iter;
             bqueue.push(std::pair{ std::move(*bs2), std::move(crv1) });
-            if (Bspline::DEBUG) { Bspline::logFile << "a pair of curves added to bqueue\n"; }
+            if (Bspline::DEBUG) { Bspline::logFile << "a pair of curves added to bqueue in case 2\n"; }
         }
 
         return;
     }
-    else
+    else // case 3
     {
         if (Bspline::DEBUG) { Bspline::logFile << std::format("decomposing curve B between {}, {}\n", u_min, u_max); }
         auto decomposedC2{ crv2.decompose(u_min, u_max) };
@@ -1262,7 +1262,7 @@ void searchIntersection(std::queue<std::pair<Bspline, Bspline>>& bqueue, std::ve
         {
             ++iter;
             bqueue.push(std::pair{std::move(*decomposedC2), std::move(crv1)});
-            if (Bspline::DEBUG) { Bspline::logFile << "a pair of curves added to bqueue\n"; }
+            if (Bspline::DEBUG) { Bspline::logFile << "a pair of curves added to bqueue in case 3\n"; }
         }
 
         return;
