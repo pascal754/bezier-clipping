@@ -15,7 +15,11 @@
 Version 17.6.0
 C++latest(modules)
 
-- imgui-sfml 2.5#3 via vcpkg
+## library via vcpkg
+
+- sfml 2.5.1
+- imgui 1.89.4
+- imgui-sfml 2.5
 
 ## Sample calculation
 ![screenshot](Screenshot_3.png)
