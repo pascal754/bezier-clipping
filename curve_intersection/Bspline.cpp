@@ -34,7 +34,6 @@ const double Bspline::u2_epsilon{ u1_epsilon / 10.0 };
 const int Bspline::max_iteration{ 500'000 }; // maximum iteration for overlapping curves
 const int Bspline::max_num_intersection_points{ 500'000 };
 std::ofstream Bspline::logFile;
-int Bspline::recursionDepth{};
 
 int Bspline::findKnotSpan(double u) const
 {
@@ -934,7 +933,7 @@ void searchIntersection(std::queue<std::pair<Bspline, Bspline>>& bqueue, std::ve
     if (Bspline::DEBUG)
     {
         Bspline::logFile << std::format("\n~~~ Iteration #{} ~~~\n", iter);
-        Bspline::logFile << "recursion depth: " << Bspline::recursionDepth << '\n';
+        Bspline::logFile << "queue size: " << bqueue.size() << '\n';
         Bspline::logFile << std::format("curve A u1: {}, u2: {}, deltaU: {}\n", crv1.knotVector.front(), crv1.knotVector.back(), crv1.knotVector.back() - crv1.knotVector.front());
         Bspline::logFile << std::format("curve B u1: {}, u2: {}, deltaU: {}\n", crv2.knotVector.front(), crv2.knotVector.back(), crv2.knotVector.back() - crv2.knotVector.front());
         Bspline::logFile << "curve A:\n";
