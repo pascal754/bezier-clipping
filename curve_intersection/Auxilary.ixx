@@ -23,13 +23,13 @@ export void cleanIntersectionPoints(std::vector<Point>& iPoints)
 
 export void printResult(const int iterationNum, std::vector<Point>& iPoints, const bool DEBUG, std::ofstream& logFile)
 {
-    std::cout << '\t' << iterationNum << " decomposition(s)\n";
+    std::cout << '\t' << iterationNum << " iteration(s)\n";
 
     std::cout << "the number of intersection before clean up: " << iPoints.size() << '\n';
 
     if (DEBUG)
     {
-        logFile << '\t' << iterationNum << " decomposition(s)\n";
+        logFile << '\t' << iterationNum << " iteration(s)\n";
         logFile << "the number of intersection before clean up: " << iPoints.size() << '\n';
 
         std::sort(iPoints.begin(), iPoints.end());
@@ -61,7 +61,7 @@ export void printResult(const int iterationNum, std::vector<Point>& iPoints, con
         }
     }
 
-    std::cout << '\t' << iterationNum << " decomposition(s)\n";
+    std::cout << '\t' << iterationNum << " iteration(s)\n";
 
     if (DEBUG)
     {

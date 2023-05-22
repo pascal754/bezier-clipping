@@ -910,8 +910,8 @@ bool exceedsMaximums(int iter, size_t numIntersectionPoints)
 {
     if (iter > Bspline::max_iteration)
     {
-        std::cout << std::format("maximum number of decomposition reached({}), return\n", Bspline::max_iteration);
-        if (Bspline::DEBUG) { Bspline::logFile << std::format("maximum number of decomposition reached({}), return\n", Bspline::max_iteration); }
+        std::cout << std::format("maximum number of iteration reached({}), return\n", Bspline::max_iteration);
+        if (Bspline::DEBUG) { Bspline::logFile << std::format("maximum number of iteration reached({}), return\n", Bspline::max_iteration); }
         return true;
     }
 
