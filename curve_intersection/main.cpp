@@ -2,12 +2,12 @@
 // by SM
 // curve intersection
 
-#include <iostream>
-#include <vector>
-#include <array>
-#include <algorithm>
-#include <format>
-#include <cstring>
+import <iostream>;
+import <vector>;
+import <array>;
+import <algorithm>;
+import <format>;
+import <cstring>;
 #include <imgui.h>
 #include <imgui-SFML.h>
 #include <SFML/Graphics.hpp>
@@ -311,7 +311,7 @@ auto main() -> int
 
                     decomp_num = 0;
                     ptList.clear();
-                    
+
                     if (Bspline::DEBUG)
                     {
                         Bspline::logFile.open("calc.log", std::ios::out);
@@ -324,11 +324,11 @@ auto main() -> int
 
                     if (decomposeFirst)
                     {
-                        curve1.bezierIntersection(curve2, ptList, decomp_num, lineDetection);
+                        bezierIntersection(curve1, curve2, ptList, decomp_num, lineDetection);
                     }
                     else
                     {
-                        curve1.findIntersection(curve2, ptList, decomp_num, lineDetection);
+                        findIntersection(curve1, curve2, ptList, decomp_num, lineDetection);
                     }
 
                     if (Bspline::DEBUG)

@@ -1,11 +1,9 @@
 // September 2, 2022
 // by SM
 
-module;
-
-#include <iostream>
-
 export module Point;
+
+import <iostream>;
 
 export class Point {
 public:
@@ -35,6 +33,4 @@ public:
     double x{};
     double y{};
     double angle{};
-//private:
-    // Color col;
 };

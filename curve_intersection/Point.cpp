@@ -1,13 +1,11 @@
 // September 2, 2022
 // by SM
 
-module;
-
-#include <iostream>
-#include <format>
-#include <cmath>
-
 module Point;
+
+import <iostream>;
+import <format>;
+import <cmath>;
 
 const double Point::epsilon{ 0.5 }; // chosen for screen pixel
 
@@ -16,11 +14,6 @@ std::ostream& operator<<(std::ostream& os, const Point& cp)
     os << std::format("({}, {}) ra = {}", cp.x, cp.y, cp.angle);
     return os;
 }
-
-//void Point::setColor(const Color& c)
-//{
-//	col = c;
-//}
 
 void Point::findAngleAround(const Point& pt)
 {

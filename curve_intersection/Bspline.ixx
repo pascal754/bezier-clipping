@@ -3,14 +3,16 @@
 
 module;
 
-#include <optional>
-#include <vector>
-#include <fstream>
-#include <string_view>
 #include <SFML/Graphics.hpp>
 
 export module Bspline;
 
+import <optional>;
+import <vector>;
+import <fstream>;
+import <string_view>;
+import <utility>;
+import <queue>;
 import Point;
 
 export class Bspline {
@@ -34,8 +36,8 @@ public:
     void drawCurve(sf::RenderWindow& window, sf::Color col);
     void drawConvexHull(sf::RenderWindow& window, sf::Color col);
     std::optional<Bspline> decompose(double u1, double u2) const;
-    void findIntersection(Bspline crv, std::vector<Point>& iPoints, int& iter, bool lineDetection); // check curves first and proceed, call searchIntersection()
-    void bezierIntersection(Bspline bs, std::vector<Point>& iPoints, int& iter, bool lineDetection);
+    friend void findIntersection(const Bspline& crv1, const Bspline& crv2, std::vector<Point>& iPoints, int& iter, bool lineDetection); // check curves first and proceed, call searchIntersection()
+    friend void bezierIntersection(const Bspline& crv1, const Bspline& crv2, std::vector<Point>& iPoints, int& iter, bool lineDetection);
     void printInfo();
     void globalCurveInterpolation();
     int findKnotSpan(double u) const;
@@ -54,7 +56,9 @@ public:
     static std::ofstream logFile;
 private:
     void deleteLastPoint();
-    void searchIntersection(Bspline crv, std::vector<Point>& iPoints, int& iter, bool lineDetection); // internal call
+    friend void searchIntersection(std::queue<std::pair<Bspline, Bspline>>& bqueue, std::vector<Point>& iPoints, int& iter, bool lineDetection); // internal call
+    friend bool exceedsMaximums(int iter, size_t numIntersectionPoints);
+    friend bool findPointLine(Bspline& crv1, Bspline& crv2, std::vector<Point>& iPoints);
     void addPoint(const Point& p);
     int findFirstPointOfConvexHull() const;
     bool isPointOnLineSegment(const Point& pt);

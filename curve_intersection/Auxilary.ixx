@@ -1,14 +1,11 @@
-module;
-
-#include <iostream>
-#include <vector>
-#include <algorithm>
-#include <fstream>
-#include <format>
-#include <cmath>
-
 export module Auxilary;
 
+import <iostream>;
+import <vector>;
+import <algorithm>;
+import <fstream>;
+import <format>;
+import <cmath>;
 import Point;
 
 export void cleanIntersectionPoints(std::vector<Point>& iPoints)
@@ -18,16 +15,6 @@ export void cleanIntersectionPoints(std::vector<Point>& iPoints)
         pt.x = std::round(pt.x);
         pt.y = std::round(pt.y);
     }
-
-    /*auto comp = [](const Point& a, const Point& b) -> bool
-    {
-        if (a.x < b.x)
-            return true;
-        else if (a.x == b.x && a.y < b.y)
-            return true;
-        else
-            return false;
-    };*/
 
     std::sort(iPoints.begin(), iPoints.end());
 
@@ -47,7 +34,7 @@ export void printResult(const int iterationNum, std::vector<Point>& iPoints, con
 
         std::sort(iPoints.begin(), iPoints.end());
 
-        for (int i{1}; const auto& pt : iPoints)
+        for (int i{ 1 }; const auto & pt : iPoints)
         {
             logFile << std::format("***intersection point #{}: ", i);
             logFile << pt << '\n';
@@ -66,7 +53,7 @@ export void printResult(const int iterationNum, std::vector<Point>& iPoints, con
 
     if (iPoints.size() < 1'000)
     {
-        for (int i{1}; const auto& pt : iPoints)
+        for (int i{ 1 }; const auto & pt : iPoints)
         {
             std::cout << std::format("***intersection point #{}: ", i);
             std::cout << pt << '\n';
@@ -80,7 +67,7 @@ export void printResult(const int iterationNum, std::vector<Point>& iPoints, con
     {
         logFile << "\nthe number of intersection after clean up: " << iPoints.size() << '\n';
 
-        for (int i{1}; const auto& pt: iPoints)
+        for (int i{ 1 }; const auto & pt: iPoints)
         {
             logFile << std::format("***intersection point #{}: ", i);
             logFile << pt << '\n';
