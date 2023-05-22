@@ -24,7 +24,8 @@ auto main() -> int
     {
         std::ios_base::sync_with_stdio(false);
         int decomp_num{}; // save the number of decomposition of curves
-        int degreeA{ 3 }, degreeB{ 3 };
+        int degreeA{ 3 };
+        int degreeB{ 3 };
         Bspline curve1{ degreeA }, curve2{ degreeB }; // p, degree of the curves
         std::vector<Point> ptList;
 
@@ -44,10 +45,14 @@ auto main() -> int
 
         sf::Clock deltaClock;
 
-        bool curve1EditMode{}, curve2EditMode{};
-        bool curve1ConvexHull{}, curve2ConvexHull{};
-        //bool curve1ControlPolygon{}, curve2ControlPolygon{};
-        bool gridMode{ true }, gridSnapMode{ true };
+        bool curve1EditMode{};
+        bool curve2EditMode{};
+        bool curve1ConvexHull{};
+        bool curve2ConvexHull{};
+        //bool curve1ControlPolygon{};
+        //bool curve2ControlPolygon{};
+        bool gridMode{ true };
+        bool gridSnapMode{ true };
         bool decomposeFirst{};
         bool lineDetection{};
         bool imguiOpen{ true };
@@ -404,8 +409,6 @@ auto main() -> int
                 ImGui::SFML::Render(childWindow);
                 childWindow.display();
             }
-
-            //sf::sleep(sf::milliseconds(100));
         }
 
         ImGui::SFML::Shutdown();

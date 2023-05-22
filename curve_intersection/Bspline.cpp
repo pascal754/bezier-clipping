@@ -927,6 +927,7 @@ bool exceedsMaximums(int iter, size_t numIntersectionPoints)
 
 void searchIntersection(std::queue<std::pair<Bspline, Bspline>>& bqueue, std::vector<Point>& iPoints, int& iter, bool lineDetection)
 {
+    ++iter;
     Bspline& crv1{ bqueue.front().first };
     Bspline& crv2{ bqueue.front().second };
 
@@ -1127,14 +1128,12 @@ void searchIntersection(std::queue<std::pair<Bspline, Bspline>>& bqueue, std::ve
         auto bs1{ crv2.decompose(crv2.knotVector[0], crv2.knotVector[0] + deltaU2 / 2.0) };
         if (bs1)
         {
-            ++iter;
             bqueue.push(std::pair{ std::move(*bs1), crv1 });
             if (Bspline::DEBUG) { Bspline::logFile << "a pair of curves added to bqueue in case 1-1\n"; }
         }
 
         auto bs2{ crv2.decompose(crv2.knotVector[0] + deltaU2 / 2.0, crv2.knotVector[crv2.cp_n + 1]) };
         if (bs2) {
-            ++iter;
             bqueue.push(std::pair{ std::move(*bs2), std::move(crv1) });
             if (Bspline::DEBUG) { Bspline::logFile << "a pair of curves added to bqueue in case 1-2\n"; }
         }
@@ -1240,14 +1239,12 @@ void searchIntersection(std::queue<std::pair<Bspline, Bspline>>& bqueue, std::ve
         auto bs1{ crv2.decompose(crv2.knotVector[0], crv2.knotVector[0] + deltaU2 / 2.0) };
         if (bs1)
         {
-            ++iter;
             bqueue.push(std::pair{ std::move(*bs1), crv1 });
             if (Bspline::DEBUG) { Bspline::logFile << "a pair of curves added to bqueue in case 2-1\n"; }
         }
 
         auto bs2{ crv2.decompose(crv2.knotVector[0] + deltaU2 / 2.0, crv2.knotVector[crv2.cp_n + 1]) };
         if (bs2) {
-            ++iter;
             bqueue.push(std::pair{ std::move(*bs2), std::move(crv1) });
             if (Bspline::DEBUG) { Bspline::logFile << "a pair of curves added to bqueue in case 2-2\n"; }
         }
@@ -1260,7 +1257,6 @@ void searchIntersection(std::queue<std::pair<Bspline, Bspline>>& bqueue, std::ve
         auto decomposedC2{ crv2.decompose(u_min, u_max) };
         if (decomposedC2)
         {
-            ++iter;
             bqueue.push(std::pair{std::move(*decomposedC2), std::move(crv1)});
             if (Bspline::DEBUG) { Bspline::logFile << "a pair of curves added to bqueue in case 3\n"; }
         }
@@ -1338,13 +1334,11 @@ void bezierIntersection(const Bspline& crv1, const Bspline& crv2, std::vector<Po
         for (int i{ crv1.p_degree }; i <= crv1.cp_n; ++i)
         {
             bezierLists[0].push_back(crv1.decompose(crv1.knotVector[i], crv1.knotVector[i + 1]));
-            ++iter;
         }
 
         for (int i{ crv2.p_degree }; i <= crv2.cp_n; ++i)
         {
             bezierLists[1].push_back(crv2.decompose(crv2.knotVector[i], crv2.knotVector[i + 1]));
-            ++iter;
         }
 
         for (size_t i{}; i < bezierLists[0].size(); ++i) {
