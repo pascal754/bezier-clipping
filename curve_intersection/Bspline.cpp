@@ -194,10 +194,14 @@ void loadPoints(Bspline& curve1, Bspline& curve2, const std::string& filePathNam
     }
     catch (const std::exception& e)
     {
+        curve1.clear();
+        curve2.clear();
         std::cerr << e.what() << '\n';
     }
     catch (...)
     {
+        curve1.clear();
+        curve2.clear();
         std::cerr << "file reading error\n";
     }
 }
