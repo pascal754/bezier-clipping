@@ -54,7 +54,7 @@ auto main() -> int
         bool gridMode{ true };
         bool gridSnapMode{ true };
         bool decomposeFirst{};
-        bool lineDetection{};
+        bool lineDetection{true};
         bool imguiOpen{ true };
 
         while (window.isOpen())
@@ -182,7 +182,7 @@ auto main() -> int
                     }
                 }
 
-                /*ImGui::Separator();
+                ImGui::Separator();
                 ImGui::NewLine();
 
                 static int e = 0;
@@ -195,7 +195,7 @@ auto main() -> int
                 else if (e == 1)
                 {
                     Bspline::controlPointMode = false;
-                }*/
+                }
 
                 ImGui::Separator();
                 ImGui::NewLine();
@@ -292,7 +292,7 @@ auto main() -> int
 
                 ImGui::Checkbox("Decompose curves first", &decomposeFirst);
 
-                //ImGui::Checkbox("Point vs. Line detection", &lineDetection);
+                ImGui::Checkbox("Point vs. Line detection", &lineDetection);
 
                 ImGui::Checkbox("Save to `calc.log`\n(last execution only)", &Bspline::DEBUG);
 
@@ -393,7 +393,6 @@ auto main() -> int
             for (auto& p : ptList)
             {
                 sf::CircleShape c{ 3 };
-                //c.setFillColor(sf::Color{ 128, 128, 128 });
                 c.setPosition(static_cast<float>(p.x) - c.getRadius(), windowSize.y - static_cast<float>(p.y) - c.getRadius());
                 window.draw(c);
             }

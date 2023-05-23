@@ -785,7 +785,7 @@ void findIntersection(const Bspline& crv1, const Bspline& crv2, std::vector<Poin
 
         std::queue<std::pair<Bspline, Bspline>> bqueue;
         bqueue.push(std::pair{ crv1, crv2 });
-        while (!bqueue.empty())
+        while (!bqueue.empty() && iter < Bspline::max_iteration && iPoints.size() < Bspline::max_num_intersection_points)
         {
             searchIntersection(bqueue, iPoints, iter, lineDetection);
             bqueue.pop();
@@ -1341,7 +1341,7 @@ void bezierIntersection(const Bspline& crv1, const Bspline& crv2, std::vector<Po
             bezierLists[1].push_back(crv2.decompose(crv2.knotVector[i], crv2.knotVector[i + 1]));
         }
 
-        if (Bspline::DEBUG) { Bspline::logFile << "\nnumber of pre-decompositions: " << bezierLists[0].size() + bezierLists[1].size() << '\n'; }
+        if (Bspline::DEBUG) { Bspline::logFile << "\nthe number of pre-decompositions: " << bezierLists[0].size() + bezierLists[1].size() << '\n'; }
 
         for (size_t i{}; i < bezierLists[0].size(); ++i) {
             for (size_t j{}; j < bezierLists[1].size(); ++j)
@@ -1350,7 +1350,7 @@ void bezierIntersection(const Bspline& crv1, const Bspline& crv2, std::vector<Po
                 {
                     std::queue<std::pair<Bspline, Bspline>> bqueue;
                     bqueue.push(std::pair{ *bezierLists[0][i], * bezierLists[1][j] });
-                    while (!bqueue.empty())
+                    while (!bqueue.empty() && iter < Bspline::max_iteration && iPoints.size() < Bspline::max_num_intersection_points)
                     {
                         searchIntersection(bqueue, iPoints, iter, lineDetection);
                         bqueue.pop();
