@@ -164,6 +164,8 @@ auto main() -> int
                     std::string filePathName, fileName;
                     if (launchFileDialog('o', filePathName, fileName))
                     {
+                        degreeA = 3;
+                        degreeB = 3;
                         curve1.changeDegree(degreeA);
                         curve2.changeDegree(degreeB);
                         loadPoints(curve1, curve2, filePathName);
