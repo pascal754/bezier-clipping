@@ -15,7 +15,7 @@
 Version 17.6.0
 C++latest(modules)
 
-## library via vcpkg
+## Library via vcpkg
 
 - sfml 2.5.1
 - imgui 1.89.4
