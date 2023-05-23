@@ -39,7 +39,6 @@ public:
     std::optional<Bspline> decompose(double u1, double u2) const;
     friend void findIntersection(const Bspline& crv1, const Bspline& crv2, std::vector<Point>& iPoints, int& iter, bool lineDetection); // check curves first and proceed, call searchIntersection()
     friend void bezierIntersection(const Bspline& crv1, const Bspline& crv2, std::vector<Point>& iPoints, int& iter, bool lineDetection);
-    void printInfo();
     void globalCurveInterpolation();
     int findKnotSpan(double u) const;
     bool checkNumbers() const; // check m = n + p + 1
@@ -70,6 +69,8 @@ private:
     void findMinMaxDistanceFromRotatedLine(); // from 90 degree rotated line
     void makeDistanceCurve(Bspline& distanceCurve, const Bspline& crv, double& min, double& max);
     bool isThereLineIntersection(double y, double y1, double y2) const;
+    void printInfo();
+    void checkPoint();
 
     static const double epsilon;
     static const double u_epsilon;

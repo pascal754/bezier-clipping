@@ -22,6 +22,7 @@ import <algorithm>;
 import <format>;
 import <stdexcept>;
 import <fstream>;
+import <numeric>;
 import Auxilary;
 
 bool Bspline::DEBUG{ false };
@@ -1082,6 +1083,9 @@ void searchIntersection(std::queue<std::pair<Bspline, Bspline>>& bqueue, std::ve
     if (lineDetection && findPointLine(crv1, crv2, iPoints))
         return;
 
+    crv1.checkPoint();
+    crv2.checkPoint();
+
     crv1.findMinMaxDistance();
 
     if (Bspline::DEBUG) { Bspline::logFile << std::format("min, max of clipping lines of curve A: {}, {}\n", crv1.minDist, crv1.maxDist); }
@@ -1369,6 +1373,22 @@ bool findPointLine(Bspline& crv1, Bspline& crv2, std::vector<Point>& iPoints)
         }
     }
     return false;
+}
+
+void Bspline::checkPoint()
+// if a curve is a point then shrink knot vector [midpoint, midpoint + u2_epsilon]
+{
+    if (convexHull.size() != 1)
+        return;
+
+    double u1{ std::midpoint(knotVector[0], knotVector[cp_n + 1]) };
+    double u2{ u1 + u2_epsilon };
+    auto decomp{ decompose(u1, u2) };
+    if (decomp)
+    {
+        *this = *decomp;
+        if (DEBUG) { logFile << "checkPoint(): curve is a point and knot vector shrunk to " << u1 << ", " << u2 << '\n'; }
+    }
 }
 
 // decompose each curve on knot and find intersection for combination
