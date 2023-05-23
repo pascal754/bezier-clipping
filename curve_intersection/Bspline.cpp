@@ -26,7 +26,6 @@ import <fstream>;
 import Auxilary;
 
 bool Bspline::DEBUG{ false };
-bool Bspline::controlPointMode{}; // true: control points, false: interpolation
 const double Bspline::epsilon{ 1e-9 }; // epsilon is for approximate zero and should be much less than u_epsilon
 const double Bspline::u_epsilon{ 0.0001 }; // for knot values
 const double Bspline::u1_epsilon{ u_epsilon / 10.0 };
@@ -110,21 +109,21 @@ void Bspline::changeDegree(int degree)
     left.resize(p_degree + 1);
     right.resize(p_degree + 1);
 
-    if (controlPointMode)
+    if (!interpolationMode)
     {
         makeKnots();
     }
     convexHull.clear();
     isConvexHullUpdated = false;
-    if (!controlPointMode)
+    if (interpolationMode)
     {
         globalCurveInterpolation();
     }
 }
 
-void loadPoints(Bspline& curve1, Bspline& curve2, std::string_view filePathName)
+void loadPoints(Bspline& curve1, Bspline& curve2, const std::string& filePathName)
 {
-    std::ifstream dataFile{ filePathName.data() };
+    std::ifstream dataFile{ filePathName };
     if (!dataFile.is_open())
     {
         std::cerr << "file not found\n";
@@ -137,28 +136,66 @@ void loadPoints(Bspline& curve1, Bspline& curve2, std::string_view filePathName)
 
         std::string xCoord, yCoord;
         dataFile >> xCoord >> yCoord;
-        if (xCoord == "A" && yCoord == "A")
+        if (xCoord != "A" || yCoord != "A")
+            throw std::exception("file data wrong");
+        
+        auto readHeader = [&](Bspline& curve) {
+            dataFile >> xCoord >> yCoord;
+            if (xCoord == "interpolation" && yCoord == "true")
+                curve.interpolationMode = true;
+            else
+                curve.interpolationMode = false;
+            };
+
+        readHeader(curve1);
+
+        bool curveBHeader{};
+
+        auto readData = [&](Bspline& curve) {
+            if (curve.interpolationMode)
+                curve.addInterpolationPoint(Point{ std::stod(xCoord), std::stod(yCoord) });
+            else
+                curve.addPointAndKnots(Point{ std::stod(xCoord), std::stod(yCoord) });
+            std::cout << xCoord << ' ' << yCoord << '\n';
+            };
+        
+
+        while (dataFile >> xCoord >> yCoord)
         {
-            while (dataFile >> xCoord >> yCoord)
+            if (xCoord == "B" && yCoord == "B")
             {
-                if (xCoord == "B" && yCoord == "B")
-                {
-                    break;
-                }
-                //curve1.addPointAndKnots(Point{ std::stod(xCoord), std::stod(yCoord) });
-                curve1.addInterpolationPoint(Point{ std::stod(xCoord), std::stod(yCoord) });
-                std::cout << xCoord << ' ' << yCoord << '\n';
+                curveBHeader = true;
+                break;
             }
+
+            readData(curve1);
+        }
+        if (!curve1.checkNumbers())
+            throw std::exception("curve1: checkNumbers() failed");
+
+        if (curve1.interpolationMode)
             curve1.globalCurveInterpolation();
 
-            while (dataFile >> xCoord >> yCoord)
-            {
-                //curve2.addPointAndKnots(Point{ std::stod(xCoord), std::stod(yCoord) });
-                curve2.addInterpolationPoint(Point{ std::stod(xCoord), std::stod(yCoord) });
-                std::cout << xCoord << ' ' << yCoord << '\n';
-            }
-            curve2.globalCurveInterpolation();
+        if (!curveBHeader)
+            throw std::exception("file data error");
+
+        readHeader(curve2);
+
+        while (dataFile >> xCoord >> yCoord)
+        {
+            readData(curve2);
         }
+        if (!curve2.checkNumbers())
+            throw std::exception("curve2: checkNumbers() failed");
+
+        if (curve2.interpolationMode)
+            curve2.globalCurveInterpolation();
+
+        std::cout << "curves data loaded\n";
+    }
+    catch (const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
     }
     catch (...)
     {
@@ -166,9 +203,15 @@ void loadPoints(Bspline& curve1, Bspline& curve2, std::string_view filePathName)
     }
 }
 
-void savePoints(const Bspline& curve1, const Bspline& curve2, std::string_view filePathName)
+void savePoints(const Bspline& curve1, const Bspline& curve2, const std::string& filePathName)
 {
-    std::ofstream dataFile{ filePathName.data() };
+    if (!curve1.checkNumbers() || !curve2.checkNumbers())
+    {
+        std::cerr << "checkNumbers() not satisfied\n";
+        return;
+    }
+
+    std::ofstream dataFile{ filePathName };
 
     if (!dataFile.is_open())
     {
@@ -178,21 +221,35 @@ void savePoints(const Bspline& curve1, const Bspline& curve2, std::string_view f
 
     try
     {
+        auto writePoints = [&](const std::vector<Point>& points) {
+            for (const auto& p : points)
+            {
+                dataFile << p.x << ' ' << p.y << '\n';
+            }};
+
+        auto writeCurve = [&](const Bspline& curve) {
+            if (curve.interpolationMode)
+            {
+                dataFile << "interpolation true\n";
+                writePoints(curve.interpolationPoints);
+            }
+            else
+            {
+                dataFile << "interpolation false\n";
+                writePoints(curve.controlPoints);
+            }};
+
         dataFile << "A A\n";
-        //for (const auto& p : curve1.controlPoints)
-        for (const auto& p : curve1.interpolationPoints)
-        {
-            dataFile << p.x << ' ' << p.y << '\n';
-        }
+        writeCurve(curve1);
 
         dataFile << "\nB B\n";
-        //for (const auto& p : curve2.controlPoints)
-        for (const auto& p : curve2.interpolationPoints)
-        {
-            dataFile << p.x << ' ' << p.y << '\n';
-        }
+        writeCurve(curve2);
 
         std::cout << "points data written to " << filePathName << '\n';
+    }
+    catch (const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
     }
     catch (...)
     {
@@ -512,28 +569,21 @@ void Bspline::drawCurve(sf::RenderWindow& window, sf::Color col)
     }
     else // draw control points until the curve satisfies m = n + p + 1 -> draw interpolation points
     {
-        if (controlPointMode)
-        {
+        auto drawPoints{ [&](std::vector<Point>& points) {
             auto wSize{ window.getSize() };
-            for (const auto& p : controlPoints)
+            for (const auto& p : points)
             {
                 sf::CircleShape c{ 5 };
                 c.setFillColor(col);
                 c.setPosition(static_cast<float>(p.x) - c.getRadius(), wSize.y - static_cast<float>(p.y) - c.getRadius());
                 window.draw(c);
             }
-        }
+            } };
+
+        if (interpolationMode)
+            drawPoints(interpolationPoints);
         else
-        {
-            auto wSize{ window.getSize() };
-            for (const auto& p : interpolationPoints)
-            {
-                sf::CircleShape c{ 5 };
-                c.setFillColor(col);
-                c.setPosition(static_cast<float>(p.x) - c.getRadius(), wSize.y - static_cast<float>(p.y) - c.getRadius());
-                window.draw(c);
-            }
-        }
+            drawPoints(controlPoints);
     }
 }
 

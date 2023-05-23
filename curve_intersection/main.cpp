@@ -23,10 +23,11 @@ auto main() -> int
     try
     {
         std::ios_base::sync_with_stdio(false);
-        int decomp_num{}; // save the number of decomposition of curves
+        int iteration_num{}; // save the number of decomposition of curves
         int degreeA{ 3 };
         int degreeB{ 3 };
-        Bspline curve1{ degreeA }, curve2{ degreeB }; // p, degree of the curves
+        Bspline curve1{ degreeA };
+        Bspline curve2{ degreeB };
         std::vector<Point> ptList;
 
         sf::RenderWindow window(sf::VideoMode(1000, 800), "Curve Intersection", sf::Style::Titlebar | sf::Style::Close);
@@ -34,7 +35,7 @@ auto main() -> int
         window.setPosition(sf::Vector2i{ 300, 50 });
         ImGui::SFML::Init(window);
 
-        sf::RenderWindow childWindow(sf::VideoMode(300, 770), "Operations", sf::Style::Titlebar);
+        sf::RenderWindow childWindow(sf::VideoMode(290, 790), "Operations", sf::Style::Titlebar);
         childWindow.setFramerateLimit(60);
         ImGui::SFML::Init(childWindow);
 
@@ -87,24 +88,24 @@ auto main() -> int
                         std::cout << mPos.x << ' ' << window.getSize().y - mPos.y << std::endl;
                         if (curve1EditMode)
                         {
-                            if (Bspline::controlPointMode)
+                            if (curve1.interpolationMode)
                             {
-                                curve1.addPointAndKnots(Point{ static_cast<double>(mPos.x), static_cast<double>(window.getSize().y - mPos.y) });
+                                curve1.addInterpolationPoint(Point{ static_cast<double>(mPos.x), static_cast<double>(window.getSize().y - mPos.y) });
                             }
                             else
                             {
-                                curve1.addInterpolationPoint(Point{ static_cast<double>(mPos.x), static_cast<double>(window.getSize().y - mPos.y) });
+                                curve1.addPointAndKnots(Point{ static_cast<double>(mPos.x), static_cast<double>(window.getSize().y - mPos.y) });
                             }
                         }
                         if (curve2EditMode)
                         {
-                            if (Bspline::controlPointMode)
+                            if (curve2.interpolationMode)
                             {
-                                curve2.addPointAndKnots(Point{ static_cast<double>(mPos.x), static_cast<double>(window.getSize().y - mPos.y) });
+                                curve2.addInterpolationPoint(Point{ static_cast<double>(mPos.x), static_cast<double>(window.getSize().y - mPos.y) });
                             }
                             else
                             {
-                                curve2.addInterpolationPoint(Point{ static_cast<double>(mPos.x), static_cast<double>(window.getSize().y - mPos.y) });
+                                curve2.addPointAndKnots(Point{ static_cast<double>(mPos.x), static_cast<double>(window.getSize().y - mPos.y) });
                             }
                         }
                     }
@@ -139,7 +140,7 @@ auto main() -> int
             if (childWindow.isOpen()) {
 
                 ImGui::SetNextWindowPos(ImVec2(5, 5)); // , ImGuiCond_FirstUseEver);
-                ImGui::SetNextWindowSize(ImVec2(280, 760));
+                ImGui::SetNextWindowSize(ImVec2(280, 780));
 
                 ImGui::Begin("Operations", &imguiOpen, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar);
                 ImGui::BeginGroup();
@@ -185,21 +186,6 @@ auto main() -> int
                 ImGui::Separator();
                 ImGui::NewLine();
 
-                static int e = 0;
-                ImGui::RadioButton("Control Points", &e, 0); ImGui::SameLine();
-                ImGui::RadioButton("Interpolation", &e, 1);
-                if (e == 0)
-                {
-                    Bspline::controlPointMode = true;
-                }
-                else if (e == 1)
-                {
-                    Bspline::controlPointMode = false;
-                }
-
-                ImGui::Separator();
-                ImGui::NewLine();
-
                 if (ImGui::Button("Add a point to curve A"))
                 {
                     curve1EditMode = true;
@@ -212,13 +198,13 @@ auto main() -> int
                     {
                         ptList.clear();
                     }
-                    if (Bspline::controlPointMode)
+                    if (curve1.interpolationMode)
                     {
-                        curve1.deleteLastPointAndKnots();
+                        curve1.deleteLastInterpolationPoint();
                     }
                     else
                     {
-                        curve1.deleteLastInterpolationPoint();
+                        curve1.deleteLastPointAndKnots();
                     }
                 }
 
@@ -242,6 +228,10 @@ auto main() -> int
                     ptList.clear();
                 }
 
+                if (curve1.getInterpolationPointSize() != 0 || curve1.getControlPointSize() != 0) ImGui::BeginDisabled();
+                ImGui::Checkbox("Interpolation Mode for A", &curve1.interpolationMode);
+                if (curve1.getInterpolationPointSize() != 0 || curve1.getControlPointSize() != 0) ImGui::EndDisabled();
+
                 ImGui::Separator();
                 ImGui::NewLine();
 
@@ -257,13 +247,13 @@ auto main() -> int
                     {
                         ptList.clear();
                     }
-                    if (Bspline::controlPointMode)
+                    if (curve2.interpolationMode)
                     {
-                        curve2.deleteLastPointAndKnots();
+                        curve2.deleteLastInterpolationPoint();
                     }
                     else
                     {
-                        curve2.deleteLastInterpolationPoint();
+                        curve2.deleteLastPointAndKnots();
                     }
                 }
 
@@ -287,12 +277,17 @@ auto main() -> int
                     ptList.clear();
                 }
 
+                if (curve2.getInterpolationPointSize() != 0 || curve2.getControlPointSize() != 0) ImGui::BeginDisabled();
+                ImGui::Checkbox("Interpolation Mode for B", &curve2.interpolationMode);
+                if (curve2.getInterpolationPointSize() != 0 || curve2.getControlPointSize() != 0) ImGui::EndDisabled();
+
+
                 ImGui::Separator();
                 ImGui::NewLine();
 
                 ImGui::Checkbox("Decompose curves first", &decomposeFirst);
 
-                ImGui::Checkbox("Point vs. Line detection", &lineDetection);
+                //ImGui::Checkbox("Point and Line detection", &lineDetection);
 
                 ImGui::Checkbox("Save to `calc.log`\n(last execution only)", &Bspline::DEBUG);
 
@@ -314,7 +309,7 @@ auto main() -> int
                     curve2.drawCurve(window, sf::Color::Yellow);
                     window.display();
 
-                    decomp_num = 0;
+                    iteration_num = 0;
                     ptList.clear();
 
                     if (Bspline::DEBUG)
@@ -329,11 +324,11 @@ auto main() -> int
 
                     if (decomposeFirst)
                     {
-                        bezierIntersection(curve1, curve2, ptList, decomp_num, lineDetection);
+                        bezierIntersection(curve1, curve2, ptList, iteration_num, lineDetection);
                     }
                     else
                     {
-                        findIntersection(curve1, curve2, ptList, decomp_num, lineDetection);
+                        findIntersection(curve1, curve2, ptList, iteration_num, lineDetection);
                     }
 
                     if (Bspline::DEBUG)
