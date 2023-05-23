@@ -14,7 +14,6 @@ module Bspline;
 
 import <iostream>;
 import <string>;
-import <string_view>;
 import <vector>;
 import <list>;
 import <queue>;

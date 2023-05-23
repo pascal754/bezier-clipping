@@ -10,7 +10,6 @@ export module Bspline;
 import <optional>;
 import <vector>;
 import <fstream>;
-import <string_view>;
 import <utility>;
 import <queue>;
 import Point;
