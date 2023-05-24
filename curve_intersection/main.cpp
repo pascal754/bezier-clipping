@@ -28,8 +28,8 @@ auto main() -> int
         int degreeB{ 3 };
         Bspline curve1{ degreeA };
         Bspline curve2{ degreeB };
-        sf::VertexArray va1{ sf::LineStrip };
-        sf::VertexArray va2{ sf::LineStrip };
+        sf::VertexArray va1{ sf::LineStrip }; // for curve1.drawCurve()
+        sf::VertexArray va2{ sf::LineStrip }; // for curve2.drawCurve()
         std::vector<Point> ptList;
 
         sf::RenderWindow window(sf::VideoMode(1000, 800), "Curve Intersection", sf::Style::Titlebar | sf::Style::Close);
@@ -166,11 +166,9 @@ auto main() -> int
                     std::string filePathName, fileName;
                     if (launchFileDialog('o', filePathName, fileName))
                     {
-                        degreeA = 3;
-                        degreeB = 3;
-                        curve1.changeDegree(degreeA);
-                        curve2.changeDegree(degreeB);
                         loadPoints(curve1, curve2, filePathName);
+                        degreeA = curve1.getDegree();
+                        degreeB = curve2.getDegree();
                         ptList.clear();
                     }
                 }

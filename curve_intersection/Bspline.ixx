@@ -27,33 +27,29 @@ public:
     void addInterpolationPoint(const Point& p);
     void deleteLastPointAndKnots();
     void deleteLastInterpolationPoint();
-    Point getPoint(int i) const;
     size_t getControlPointSize() const { return controlPoints.size(); }
     size_t getInterpolationPointSize() const { return interpolationPoints.size(); }
     void findConvexHull();
-    bool leftTurn(const Point& p0, const Point& p1, const Point& p2) const;
     bool hasEnoughPoints() const;
     void drawControlPolygon(sf::RenderWindow& window) const;
     void drawCurve(sf::RenderWindow& window, sf::Color col, sf::VertexArray& va);
     void drawConvexHull(sf::RenderWindow& window, sf::Color col);
     std::optional<Bspline> decompose(double u1, double u2) const;
-    friend void findIntersection(const Bspline& crv1, const Bspline& crv2, std::vector<Point>& iPoints, int& iter, bool lineDetection);
-    friend void bezierIntersection(const Bspline& crv1, const Bspline& crv2, std::vector<Point>& iPoints, int& iter, bool lineDetection);
     void globalCurveInterpolation();
-    int findKnotSpan(double u) const;
     bool checkNumbers() const; // check m = n + p + 1
     void clear();
-    void clearControlPoints();
     void changeDegree(int degree);
-    void find_u_bar_k(std::vector<double>& u_bar_k);
-    void find_U(const std::vector<double>& u_bar_k);
+    int getDegree() const { return p_degree; }
+
     static bool DEBUG;
+    static std::ofstream logFile;
+
+    bool interpolationMode{ true }; // true: interpolation, false: control points
+
+    friend void findIntersection(const Bspline& crv1, const Bspline& crv2, std::vector<Point>& iPoints, int& iter, bool lineDetection);
+    friend void bezierIntersection(const Bspline& crv1, const Bspline& crv2, std::vector<Point>& iPoints, int& iter, bool lineDetection);
     friend void loadPoints(Bspline& curve1, Bspline& curve2, const std::string& filePathName);
     friend void savePoints(const Bspline& curve1, const Bspline& curve2, const std::string& filePathName);
-    void LUPSolve(const std::vector<std::vector<double>>& A, const std::vector<int>& Pm);
-    bool LUPDecompose(std::vector<std::vector<double>>& A, std::vector<int>& Pm);
-    static std::ofstream logFile;
-    bool interpolationMode{ true }; // true: interpolation, false: control points
 private:
     void deleteLastPoint();
     friend void searchIntersection(std::queue<std::pair<Bspline, Bspline>>& bqueue, std::vector<Point>& iPoints, int& iter, bool lineDetection); // internal call
@@ -69,6 +65,13 @@ private:
     void findMinMaxDistanceFromRotatedLine(); // from 90 degree rotated line
     void makeDistanceCurve(Bspline& distanceCurve, const Bspline& crv, double& min, double& max);
     bool isThereLineIntersection(double y, double y1, double y2) const;
+    bool leftTurn(const Point& p0, const Point& p1, const Point& p2) const;
+    void clearControlPoints();
+    int findKnotSpan(double u) const;
+    void find_u_bar_k(std::vector<double>& u_bar_k);
+    void find_U(const std::vector<double>& u_bar_k);
+    void LUPSolve(const std::vector<std::vector<double>>& A, const std::vector<int>& Pm);
+    bool LUPDecompose(std::vector<std::vector<double>>& A, std::vector<int>& Pm);
     void printInfo();
     void checkPoint();
 

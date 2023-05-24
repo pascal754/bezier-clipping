@@ -144,6 +144,12 @@ void loadPoints(Bspline& curve1, Bspline& curve2, const std::string& filePathNam
         
         auto readHeader = [&](Bspline& curve) {
             dataFile >> xCoord >> yCoord;
+            if (xCoord == "degree")
+                curve.changeDegree(std::stoi(yCoord));
+            else
+                throw std::exception("degree not found");
+
+            dataFile >> xCoord >> yCoord;
             if (xCoord == "interpolation" && yCoord == "true")
                 curve.interpolationMode = true;
             else if (xCoord == "interpolation" && yCoord == "false")
@@ -178,9 +184,6 @@ void loadPoints(Bspline& curve1, Bspline& curve2, const std::string& filePathNam
         if (!curve1.checkNumbers())
             throw std::exception("curve1: checkNumbers() failed");
 
-        if (curve1.interpolationMode)
-            curve1.globalCurveInterpolation();
-
         if (!curveBHeader)
             throw std::exception("curve B indicator missing");
 
@@ -192,9 +195,6 @@ void loadPoints(Bspline& curve1, Bspline& curve2, const std::string& filePathNam
         }
         if (!curve2.checkNumbers())
             throw std::exception("curve2: checkNumbers() failed");
-
-        if (curve2.interpolationMode)
-            curve2.globalCurveInterpolation();
 
         std::cout << "curves data loaded\n";
     }
@@ -237,6 +237,8 @@ void savePoints(const Bspline& curve1, const Bspline& curve2, const std::string&
             }};
 
         auto writeCurve = [&](const Bspline& curve) {
+            dataFile << "degree " << curve.getDegree() << '\n';
+
             if (curve.interpolationMode)
             {
                 dataFile << "interpolation true\n";
@@ -356,11 +358,6 @@ void Bspline::deleteLastInterpolationPoint()
     convexHull.clear();
     drawUpdated = false;
     globalCurveInterpolation();
-}
-
-Point Bspline::getPoint(int i) const
-{
-    return controlPoints[i];
 }
 
 int Bspline::findFirstPointOfConvexHull() const
