@@ -23,23 +23,35 @@ export void cleanIntersectionPoints(std::vector<Point>& iPoints)
 
 export void printResult(const int iterationNum, std::vector<Point>& iPoints, const bool DEBUG, std::ofstream& logFile)
 {
+    std::cout << "--- calculation results ---\n";
+
     std::cout << "\n\t" << iterationNum << " iteration(s)\n";
 
     std::cout << "the number of intersection before clean up: " << iPoints.size() << '\n';
 
+    auto writePoints = [&](std::ostream& os) {
+        for (int i{ 1 }; const auto & pt : iPoints)
+        {
+            os << std::format("***intersection point #{}: ", i);
+            os << '(' << pt.x << ", " << pt.y << ")\n";
+            ++i;
+        }
+        };
+
+    if (iPoints.size() <= 1'000)
+    {
+        writePoints(std::cout);
+    }
+
     if (DEBUG)
     {
+        logFile << "--- calculation results ---\n";
         logFile << "\n\t" << iterationNum << " iteration(s)\n";
         logFile << "the number of intersection before clean up: " << iPoints.size() << '\n';
 
         std::sort(iPoints.begin(), iPoints.end());
 
-        for (int i{ 1 }; const auto & pt : iPoints)
-        {
-            logFile << std::format("***intersection point #{}: ", i);
-            logFile << pt << '\n';
-            ++i;
-        }
+        writePoints(logFile);
     }
 
     if (iPoints.empty())
@@ -51,14 +63,9 @@ export void printResult(const int iterationNum, std::vector<Point>& iPoints, con
 
     std::cout << "\nthe number of intersection after clean up: " << iPoints.size() << '\n';
 
-    if (iPoints.size() < 1'000)
+    if (iPoints.size() <= 1'000)
     {
-        for (int i{ 1 }; const auto & pt : iPoints)
-        {
-            std::cout << std::format("***intersection point #{}: ", i);
-            std::cout << pt << '\n';
-            ++i;
-        }
+        writePoints(std::cout);
     }
 
     std::cout << '\t' << iterationNum << " iteration(s)\n";
@@ -67,11 +74,6 @@ export void printResult(const int iterationNum, std::vector<Point>& iPoints, con
     {
         logFile << "\nthe number of intersection after clean up: " << iPoints.size() << '\n';
 
-        for (int i{ 1 }; const auto & pt: iPoints)
-        {
-            logFile << std::format("***intersection point #{}: ", i);
-            logFile << pt << '\n';
-            ++i;
-        }
+        writePoints(logFile);
     }
 }
