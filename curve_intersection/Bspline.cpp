@@ -137,14 +137,16 @@ void loadPoints(Bspline& curve1, Bspline& curve2, const std::string& filePathNam
         std::string xCoord, yCoord;
         dataFile >> xCoord >> yCoord;
         if (xCoord != "A" || yCoord != "A")
-            throw std::exception("file data wrong");
+            throw std::exception("curve A indicator missing");
         
         auto readHeader = [&](Bspline& curve) {
             dataFile >> xCoord >> yCoord;
             if (xCoord == "interpolation" && yCoord == "true")
                 curve.interpolationMode = true;
-            else
+            else if (xCoord == "interpolation" && yCoord == "false")
                 curve.interpolationMode = false;
+            else
+                throw std::exception("interpolation format wrong");
             };
 
         readHeader(curve1);
@@ -177,7 +179,7 @@ void loadPoints(Bspline& curve1, Bspline& curve2, const std::string& filePathNam
             curve1.globalCurveInterpolation();
 
         if (!curveBHeader)
-            throw std::exception("file data error");
+            throw std::exception("curve B indicator missing");
 
         readHeader(curve2);
 
@@ -203,7 +205,7 @@ void loadPoints(Bspline& curve1, Bspline& curve2, const std::string& filePathNam
     {
         curve1.clear();
         curve2.clear();
-        std::cerr << "file reading error\n";
+        std::cerr << "other file reading error\n";
     }
 }
 
