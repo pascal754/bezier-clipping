@@ -88,6 +88,7 @@ void Bspline::clear()
     knotVector.clear();
     convexHull.clear();
     isConvexHullUpdated = false;
+    drawUpdated = false;
     cp_n = -1;
 }
 
@@ -96,6 +97,7 @@ void Bspline::clearControlPoints()
     controlPoints.clear();
     convexHull.clear();
     isConvexHullUpdated = false;
+    drawUpdated = false;
     cp_n = -1;
 }
 
@@ -115,6 +117,7 @@ void Bspline::changeDegree(int degree)
     }
     convexHull.clear();
     isConvexHullUpdated = false;
+    drawUpdated = false;
     if (interpolationMode)
     {
         globalCurveInterpolation();
@@ -305,6 +308,7 @@ void Bspline::addPoint(const Point& p) // control point
     controlPoints.push_back(p);
     cp_n = static_cast<int>(std::ssize(controlPoints)) - 1;
     isConvexHullUpdated = false;
+    drawUpdated = false;
 }
 
 void Bspline::addPointAndKnots(const Point& p) // control point
@@ -318,6 +322,7 @@ void Bspline::addInterpolationPoint(const Point& p)
     interpolationPoints.push_back(p);
     cp_n = static_cast<int>(std::ssize(interpolationPoints)) - 1;
     isConvexHullUpdated = false;
+    drawUpdated = false;
     globalCurveInterpolation();
 }
 
@@ -326,6 +331,7 @@ void Bspline::deleteLastPoint() // control point
     controlPoints.pop_back();
     cp_n = static_cast<int>(std::ssize(controlPoints)) - 1;
     isConvexHullUpdated = false;
+    drawUpdated = false;
 }
 
 void Bspline::deleteLastPointAndKnots() // control point
@@ -348,6 +354,7 @@ void Bspline::deleteLastInterpolationPoint()
     cp_n = static_cast<int>(std::ssize(interpolationPoints)) - 1;
     isConvexHullUpdated = false;
     convexHull.clear();
+    drawUpdated = false;
     globalCurveInterpolation();
 }
 
@@ -542,7 +549,7 @@ void Bspline::drawControlPolygon(sf::RenderWindow& window) const
     window.draw(poly);
 }
 
-void Bspline::drawCurve(sf::RenderWindow& window, sf::Color col)
+void Bspline::drawCurve(sf::RenderWindow& window, sf::Color col, sf::VertexArray& va)
 {
     if (checkNumbers())
     {
@@ -557,23 +564,28 @@ void Bspline::drawCurve(sf::RenderWindow& window, sf::Color col)
         }
         else // draw curve
         {
-            double step = (knotVector[cp_n + 1] - knotVector[0]) / ((cp_n / 20 + 1) * 200);
-            Point pt;
-            sf::VertexArray curve{ sf::LineStrip };
-            auto wSize{ window.getSize() };
-
-            for (auto u{ knotVector[0] }; u < knotVector[cp_n + 1]; u += step)
+            if (!drawUpdated)
             {
-                curvePoint(u, pt);
-                curve.append(sf::Vertex{ sf::Vector2f{static_cast<float>(pt.x), wSize.y - static_cast<float>(pt.y)}, col });
+                va.clear();
+                double step = (knotVector[cp_n + 1] - knotVector[0]) / ((cp_n / 20 + 1) * 200);
+                Point pt;
+                auto wSize{ window.getSize() };
+
+                for (auto u{ knotVector[0] }; u < knotVector[cp_n + 1]; u += step)
+                {
+                    curvePoint(u, pt);
+                    va.append(sf::Vertex{ sf::Vector2f{static_cast<float>(pt.x), wSize.y - static_cast<float>(pt.y)}, col });
+                }
+
+                curvePoint(knotVector[cp_n + 1], pt);
+                va.append(sf::Vertex{ sf::Vector2f{static_cast<float>(pt.x), wSize.y - static_cast<float>(pt.y)}, col });
+                drawUpdated = true;
             }
 
-            curvePoint(knotVector[cp_n + 1], pt);
-            curve.append(sf::Vertex{ sf::Vector2f{static_cast<float>(pt.x), wSize.y - static_cast<float>(pt.y)}, col });
-            window.draw(curve);
+            window.draw(va);
         }
     }
-    else // draw control points until the curve satisfies m = n + p + 1 -> draw interpolation points
+    else // draw control or interpolation points until the curve satisfies m = n + p + 1
     {
         auto drawPoints{ [&](std::vector<Point>& points) {
             auto wSize{ window.getSize() };

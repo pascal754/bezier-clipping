@@ -34,10 +34,10 @@ public:
     bool leftTurn(const Point& p0, const Point& p1, const Point& p2) const;
     bool hasEnoughPoints() const;
     void drawControlPolygon(sf::RenderWindow& window) const;
-    void drawCurve(sf::RenderWindow& window, sf::Color col);
+    void drawCurve(sf::RenderWindow& window, sf::Color col, sf::VertexArray& va);
     void drawConvexHull(sf::RenderWindow& window, sf::Color col);
     std::optional<Bspline> decompose(double u1, double u2) const;
-    friend void findIntersection(const Bspline& crv1, const Bspline& crv2, std::vector<Point>& iPoints, int& iter, bool lineDetection); // check curves first and proceed, call searchIntersection()
+    friend void findIntersection(const Bspline& crv1, const Bspline& crv2, std::vector<Point>& iPoints, int& iter, bool lineDetection);
     friend void bezierIntersection(const Bspline& crv1, const Bspline& crv2, std::vector<Point>& iPoints, int& iter, bool lineDetection);
     void globalCurveInterpolation();
     int findKnotSpan(double u) const;
@@ -86,7 +86,16 @@ private:
     std::vector<double> knotVector;
     std::vector<double> basis, left, right;
     std::vector<Point> convexHull;
-    double coef_a{}, coef_b{}, coef_c{}; // ax + by + c = 0 line through the end points (normalized form: a^2 + b^2 = 1)
-    double minDist{}, maxDist{}; // minimum and maximum distance of control points from the line, ax + by + c = 0
-    bool isConvexHullUpdated{ false }; // prevent the same calculations once convex hull is updated
+
+    // ax + by + c = 0 line through the end points (normalized form: a^2 + b^2 = 1)
+    double coef_a{};
+    double coef_b{};
+    double coef_c{};
+
+    // minimum and maximum distance of control points from the line, ax + by + c = 0
+    double minDist{};
+    double maxDist{};
+
+    bool isConvexHullUpdated{}; // prevent the same calculations once convex hull is updated
+    bool drawUpdated{};
 };

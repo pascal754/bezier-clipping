@@ -28,6 +28,8 @@ auto main() -> int
         int degreeB{ 3 };
         Bspline curve1{ degreeA };
         Bspline curve2{ degreeB };
+        sf::VertexArray va1{ sf::LineStrip };
+        sf::VertexArray va2{ sf::LineStrip };
         std::vector<Point> ptList;
 
         sf::RenderWindow window(sf::VideoMode(1000, 800), "Curve Intersection", sf::Style::Titlebar | sf::Style::Close);
@@ -307,8 +309,8 @@ auto main() -> int
                     {
                         drawGrids(window, windowSize.x, windowSize.y, 50);
                     }
-                    curve1.drawCurve(window, sf::Color::Green);
-                    curve2.drawCurve(window, sf::Color::Yellow);
+                    curve1.drawCurve(window, sf::Color::Green, va1);
+                    curve2.drawCurve(window, sf::Color::Yellow, va2);
                     window.display();
 
                     iteration_num = 0;
@@ -362,7 +364,7 @@ auto main() -> int
                 drawGrids(window, windowSize.x, windowSize.y, 50);
             }
 
-            curve1.drawCurve(window, sf::Color::Green);
+            curve1.drawCurve(window, sf::Color::Green, va1);
 
             /*if (curve1ControlPolygon)
             {
@@ -374,7 +376,7 @@ auto main() -> int
                 curve1.drawConvexHull(window, sf::Color::Cyan);
             }
 
-            curve2.drawCurve(window, sf::Color::Yellow);
+            curve2.drawCurve(window, sf::Color::Yellow, va2);
 
             /*if (curve2ControlPolygon)
             {
