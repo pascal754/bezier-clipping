@@ -839,6 +839,8 @@ void findIntersection(const Bspline& crv1, const Bspline& crv2, std::vector<Poin
 
         std::queue<std::pair<Bspline, Bspline>> bqueue;
         bqueue.push(std::pair{ crv1, crv2 });
+        bqueue.front().first.interpolationPoints.clear();
+        bqueue.front().second.interpolationPoints.clear();
         while (!bqueue.empty() && iter < Bspline::max_iteration && iPoints.size() < Bspline::max_num_intersection_points)
         {
             searchIntersection(bqueue, iPoints, iter, lineDetection);
