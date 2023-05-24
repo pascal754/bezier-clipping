@@ -289,7 +289,7 @@ auto main() -> int
 
                 ImGui::Checkbox("Decompose curves first", &decomposeFirst);
 
-                //ImGui::Checkbox("Point and Line detection", &lineDetection);
+                ImGui::Checkbox("Point and Line detection", &lineDetection);
 
                 ImGui::Checkbox("Save to `calc.log`\n(last execution only)", &Bspline::DEBUG);
 

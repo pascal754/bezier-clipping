@@ -22,7 +22,6 @@ import <algorithm>;
 import <format>;
 import <stdexcept>;
 import <fstream>;
-import <numeric>;
 import Auxilary;
 
 bool Bspline::DEBUG{ false };
@@ -841,6 +840,8 @@ void findIntersection(const Bspline& crv1, const Bspline& crv2, std::vector<Poin
         bqueue.push(std::pair{ crv1, crv2 });
         bqueue.front().first.interpolationPoints.clear();
         bqueue.front().second.interpolationPoints.clear();
+        bqueue.front().first.checkPoint();
+        bqueue.front().second.checkPoint();
         while (!bqueue.empty() && iter < Bspline::max_iteration && iPoints.size() < Bspline::max_num_intersection_points)
         {
             searchIntersection(bqueue, iPoints, iter, lineDetection);
@@ -1084,9 +1085,6 @@ void searchIntersection(std::queue<std::pair<Bspline, Bspline>>& bqueue, std::ve
     // off: try to find intersection, the number of iteration is limited by Bspline::max_iteration or Bspline::max_num_intersection_points whichever comes first
     if (lineDetection && findPointLine(crv1, crv2, iPoints))
         return;
-
-    crv1.checkPoint();
-    crv2.checkPoint();
 
     crv1.findMinMaxDistance();
 
@@ -1383,7 +1381,7 @@ void Bspline::checkPoint()
     if (convexHull.size() != 1)
         return;
 
-    double u1{ std::midpoint(knotVector[0], knotVector[cp_n + 1]) };
+    double u1{ knotVector[0] };
     double u2{ u1 + u2_epsilon };
     auto decomp{ decompose(u1, u2) };
     if (decomp)
@@ -1425,6 +1423,8 @@ void bezierIntersection(const Bspline& crv1, const Bspline& crv2, std::vector<Po
                 {
                     std::queue<std::pair<Bspline, Bspline>> bqueue;
                     bqueue.push(std::pair{ *bezierLists[0][i], * bezierLists[1][j] });
+                    bqueue.front().first.checkPoint();
+                    bqueue.front().second.checkPoint();
                     while (!bqueue.empty() && iter < Bspline::max_iteration && iPoints.size() < Bspline::max_num_intersection_points)
                     {
                         searchIntersection(bqueue, iPoints, iter, lineDetection);
