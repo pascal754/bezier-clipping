@@ -867,7 +867,9 @@ void findIntersection(const Bspline& crv1, const Bspline& crv2, std::vector<Poin
         auto duration = duration_cast<microseconds>(stop - start);
 
         printResult(iter, iPoints, Bspline::DEBUG, Bspline::logFile);
-        std::cout << "Time elapsed: " << duration.count() << " microseconds\n";
+
+        if (!Bspline::DEBUG)
+            std::cout << "Time elapsed: " << duration.count() << " microseconds\n";
     }
     catch (const std::exception& e)
     {
@@ -1462,7 +1464,9 @@ void bezierIntersection(const Bspline& crv1, const Bspline& crv2, std::vector<Po
         auto duration = duration_cast<microseconds>(stop - start);
 
         printResult(iter, iPoints, Bspline::DEBUG, Bspline::logFile);
-        std::cout << "Time elapsed: " << duration.count() << " microseconds\n";
+
+        if(!Bspline::DEBUG)
+            std::cout << "Time elapsed: " << duration.count() << " microseconds\n";
     }
     catch (const std::exception& e)
     {
