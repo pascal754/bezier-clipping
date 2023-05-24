@@ -55,7 +55,7 @@ auto main() -> int
         bool gridMode{ true };
         bool gridSnapMode{ true };
         bool decomposeFirst{};
-        bool lineDetection{true};
+        bool lineDetection{};
         bool imguiOpen{ true };
 
         while (window.isOpen())
@@ -289,7 +289,7 @@ auto main() -> int
 
                 ImGui::Checkbox("Decompose curves first", &decomposeFirst);
 
-                ImGui::Checkbox("Point and Line detection", &lineDetection);
+                //ImGui::Checkbox("Point and Line detection", &lineDetection);
 
                 ImGui::Checkbox("Save to `calc.log`\n(last execution only)", &Bspline::DEBUG);
 

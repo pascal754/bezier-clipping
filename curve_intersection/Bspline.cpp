@@ -22,6 +22,7 @@ import <algorithm>;
 import <format>;
 import <stdexcept>;
 import <fstream>;
+import <chrono>;
 import Auxilary;
 
 bool Bspline::DEBUG{ false };
@@ -836,6 +837,9 @@ void findIntersection(const Bspline& crv1, const Bspline& crv2, std::vector<Poin
             return;
         }
 
+        using namespace std::chrono;
+        auto start = high_resolution_clock::now();
+
         std::queue<std::pair<Bspline, Bspline>> bqueue;
         bqueue.push(std::pair{ crv1, crv2 });
         bqueue.front().first.interpolationPoints.clear();
@@ -848,7 +852,11 @@ void findIntersection(const Bspline& crv1, const Bspline& crv2, std::vector<Poin
             bqueue.pop();
         }
 
+        auto stop = high_resolution_clock::now();
+        auto duration = duration_cast<microseconds>(stop - start);
+
         printResult(iter, iPoints, Bspline::DEBUG, Bspline::logFile);
+        std::cout << "Time elapsed: " << duration.count() << " microseconds\n";
     }
     catch (const std::exception& e)
     {
@@ -1378,6 +1386,8 @@ bool findPointLine(Bspline& crv1, Bspline& crv2, std::vector<Point>& iPoints)
 void Bspline::checkPoint()
 // if a curve is a point then shrink knot vector [midpoint, midpoint + u2_epsilon]
 {
+    findConvexHull();
+
     if (convexHull.size() != 1)
         return;
 
@@ -1401,6 +1411,9 @@ void bezierIntersection(const Bspline& crv1, const Bspline& crv2, std::vector<Po
             std::cout << "m = n + p + 1 not satisfied\n";
             return;
         }
+
+        using namespace std::chrono;
+        auto start = high_resolution_clock::now();
 
         std::vector<std::optional<Bspline>> bezierLists[2];
 
@@ -1434,7 +1447,11 @@ void bezierIntersection(const Bspline& crv1, const Bspline& crv2, std::vector<Po
             }
         }
 
+        auto stop = high_resolution_clock::now();
+        auto duration = duration_cast<microseconds>(stop - start);
+
         printResult(iter, iPoints, Bspline::DEBUG, Bspline::logFile);
+        std::cout << "Time elapsed: " << duration.count() << " microseconds\n";
     }
     catch (const std::exception& e)
     {
