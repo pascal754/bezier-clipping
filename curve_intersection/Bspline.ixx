@@ -47,7 +47,7 @@ public:
     bool interpolationMode{ true }; // true: interpolation, false: control points
 
     friend void findIntersection(const Bspline& crv1, const Bspline& crv2, std::vector<Point>& iPoints, int& iter, bool lineDetection);
-    friend void bezierIntersection(const Bspline& crv1, const Bspline& crv2, std::vector<Point>& iPoints, int& iter, bool lineDetection);
+    friend void bezierIntersection(Bspline& crv1, Bspline& crv2, std::vector<Point>& iPoints, int& iter, bool lineDetection);
     friend void loadPoints(Bspline& curve1, Bspline& curve2, const std::string& filePathName);
     friend void savePoints(const Bspline& curve1, const Bspline& curve2, const std::string& filePathName);
 private:
@@ -73,7 +73,7 @@ private:
     void LUPSolve(const std::vector<std::vector<double>>& A, const std::vector<int>& Pm);
     bool LUPDecompose(std::vector<std::vector<double>>& A, std::vector<int>& Pm);
     void printInfo();
-    void checkPoint();
+    void checkPointToShrink();
 
     static const double epsilon;
     static const double u_epsilon;
