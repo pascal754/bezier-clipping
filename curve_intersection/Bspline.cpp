@@ -856,8 +856,7 @@ void findIntersection(const Bspline& crv1, const Bspline& crv2, std::vector<Poin
         bqueue.push(std::pair{ crv1, crv2 });
         bqueue.front().first.interpolationPoints.clear();
         bqueue.front().second.interpolationPoints.clear();
-        bqueue.front().first.checkPointToShrink();
-        bqueue.front().second.checkPointToShrink();
+
         while (!bqueue.empty() && iter < Bspline::max_iteration && iPoints.size() < Bspline::max_num_intersection_points)
         {
             searchIntersection(bqueue, iPoints, iter, lineDetection);
@@ -1009,6 +1008,9 @@ void searchIntersection(std::queue<std::pair<Bspline, Bspline>>& bqueue, std::ve
     ++iter;
     Bspline& crv1{ bqueue.front().first };
     Bspline& crv2{ bqueue.front().second };
+
+    crv1.checkPointToShrink();
+    crv2.checkPointToShrink();
 
     if (Bspline::DEBUG)
     {
@@ -1405,6 +1407,9 @@ void Bspline::checkPointToShrink()
     findConvexHull();
 
     if (convexHull.size() != 1)
+        return;
+
+    if (knotVector[cp_n + 1] - knotVector[0] < u2_epsilon)
         return;
 
     double u1{ knotVector[0] };
