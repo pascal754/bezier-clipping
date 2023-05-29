@@ -38,8 +38,7 @@ export void printResult(const int iterationNum, std::vector<Point>& iPoints, con
     auto writePoints = [&](std::ostream& os) {
         for (auto [index, pt] : iPoints | enumerate | as_const)
         {
-            os << std::format("***intersection point #{}: ", index + 1);
-            os << '(' << pt.x << ", " << pt.y << ")\n";
+            std::println(os, "***intersection point #{}: ({}, {})", index + 1, pt.x, pt.y);
         }
         };
 
