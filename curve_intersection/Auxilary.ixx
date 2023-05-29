@@ -6,6 +6,7 @@ module;
 #include <fstream>
 #include <format>
 #include <cmath>
+#include <ranges>
 
 export module Auxilary;
 
@@ -32,12 +33,13 @@ export void printResult(const int iterationNum, std::vector<Point>& iPoints, con
 
     std::cout << "the number of intersection before clean up: " << iPoints.size() << '\n';
 
+    using namespace std::views;
+
     auto writePoints = [&](std::ostream& os) {
-        for (int i{ 1 }; const auto & pt : iPoints)
+        for (auto [index, pt] : iPoints | enumerate | as_const)
         {
-            os << std::format("***intersection point #{}: ", i);
+            os << std::format("***intersection point #{}: ", index + 1);
             os << '(' << pt.x << ", " << pt.y << ")\n";
-            ++i;
         }
         };
 
