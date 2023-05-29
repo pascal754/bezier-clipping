@@ -1,11 +1,14 @@
+module;
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <fstream>
+#include <format>
+#include <cmath>
+
 export module Auxilary;
 
-import <iostream>;
-import <vector>;
-import <algorithm>;
-import <fstream>;
-import <format>;
-import <cmath>;
 import Point;
 
 export void cleanIntersectionPoints(std::vector<Point>& iPoints)

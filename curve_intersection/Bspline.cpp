@@ -8,21 +8,21 @@
 
 module;
 
+#include <iostream>
+#include <string>
+#include <vector>
+#include <list>
+#include <queue>
+#include <utility>
+#include <algorithm>
+#include <format>
+#include <stdexcept>
+#include <fstream>
+#include <chrono>
 #include <SFML/Graphics.hpp>
 
 module Bspline;
 
-import <iostream>;
-import <string>;
-import <vector>;
-import <list>;
-import <queue>;
-import <utility>;
-import <algorithm>;
-import <format>;
-import <stdexcept>;
-import <fstream>;
-import <chrono>;
 import Auxilary;
 
 bool Bspline::DEBUG{ false };

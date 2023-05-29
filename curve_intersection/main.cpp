@@ -2,12 +2,12 @@
 // by SM
 // curve intersection
 
-import <iostream>;
-import <vector>;
-import <array>;
-import <algorithm>;
-import <format>;
-import <cstring>;
+#include <iostream>
+#include <vector>
+#include <array>
+#include <algorithm>
+#include <format>
+#include <cstring>
 #include <imgui.h>
 #include <imgui-SFML.h>
 #include <SFML/Graphics.hpp>

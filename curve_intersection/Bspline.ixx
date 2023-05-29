@@ -3,15 +3,15 @@
 
 module;
 
+#include <optional>
+#include <vector>
+#include <fstream>
+#include <utility>
+#include <queue>
 #include <SFML/Graphics.hpp>
 
 export module Bspline;
 
-import <optional>;
-import <vector>;
-import <fstream>;
-import <utility>;
-import <queue>;
 import Point;
 
 export class Bspline {

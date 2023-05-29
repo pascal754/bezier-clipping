@@ -4,14 +4,13 @@
 
 module;
 
+#include <iostream>
+#include <format>
+#include <string>
 #include <Windows.h>
 #include <shobjidl.h> 
 
 export module FileDialog;
-
-import <iostream>;
-import <format>;
-import <string>;
 
 std::string wchar_to_UTF8(const wchar_t* in)
 {
