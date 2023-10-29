@@ -80,7 +80,7 @@ export void printResult(const int iterationNum, std::vector<Point>& iPoints, con
 export void writeNodeInfo(const std::vector<NodeInfo>& vNodeInfo)
 {
     std::ofstream file("node_info.log");
-    std::println(file, "{:>10}{:>10}{:>5}  {:^23}  {:^23}  {:>5}  {:^23}  {:^23}  {:^15}  {:>5}",
+    std::println(file, "{:>10}{:>10}{:>5}  {:^23}  {:^23}  {:>5}  {:^23}  {:^23}  {:5}  {:^15}  {:>5}",
         "Iteration",
         "From",
         "ID",
@@ -89,21 +89,40 @@ export void writeNodeInfo(const std::vector<NodeInfo>& vNodeInfo)
         "ID",
         "[u1",
         "u2]",
+        "First",
         "Info",
         "Depth");
     for (const auto& x : vNodeInfo)
     {
-
-        std::println(file, "{:10}{:10}{:5}  {:<23}  {:<23}  {:5}  {:<23}  {:<23}  {:15}  {:5}",
-            x.iterationNum,
-            x.parentNum,
-            x.curveA.id,
-            x.curveA.u1,
-            x.curveA.u2,
-            x.curveB.id,
-            x.curveB.u1,
-            x.curveB.u2,
-            magic_enum::enum_name(x.rInfo),
-            x.depth);
+        if (x.curveA.id == 0)
+        {
+            std::println(file, "{:10}{:10}{:5}  {:<23}  {:<23}  {:5}  {:<23}  {:<23}  {:^5}  {:15}  {:5}",
+                x.iterationNum,
+                x.parentNum,
+                x.curveA.id,
+                x.curveA.u1,
+                x.curveA.u2,
+                x.curveB.id,
+                x.curveB.u1,
+                x.curveB.u2,
+                x.curveA.id,
+                magic_enum::enum_name(x.rInfo),
+                x.depth);
+        }
+        else
+        {
+            std::println(file, "{:10}{:10}{:5}  {:<23}  {:<23}  {:5}  {:<23}  {:<23}  {:^5}  {:15}  {:5}",
+                x.iterationNum,
+                x.parentNum,
+                x.curveB.id,
+                x.curveB.u1,
+                x.curveB.u2,
+                x.curveA.id,
+                x.curveA.u1,
+                x.curveA.u2,
+                x.curveA.id,
+                magic_enum::enum_name(x.rInfo),
+                x.depth);
+        }
     }
 }

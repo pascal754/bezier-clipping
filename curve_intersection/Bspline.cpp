@@ -1388,7 +1388,7 @@ void Bspline::checkPointToShrink()
         return;
 
     double u1{ knotVector[0] };
-    double u2{ u1 + u2_epsilon };
+    double u2{ u1 + u2_epsilon / 2.0 };
     auto decomp{ decompose(u1, u2) };
     if (decomp)
     {
