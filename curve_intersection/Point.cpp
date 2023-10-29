@@ -2,9 +2,7 @@
 // by SM
 module;
 
-#include <iostream>
-#include <format>
-#include <cmath>
+#include "pch.h"
 
 module Point;
 
@@ -12,7 +10,7 @@ const double Point::epsilon{ 0.5 }; // chosen for screen pixel
 
 std::ostream& operator<<(std::ostream& os, const Point& cp)
 {
-    os << std::format("({}, {}) ra = {}", cp.x, cp.y, cp.angle);
+    std::print(os, "({}, {}) ra = {}", cp.x, cp.y, cp.angle);
     return os;
 }
 

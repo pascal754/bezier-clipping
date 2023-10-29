@@ -39,5 +39,16 @@
     <ClCompile Include="Auxilary.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="NodeInfo.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

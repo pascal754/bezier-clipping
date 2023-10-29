@@ -3,18 +3,17 @@
 
 module;
 
-#include <optional>
-#include <vector>
-#include <fstream>
-#include <utility>
-#include <queue>
-#include <SFML/Graphics.hpp>
+#include "pch.h"
 
 export module Bspline;
 
 import Point;
+import NodeInfo;
 
-export class Bspline {
+struct TwoCurves;
+
+export class Bspline
+{
 public:
     explicit Bspline(int degree) : p_degree{ degree }
     {
@@ -40,19 +39,21 @@ public:
     void clear();
     void changeDegree(int degree);
     int getDegree() const { return p_degree; }
+    int getID() const { return id; }
+    void setID(int i) { id = i; }
 
     static bool DEBUG;
     static std::ofstream logFile;
 
     bool interpolationMode{ true }; // true: interpolation, false: control points
 
-    friend void findIntersection(const Bspline& crv1, const Bspline& crv2, std::vector<Point>& iPoints, int& iter, bool lineDetection);
-    friend void bezierIntersection(Bspline& crv1, Bspline& crv2, std::vector<Point>& iPoints, int& iter, bool lineDetection);
+    friend void findIntersection(const Bspline& crv1, const Bspline& crv2, std::vector<Point>& iPoints, int& iter, bool lineDetection, std::vector<NodeInfo>& vNodeInfo);
+    friend void bezierIntersection(Bspline& crv1, Bspline& crv2, std::vector<Point>& iPoints, int& iter, bool lineDetection, std::vector<NodeInfo>& vNodeInfo);
     friend void loadPoints(Bspline& curve1, Bspline& curve2, const std::string& filePathName);
     friend void savePoints(const Bspline& curve1, const Bspline& curve2, const std::string& filePathName);
 private:
     void deleteLastPoint();
-    friend void searchIntersection(std::queue<std::pair<Bspline, Bspline>>& bqueue, std::vector<Point>& iPoints, int& iter, bool lineDetection); // internal call
+    friend void searchIntersection(std::queue<TwoCurves>& bqueue, std::vector<Point>& iPoints, int& iter, bool lineDetection, std::vector<NodeInfo>& vNodeInfo);
     friend bool exceedsMaximums(int iter, size_t numIntersectionPoints);
     friend bool findPointLine(Bspline& crv1, Bspline& crv2, std::vector<Point>& iPoints);
     void addPoint(const Point& p);
@@ -101,4 +102,20 @@ private:
 
     bool isConvexHullUpdated{}; // prevent the same calculations once convex hull is updated
     bool drawUpdated{};
+    int id{ -1 };
+};
+
+export struct TwoCurves
+{
+    Bspline c1;
+    Bspline c2;
+    int parentIter;
+    int depth;
+};
+
+export struct IPointInfo
+{
+    double ua;
+    double ub;
+    Point iPoint;
 };

@@ -2,35 +2,30 @@
 // by SM
 // curve intersection
 
-#include <iostream>
-#include <vector>
-#include <array>
-#include <algorithm>
-#include <format>
-#include <cstring>
-#include <imgui.h>
-#include <imgui-SFML.h>
-#include <SFML/Graphics.hpp>
-#include <SFML/System/Clock.hpp>
+#include "pch.h"
 
 import Bspline;
 import Point;
 import Grid;
 import FileDialog;
+import NodeInfo;
 
 auto main() -> int
 {
     try
     {
-        std::ios_base::sync_with_stdio(false);
+        //std::ios_base::sync_with_stdio(false);
         int iteration_num{}; // save the number of decomposition of curves
         int degreeA{ 3 };
         int degreeB{ 3 };
         Bspline curve1{ degreeA };
         Bspline curve2{ degreeB };
+        curve1.setID(0);
+        curve2.setID(1);
         sf::VertexArray va1{ sf::LineStrip }; // for curve1.drawCurve()
         sf::VertexArray va2{ sf::LineStrip }; // for curve2.drawCurve()
         std::vector<Point> ptList;
+        std::vector<NodeInfo> vNodeInfo;
 
         sf::RenderWindow window(sf::VideoMode(1000, 800), "Curve Intersection", sf::Style::Titlebar | sf::Style::Close);
         window.setFramerateLimit(60);
@@ -87,7 +82,7 @@ auto main() -> int
                             mPos.x = static_cast<int>(std::roundf(static_cast<float>(mPos.x) / 50.0f)) * 50;
                             mPos.y = static_cast<int>(std::roundf(static_cast<float>(mPos.y) / 50.0f)) * 50;
                         }
-                        std::cout << mPos.x << ' ' << window.getSize().y - mPos.y << std::endl;
+                        std::println("{} {}", mPos.x, window.getSize().y - mPos.y);
                         if (curve1EditMode)
                         {
                             if (curve1.interpolationMode)
@@ -163,7 +158,8 @@ auto main() -> int
                     /*curve1ControlPolygon = false;
                     curve2ControlPolygon = false;*/
 
-                    std::string filePathName, fileName;
+                    std::string filePathName;
+                    std::string fileName;
                     if (launchFileDialog('o', filePathName, fileName))
                     {
                         loadPoints(curve1, curve2, filePathName);
@@ -178,7 +174,8 @@ auto main() -> int
                 {
                     curve1EditMode = false;
                     curve2EditMode = false;
-                    std::string filePathName, fileName;
+                    std::string filePathName;
+                    std::string fileName;
                     if (launchFileDialog('s', filePathName, fileName))
                     {
                         savePoints(curve1, curve2, filePathName);
@@ -319,18 +316,19 @@ auto main() -> int
                         Bspline::logFile.open("calc.log", std::ios::out);
                         if (!Bspline::logFile.is_open())
                         {
-                            std::cerr << "file open error\n";
+                            std::println(stderr, "file open error");
                             Bspline::DEBUG = false;
                         }
                     }
 
                     if (decomposeFirst)
                     {
-                        bezierIntersection(curve1, curve2, ptList, iteration_num, lineDetection);
+                        bezierIntersection(curve1, curve2, ptList, iteration_num, lineDetection, vNodeInfo);
                     }
                     else
                     {
-                        findIntersection(curve1, curve2, ptList, iteration_num, lineDetection);
+                        vNodeInfo.clear();
+                        findIntersection(curve1, curve2, ptList, iteration_num, lineDetection, vNodeInfo);
                     }
 
                     if (Bspline::DEBUG)
@@ -411,12 +409,12 @@ auto main() -> int
     }
     catch (const std::exception& e)
     {
-        std::cerr << e.what() << '\n';
+        std::println(stderr, "{}", e.what());
         return 1;
     }
     catch (...)
     {
-        std::cerr << "something wrong\n";
+        std::println(stderr, "something wrong");
         return 1;
     }
 }

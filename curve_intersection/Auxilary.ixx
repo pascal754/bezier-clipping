@@ -1,16 +1,11 @@
 module;
 
-#include <iostream>
-#include <vector>
-#include <algorithm>
-#include <fstream>
-#include <format>
-#include <cmath>
-#include <ranges>
+#include "pch.h"
 
 export module Auxilary;
 
 import Point;
+import NodeInfo;
 
 export void cleanIntersectionPoints(std::vector<Point>& iPoints)
 {
@@ -27,11 +22,11 @@ export void cleanIntersectionPoints(std::vector<Point>& iPoints)
 
 export void printResult(const int iterationNum, std::vector<Point>& iPoints, const bool DEBUG, std::ofstream& logFile)
 {
-    std::cout << "\n--- calculation results ---\n";
+    std::println("\n--- calculation results ---");
 
-    std::cout << "\n\t" << iterationNum << " iteration(s)\n";
+    std::println("\n\t{} iteration(s)", iterationNum);
 
-    std::cout << "the number of intersection before clean up: " << iPoints.size() << '\n';
+    std::println("the number of intersection before clean up: {}", iPoints.size());
 
     using namespace std::views;
 
@@ -49,9 +44,9 @@ export void printResult(const int iterationNum, std::vector<Point>& iPoints, con
 
     if (DEBUG)
     {
-        logFile << "\n--- calculation results ---\n";
-        logFile << "\n\t" << iterationNum << " iteration(s)\n";
-        logFile << "the number of intersection before clean up: " << iPoints.size() << '\n';
+        std::println(logFile, "\n--- calculation results ---");
+        std::println(logFile, "\n\t{} iteration(s)", iterationNum);
+        std::println(logFile, "the number of intersection before clean up: {}", iPoints.size());
 
         std::sort(iPoints.begin(), iPoints.end());
 
@@ -65,19 +60,50 @@ export void printResult(const int iterationNum, std::vector<Point>& iPoints, con
 
     cleanIntersectionPoints(iPoints);
 
-    std::cout << "\nthe number of intersection after clean up: " << iPoints.size() << '\n';
+    std::println("\nthe number of intersection after clean up: {}", iPoints.size());
 
     if (iPoints.size() <= 1'000)
     {
         writePoints(std::cout);
     }
 
-    std::cout << '\t' << iterationNum << " iteration(s)\n";
+    std::println("\t{} iteration(s)", iterationNum);
 
     if (DEBUG)
     {
-        logFile << "\nthe number of intersection after clean up: " << iPoints.size() << '\n';
+        std::println(logFile, "\nthe number of intersection after clean up: {}", iPoints.size());
 
         writePoints(logFile);
+    }
+}
+
+export void writeNodeInfo(const std::vector<NodeInfo>& vNodeInfo)
+{
+    std::ofstream file("node_info.log");
+    std::println(file, "{:>10}{:>10}{:>5}  {:^23}  {:^23}  {:>5}  {:^23}  {:^23}  {:^15}  {:>5}",
+        "Iteration",
+        "From",
+        "ID",
+        "[u1",
+        "u2]",
+        "ID",
+        "[u1",
+        "u2]",
+        "Info",
+        "Depth");
+    for (const auto& x : vNodeInfo)
+    {
+
+        std::println(file, "{:10}{:10}{:5}  {:<23}  {:<23}  {:5}  {:<23}  {:<23}  {:15}  {:5}",
+            x.iterationNum,
+            x.parentNum,
+            x.curveA.id,
+            x.curveA.u1,
+            x.curveA.u2,
+            x.curveB.id,
+            x.curveB.u1,
+            x.curveB.u2,
+            magic_enum::enum_name(x.rInfo),
+            x.depth);
     }
 }
