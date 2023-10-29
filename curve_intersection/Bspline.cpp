@@ -1392,7 +1392,7 @@ void Bspline::checkPointToShrink()
     auto decomp{ decompose(u1, u2) };
     if (decomp)
     {
-        *this = *decomp;
+        *this = std::move(*decomp);
         if (DEBUG) { std::println(logFile, "checkPointToShrink(): curve is a point and knot vector shrunk to {}, {}", u1, u2); }
     }
 }
