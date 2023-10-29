@@ -310,6 +310,7 @@ auto main() -> int
 
                     iteration_num = 0;
                     ptList.clear();
+                    vNodeInfo.clear();
 
                     if (Bspline::DEBUG)
                     {
@@ -327,7 +328,6 @@ auto main() -> int
                     }
                     else
                     {
-                        vNodeInfo.clear();
                         findIntersection(curve1, curve2, ptList, iteration_num, lineDetection, vNodeInfo);
                     }
 
