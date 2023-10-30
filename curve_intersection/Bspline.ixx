@@ -49,7 +49,7 @@ public:
     bool interpolationMode{ true }; // true: interpolation, false: control points
 
     friend void findIntersection(Bspline crv1, Bspline crv2, ParamInfo& paramInfo);
-    friend void predecomposeFindIntersection(Bspline crv1, Bspline crv2, std::queue<TwoCurves>& bQueue);
+    friend void predecomposeCurves(Bspline crv1, Bspline crv2, std::queue<TwoCurves>& bQueue);
     friend void loadPoints(Bspline& curve1, Bspline& curve2, const std::string& filePathName);
     friend void savePoints(const Bspline& curve1, const Bspline& curve2, const std::string& filePathName);
 private:

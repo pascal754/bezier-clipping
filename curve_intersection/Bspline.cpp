@@ -1417,7 +1417,7 @@ void findIntersection(Bspline crv1, Bspline crv2, ParamInfo& paramInfo)
 
         if (paramInfo.decomposeFirst)
         {
-            predecomposeFindIntersection(std::move(crv1), std::move(crv2), bQueue);
+            predecomposeCurves(std::move(crv1), std::move(crv2), bQueue);
         }
         else
         {
@@ -1446,7 +1446,7 @@ void findIntersection(Bspline crv1, Bspline crv2, ParamInfo& paramInfo)
 }
 
 // decompose each curve on knot and find intersection for combination
-void predecomposeFindIntersection(Bspline crv1, Bspline crv2, std::queue<TwoCurves>& bQueue)
+void predecomposeCurves(Bspline crv1, Bspline crv2, std::queue<TwoCurves>& bQueue)
 {
     std::vector<std::optional<Bspline>> bezierList1;
     std::vector<std::optional<Bspline>> bezierList2;
