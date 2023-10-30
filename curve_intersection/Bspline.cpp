@@ -1394,7 +1394,7 @@ void Bspline::checkPointToShrink()
     }
 }
 
-void findIntersection(Bspline crv1, Bspline crv2, std::vector<Point>& iPoints, int& iter, bool lineDetection, std::vector<NodeInfo>& vNodeInfo, bool decomposeFirst)
+void findIntersection(Bspline crv1, Bspline crv2, ParamInfo& paramInfo)
 {
     try
     {
@@ -1414,7 +1414,7 @@ void findIntersection(Bspline crv1, Bspline crv2, std::vector<Point>& iPoints, i
 
         std::queue<TwoCurves> bqueue;
 
-        if (decomposeFirst)
+        if (paramInfo.decomposeFirst)
         {
             predecomposeFindIntersection(std::move(crv1), std::move(crv2), bqueue);
         }
@@ -1423,18 +1423,18 @@ void findIntersection(Bspline crv1, Bspline crv2, std::vector<Point>& iPoints, i
             bqueue.push(TwoCurves{ std::move(crv1), std::move(crv2), 0, 0 });
         }
 
-        while (!bqueue.empty() && iter < Bspline::max_iteration && iPoints.size() < Bspline::max_num_intersection_points)
+        while (!bqueue.empty() && paramInfo.iterationNum < Bspline::max_iteration && paramInfo.iPoints.size() < Bspline::max_num_intersection_points)
         {
-            searchIntersection(bqueue, iPoints, iter, lineDetection, vNodeInfo);
+            searchIntersection(bqueue, paramInfo.iPoints, paramInfo.iterationNum, paramInfo.lineDetection, paramInfo.vNodeInfo);
             bqueue.pop();
         }
 
         auto stop = high_resolution_clock::now();
         auto duration = duration_cast<microseconds>(stop - start);
 
-        printResult(iter, iPoints, Bspline::DEBUG, Bspline::logFile);
+        printResult(paramInfo.iterationNum, paramInfo.iPoints, Bspline::DEBUG, Bspline::logFile);
 
-        writeNodeInfo(vNodeInfo);
+        writeNodeInfo(paramInfo.vNodeInfo);
 
         if (!Bspline::DEBUG) { std::println("Time elapsed: {} microseconds", duration.count()); }
     }

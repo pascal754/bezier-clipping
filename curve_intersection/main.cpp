@@ -15,7 +15,7 @@ auto main() -> int
     try
     {
         //std::ios_base::sync_with_stdio(false);
-        int iteration_num{}; // save the number of decomposition of curves
+        ParamInfo paramInfo{};
         int degreeA{ 3 };
         int degreeB{ 3 };
         Bspline curve1{ degreeA };
@@ -24,8 +24,6 @@ auto main() -> int
         curve2.setID(1);
         sf::VertexArray va1{ sf::LineStrip }; // for curve1.drawCurve()
         sf::VertexArray va2{ sf::LineStrip }; // for curve2.drawCurve()
-        std::vector<Point> ptList;
-        std::vector<NodeInfo> vNodeInfo;
 
         sf::RenderWindow window(sf::VideoMode(1000, 800), "Curve Intersection", sf::Style::Titlebar | sf::Style::Close);
         window.setFramerateLimit(60);
@@ -51,8 +49,6 @@ auto main() -> int
         //bool curve2ControlPolygon{};
         bool gridMode{ true };
         bool gridSnapMode{ true };
-        bool decomposeFirst{};
-        bool lineDetection{};
         bool imguiOpen{ true };
 
         while (window.isOpen())
@@ -165,7 +161,7 @@ auto main() -> int
                         loadPoints(curve1, curve2, filePathName);
                         degreeA = curve1.getDegree();
                         degreeB = curve2.getDegree();
-                        ptList.clear();
+                        paramInfo.iPoints.clear();
                     }
                 }
 
@@ -189,14 +185,12 @@ auto main() -> int
                 {
                     curve1EditMode = true;
                     curve2EditMode = false;
-                    ptList.clear();
+                    paramInfo.iPoints.clear();
                 }
                 if (ImGui::Button("Delete the last point from curve A"))
                 {
-                    if (ptList.size() != 0)
-                    {
-                        ptList.clear();
-                    }
+                    paramInfo.iPoints.clear();
+
                     if (curve1.interpolationMode)
                     {
                         curve1.deleteLastInterpolationPoint();
@@ -212,7 +206,7 @@ auto main() -> int
                     curve1EditMode = false;
                     curve2EditMode = false;
                     curve1.clear();
-                    ptList.clear();
+                    paramInfo.iPoints.clear();
                 }
 
                 //ImGui::Checkbox("Control Polygon for A", &curve1ControlPolygon);
@@ -224,7 +218,7 @@ auto main() -> int
                     curve2EditMode = false;
                     degreeA = std::clamp(degreeA, 1, 10);
                     curve1.changeDegree(degreeA);
-                    ptList.clear();
+                    paramInfo.iPoints.clear();
                 }
 
                 if (curve1.getInterpolationPointSize() != 0 || curve1.getControlPointSize() != 0) ImGui::BeginDisabled();
@@ -238,14 +232,12 @@ auto main() -> int
                 {
                     curve1EditMode = false;
                     curve2EditMode = true;
-                    ptList.clear();
+                    paramInfo.iPoints.clear();
                 }
                 if (ImGui::Button("Delete the last point from curve B"))
                 {
-                    if (ptList.size() != 0)
-                    {
-                        ptList.clear();
-                    }
+                    paramInfo.iPoints.clear();
+
                     if (curve2.interpolationMode)
                     {
                         curve2.deleteLastInterpolationPoint();
@@ -261,7 +253,7 @@ auto main() -> int
                     curve1EditMode = false;
                     curve2EditMode = false;
                     curve2.clear();
-                    ptList.clear();
+                    paramInfo.iPoints.clear();
                 }
 
                 //ImGui::Checkbox("Control Polygon for B", &curve2ControlPolygon);
@@ -273,7 +265,7 @@ auto main() -> int
                     curve2EditMode = false;
                     degreeB = std::clamp(degreeB, 1, 10);
                     curve2.changeDegree(degreeB);
-                    ptList.clear();
+                    paramInfo.iPoints.clear();
                 }
 
                 if (curve2.getInterpolationPointSize() != 0 || curve2.getControlPointSize() != 0) ImGui::BeginDisabled();
@@ -284,7 +276,7 @@ auto main() -> int
                 ImGui::Separator();
                 ImGui::NewLine();
 
-                ImGui::Checkbox("Decompose curves first", &decomposeFirst);
+                ImGui::Checkbox("Decompose curves first", &paramInfo.decomposeFirst);
 
                 //ImGui::Checkbox("Point and Line detection", &lineDetection);
 
@@ -308,9 +300,9 @@ auto main() -> int
                     curve2.drawCurve(window, sf::Color::Yellow, va2);
                     window.display();
 
-                    iteration_num = 0;
-                    ptList.clear();
-                    vNodeInfo.clear();
+                    paramInfo.iterationNum = 0;
+                    paramInfo.iPoints.clear();
+                    paramInfo.vNodeInfo.clear();
 
                     if (Bspline::DEBUG)
                     {
@@ -322,7 +314,7 @@ auto main() -> int
                         }
                     }
 
-                    findIntersection(curve1, curve2, ptList, iteration_num, lineDetection, vNodeInfo, decomposeFirst);
+                    findIntersection(curve1, curve2, paramInfo);
 
                     if (Bspline::DEBUG)
                     {
@@ -376,9 +368,7 @@ auto main() -> int
                 curve2.drawConvexHull(window, sf::Color::Magenta);
             }
 
-
-
-            for (auto& p : ptList)
+            for (auto& p : paramInfo.iPoints)
             {
                 sf::CircleShape c{ 3 };
                 c.setPosition(static_cast<float>(p.x) - c.getRadius(), windowSize.y - static_cast<float>(p.y) - c.getRadius());

@@ -11,6 +11,7 @@ import Point;
 import NodeInfo;
 
 struct TwoCurves;
+struct ParamInfo;
 
 export class Bspline
 {
@@ -47,7 +48,7 @@ public:
 
     bool interpolationMode{ true }; // true: interpolation, false: control points
 
-    friend void findIntersection(Bspline crv1, Bspline crv2, std::vector<Point>& iPoints, int& iter, bool lineDetection, std::vector<NodeInfo>& vNodeInfo, bool decomposeFirst);
+    friend void findIntersection(Bspline crv1, Bspline crv2, ParamInfo& paramInfo);
     friend void predecomposeFindIntersection(Bspline crv1, Bspline crv2, std::queue<TwoCurves>& bqueue);
     friend void loadPoints(Bspline& curve1, Bspline& curve2, const std::string& filePathName);
     friend void savePoints(const Bspline& curve1, const Bspline& curve2, const std::string& filePathName);
@@ -118,4 +119,13 @@ export struct IPointInfo
     double ua;
     double ub;
     Point iPoint;
+};
+
+export struct ParamInfo
+{
+    bool lineDetection;
+    bool decomposeFirst;
+    int iterationNum;
+    std::vector<Point> iPoints;
+    std::vector<NodeInfo> vNodeInfo;
 };
