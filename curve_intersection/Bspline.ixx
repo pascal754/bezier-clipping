@@ -54,7 +54,7 @@ public:
     friend void savePoints(const Bspline& curve1, const Bspline& curve2, const std::string& filePathName);
 private:
     void deleteLastPoint();
-    friend void searchIntersection(std::queue<TwoCurves>& bQueue, std::vector<Point>& iPoints, int& iter, bool lineDetection, std::vector<NodeInfo>& vNodeInfo);
+    friend void searchIntersection(std::queue<TwoCurves>& bQueue, ParamInfo& paramInfo);
     friend bool exceedsMaximums(int iter, size_t numIntersectionPoints);
     friend bool findPointLine(Bspline& crv1, Bspline& crv2, std::vector<Point>& iPoints);
     void addPoint(const Point& p);
