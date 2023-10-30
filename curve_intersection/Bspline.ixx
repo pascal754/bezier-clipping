@@ -47,8 +47,8 @@ public:
 
     bool interpolationMode{ true }; // true: interpolation, false: control points
 
-    friend void findIntersection(const Bspline& crv1, const Bspline& crv2, std::vector<Point>& iPoints, int& iter, bool lineDetection, std::vector<NodeInfo>& vNodeInfo);
-    friend void bezierIntersection(Bspline& crv1, Bspline& crv2, std::vector<Point>& iPoints, int& iter, bool lineDetection, std::vector<NodeInfo>& vNodeInfo);
+    friend void findIntersection(Bspline crv1, Bspline crv2, std::vector<Point>& iPoints, int& iter, bool lineDetection, std::vector<NodeInfo>& vNodeInfo);
+    friend void bezierIntersection(Bspline crv1, Bspline crv2, std::vector<Point>& iPoints, int& iter, bool lineDetection, std::vector<NodeInfo>& vNodeInfo);
     friend void loadPoints(Bspline& curve1, Bspline& curve2, const std::string& filePathName);
     friend void savePoints(const Bspline& curve1, const Bspline& curve2, const std::string& filePathName);
 private:

@@ -959,9 +959,6 @@ void searchIntersection(std::queue<TwoCurves>& bqueue, std::vector<Point>& iPoin
     Bspline& crv1{ bqueue.front().c1 };
     Bspline& crv2{ bqueue.front().c2 };
 
-    crv1.checkPointToShrink();
-    crv2.checkPointToShrink();
-
     vNodeInfo.push_back({
         iter,
         bqueue.front().parentIter,
@@ -1397,7 +1394,7 @@ void Bspline::checkPointToShrink()
     }
 }
 
-void findIntersection(const Bspline& crv1, const Bspline& crv2, std::vector<Point>& iPoints, int& iter, bool lineDetection, std::vector<NodeInfo>& vNodeInfo)
+void findIntersection(Bspline crv1, Bspline crv2, std::vector<Point>& iPoints, int& iter, bool lineDetection, std::vector<NodeInfo>& vNodeInfo)
 {
     try
     {
@@ -1410,10 +1407,14 @@ void findIntersection(const Bspline& crv1, const Bspline& crv2, std::vector<Poin
         using namespace std::chrono;
         auto start = high_resolution_clock::now();
 
+        crv1.interpolationPoints.clear();
+        crv2.interpolationPoints.clear();
+        crv1.checkPointToShrink();
+        crv2.checkPointToShrink();
+
         std::queue<TwoCurves> bqueue;
-        bqueue.push(TwoCurves{ crv1, crv2, 0, 0 });
-        bqueue.front().c1.interpolationPoints.clear();
-        bqueue.front().c2.interpolationPoints.clear();
+        bqueue.push(TwoCurves{ std::move(crv1), std::move(crv2), 0, 0 });
+        
 
         while (!bqueue.empty() && iter < Bspline::max_iteration && iPoints.size() < Bspline::max_num_intersection_points)
         {
@@ -1438,7 +1439,7 @@ void findIntersection(const Bspline& crv1, const Bspline& crv2, std::vector<Poin
 }
 
 // decompose each curve on knot and find intersection for combination
-void bezierIntersection(Bspline& crv1, Bspline& crv2, std::vector<Point>& iPoints, int& iter, bool lineDetection, std::vector<NodeInfo>& vNodeInfo)
+void bezierIntersection(Bspline crv1, Bspline crv2, std::vector<Point>& iPoints, int& iter, bool lineDetection, std::vector<NodeInfo>& vNodeInfo)
 {
     try
     {
@@ -1451,6 +1452,11 @@ void bezierIntersection(Bspline& crv1, Bspline& crv2, std::vector<Point>& iPoint
         using namespace std::chrono;
         auto start = high_resolution_clock::now();
 
+        crv1.interpolationPoints.clear();
+        crv2.interpolationPoints.clear();
+        crv1.checkPointToShrink();
+        crv2.checkPointToShrink();
+
         std::vector<std::optional<Bspline>> bezierLists[2];
 
         auto preDecompose = [&bezierLists](Bspline& curve, int n) {
@@ -1458,15 +1464,7 @@ void bezierIntersection(Bspline& crv1, Bspline& crv2, std::vector<Point>& iPoint
 
             if (curve.convexHull.size() == 1)
             {
-                auto decomp{ curve.decompose(curve.knotVector[0], curve.knotVector[0] + Bspline::u2_epsilon) };
-                if (decomp)
-                    bezierLists[n].push_back(std::move(decomp));
-                else
-                {
-                    auto copied{ curve };
-                    copied.interpolationPoints.clear();
-                    bezierLists[n].push_back(std::move(copied));
-                }
+                bezierLists[n].push_back(std::move(curve));
             }
             else
             {
