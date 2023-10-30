@@ -953,24 +953,24 @@ bool exceedsMaximums(int iter, size_t numIntersectionPoints)
     return false;
 }
 
-void searchIntersection(std::queue<TwoCurves>& bqueue, std::vector<Point>& iPoints, int& iter, bool lineDetection, std::vector<NodeInfo>& vNodeInfo)
+void searchIntersection(std::queue<TwoCurves>& bQueue, std::vector<Point>& iPoints, int& iter, bool lineDetection, std::vector<NodeInfo>& vNodeInfo)
 {
     ++iter;
-    Bspline& crv1{ bqueue.front().c1 };
-    Bspline& crv2{ bqueue.front().c2 };
+    Bspline& crv1{ bQueue.front().c1 };
+    Bspline& crv2{ bQueue.front().c2 };
 
     vNodeInfo.push_back({
         iter,
-        bqueue.front().parentIter,
+        bQueue.front().parentIter,
         {crv1.getID(), crv1.knotVector.front(), crv1.knotVector.back()},
         {crv2.getID(), crv2.knotVector.front(), crv2.knotVector.back()},
         ReturnInfo::Default,
-        bqueue.front().depth });
+        bQueue.front().depth });
 
     if (Bspline::DEBUG)
     {
         std::println(Bspline::logFile, "\n~~~ Iteration #{} ~~~", iter);
-        std::println(Bspline::logFile, "queue size: {}", bqueue.size());
+        std::println(Bspline::logFile, "queue size: {}", bQueue.size());
         std::println(Bspline::logFile, "curve A u1: {}, u2: {}, deltaU: {}", crv1.knotVector.front(), crv1.knotVector.back(), crv1.knotVector.back() - crv1.knotVector.front());
         std::println(Bspline::logFile, "curve B u1: {}, u2: {}, deltaU: {}", crv2.knotVector.front(), crv2.knotVector.back(), crv2.knotVector.back() - crv2.knotVector.front());
         std::println(Bspline::logFile, "curve A:");
@@ -1050,7 +1050,7 @@ void searchIntersection(std::queue<TwoCurves>& bqueue, std::vector<Point>& iPoin
     if (deltaU1 > deltaU2)
     {
         if (Bspline::DEBUG) { std::println(Bspline::logFile, "switching two curves"); }
-        bqueue.push(TwoCurves{ std::move(crv2), std::move(crv1), iter, bqueue.front().depth });
+        bQueue.push(TwoCurves{ std::move(crv2), std::move(crv1), iter, bQueue.front().depth });
         vNodeInfo.back().rInfo = ReturnInfo::Switched;
         return;
     }
@@ -1176,14 +1176,14 @@ void searchIntersection(std::queue<TwoCurves>& bqueue, std::vector<Point>& iPoin
         auto bs1{ crv2.decompose(crv2.knotVector[0], crv2.knotVector[0] + deltaU2 / 2.0) };
         if (bs1)
         {
-            bqueue.push(TwoCurves{ std::move(*bs1), crv1, iter, bqueue.front().depth + 1 });
-            if (Bspline::DEBUG) { std::println(Bspline::logFile, "a pair of curves added to bqueue from case 1-1"); }
+            bQueue.push(TwoCurves{ std::move(*bs1), crv1, iter, bQueue.front().depth + 1 });
+            if (Bspline::DEBUG) { std::println(Bspline::logFile, "a pair of curves added to bQueue from case 1-1"); }
         }
 
         auto bs2{ crv2.decompose(crv2.knotVector[0] + deltaU2 / 2.0, crv2.knotVector[crv2.cp_n + 1]) };
         if (bs2) {
-            bqueue.push(TwoCurves{ std::move(*bs2), std::move(crv1), iter, bqueue.front().depth + 1 });
-            if (Bspline::DEBUG) { std::println(Bspline::logFile, "a pair of curves added to bqueue from case 1-2"); }
+            bQueue.push(TwoCurves{ std::move(*bs2), std::move(crv1), iter, bQueue.front().depth + 1 });
+            if (Bspline::DEBUG) { std::println(Bspline::logFile, "a pair of curves added to bQueue from case 1-2"); }
         }
 
         vNodeInfo.back().rInfo = ReturnInfo::DecomposedC1;
@@ -1292,14 +1292,14 @@ void searchIntersection(std::queue<TwoCurves>& bqueue, std::vector<Point>& iPoin
         auto bs1{ crv2.decompose(crv2.knotVector[0], crv2.knotVector[0] + deltaU2 / 2.0) };
         if (bs1)
         {
-            bqueue.push(TwoCurves{ std::move(*bs1), crv1, iter, bqueue.front().depth + 1 });
-            if (Bspline::DEBUG) { std::println(Bspline::logFile, "a pair of curves added to bqueue from case 2-1"); }
+            bQueue.push(TwoCurves{ std::move(*bs1), crv1, iter, bQueue.front().depth + 1 });
+            if (Bspline::DEBUG) { std::println(Bspline::logFile, "a pair of curves added to bQueue from case 2-1"); }
         }
 
         auto bs2{ crv2.decompose(crv2.knotVector[0] + deltaU2 / 2.0, crv2.knotVector[crv2.cp_n + 1]) };
         if (bs2) {
-            bqueue.push(TwoCurves{ std::move(*bs2), std::move(crv1), iter, bqueue.front().depth + 1 });
-            if (Bspline::DEBUG) { std::println(Bspline::logFile, "a pair of curves added to bqueue from case 2-2"); }
+            bQueue.push(TwoCurves{ std::move(*bs2), std::move(crv1), iter, bQueue.front().depth + 1 });
+            if (Bspline::DEBUG) { std::println(Bspline::logFile, "a pair of curves added to bQueue from case 2-2"); }
         }
 
         vNodeInfo.back().rInfo = ReturnInfo::DecomposedC2;
@@ -1311,8 +1311,8 @@ void searchIntersection(std::queue<TwoCurves>& bqueue, std::vector<Point>& iPoin
         auto decomposedC2{ crv2.decompose(u_min, u_max) };
         if (decomposedC2)
         {
-            bqueue.push(TwoCurves{ std::move(*decomposedC2), std::move(crv1), iter, bqueue.front().depth + 1 });
-            if (Bspline::DEBUG) { std::println(Bspline::logFile, "a pair of curves added to bqueue from case 3"); }
+            bQueue.push(TwoCurves{ std::move(*decomposedC2), std::move(crv1), iter, bQueue.front().depth + 1 });
+            if (Bspline::DEBUG) { std::println(Bspline::logFile, "a pair of curves added to bQueue from case 3"); }
         }
 
         vNodeInfo.back().rInfo = ReturnInfo::DecomposedC3;
@@ -1412,21 +1412,21 @@ void findIntersection(Bspline crv1, Bspline crv2, ParamInfo& paramInfo)
         using namespace std::chrono;
         auto start = high_resolution_clock::now();
 
-        std::queue<TwoCurves> bqueue;
+        std::queue<TwoCurves> bQueue;
 
         if (paramInfo.decomposeFirst)
         {
-            predecomposeFindIntersection(std::move(crv1), std::move(crv2), bqueue);
+            predecomposeFindIntersection(std::move(crv1), std::move(crv2), bQueue);
         }
         else
         {
-            bqueue.push(TwoCurves{ std::move(crv1), std::move(crv2), 0, 0 });
+            bQueue.push(TwoCurves{ std::move(crv1), std::move(crv2), 0, 0 });
         }
 
-        while (!bqueue.empty() && paramInfo.iterationNum < Bspline::max_iteration && paramInfo.iPoints.size() < Bspline::max_num_intersection_points)
+        while (!bQueue.empty() && paramInfo.iterationNum < Bspline::max_iteration && paramInfo.iPoints.size() < Bspline::max_num_intersection_points)
         {
-            searchIntersection(bqueue, paramInfo.iPoints, paramInfo.iterationNum, paramInfo.lineDetection, paramInfo.vNodeInfo);
-            bqueue.pop();
+            searchIntersection(bQueue, paramInfo.iPoints, paramInfo.iterationNum, paramInfo.lineDetection, paramInfo.vNodeInfo);
+            bQueue.pop();
         }
 
         auto stop = high_resolution_clock::now();
@@ -1445,7 +1445,7 @@ void findIntersection(Bspline crv1, Bspline crv2, ParamInfo& paramInfo)
 }
 
 // decompose each curve on knot and find intersection for combination
-void predecomposeFindIntersection(Bspline crv1, Bspline crv2, std::queue<TwoCurves>& bqueue)
+void predecomposeFindIntersection(Bspline crv1, Bspline crv2, std::queue<TwoCurves>& bQueue)
 {
     std::vector<std::optional<Bspline>> bezierList1;
     std::vector<std::optional<Bspline>> bezierList2;
@@ -1476,7 +1476,7 @@ void predecomposeFindIntersection(Bspline crv1, Bspline crv2, std::queue<TwoCurv
         {
             if (b1.has_value() && b2.has_value())
             {
-                bqueue.push(TwoCurves{ *b1, *b2, 0, 0 });
+                bQueue.push(TwoCurves{ *b1, *b2, 0, 0 });
             }
         }
     }

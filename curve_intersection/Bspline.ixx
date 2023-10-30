@@ -49,12 +49,12 @@ public:
     bool interpolationMode{ true }; // true: interpolation, false: control points
 
     friend void findIntersection(Bspline crv1, Bspline crv2, ParamInfo& paramInfo);
-    friend void predecomposeFindIntersection(Bspline crv1, Bspline crv2, std::queue<TwoCurves>& bqueue);
+    friend void predecomposeFindIntersection(Bspline crv1, Bspline crv2, std::queue<TwoCurves>& bQueue);
     friend void loadPoints(Bspline& curve1, Bspline& curve2, const std::string& filePathName);
     friend void savePoints(const Bspline& curve1, const Bspline& curve2, const std::string& filePathName);
 private:
     void deleteLastPoint();
-    friend void searchIntersection(std::queue<TwoCurves>& bqueue, std::vector<Point>& iPoints, int& iter, bool lineDetection, std::vector<NodeInfo>& vNodeInfo);
+    friend void searchIntersection(std::queue<TwoCurves>& bQueue, std::vector<Point>& iPoints, int& iter, bool lineDetection, std::vector<NodeInfo>& vNodeInfo);
     friend bool exceedsMaximums(int iter, size_t numIntersectionPoints);
     friend bool findPointLine(Bspline& crv1, Bspline& crv2, std::vector<Point>& iPoints);
     void addPoint(const Point& p);
