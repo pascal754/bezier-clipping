@@ -959,6 +959,10 @@ void searchIntersection(std::queue<TwoCurves>& bQueue, ParamInfo& paramInfo)
     Bspline& crv1{ bQueue.front().c1 };
     Bspline& crv2{ bQueue.front().c2 };
 
+    // necessary when duplicate points were selected in the control point mode
+    crv1.checkPointToShrink();
+    crv2.checkPointToShrink();
+
     paramInfo.vNodeInfo.push_back({
         paramInfo.iterationNum,
         bQueue.front().parentIter,
@@ -1386,12 +1390,12 @@ void Bspline::checkPointToShrink()
         return;
 
     double u1{ knotVector[0] };
-    double u2{ u1 + u2_epsilon / 2.0 };
+    double u2{ u1 + u2_epsilon / 10.0 };
     auto decomp{ decompose(u1, u2) };
     if (decomp)
     {
         *this = std::move(*decomp);
-        if (DEBUG) { std::println(logFile, "checkPointToShrink(): curve is a point and knot vector shrunk to {}, {}", u1, u2); }
+        if (DEBUG) { std::println(logFile, "checkPointToShrink(): The curve is a point and knot vector shrunk to {}, {}", u1, u2); }
     }
 }
 
