@@ -322,14 +322,7 @@ auto main() -> int
                         }
                     }
 
-                    if (decomposeFirst)
-                    {
-                        bezierIntersection(curve1, curve2, ptList, iteration_num, lineDetection, vNodeInfo);
-                    }
-                    else
-                    {
-                        findIntersection(curve1, curve2, ptList, iteration_num, lineDetection, vNodeInfo);
-                    }
+                    findIntersection(curve1, curve2, ptList, iteration_num, lineDetection, vNodeInfo, decomposeFirst);
 
                     if (Bspline::DEBUG)
                     {
