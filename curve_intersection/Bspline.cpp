@@ -956,6 +956,12 @@ bool exceedsMaximums(int iter, size_t numIntersectionPoints)
 void searchIntersection(std::queue<TwoCurves>& bQueue, ParamInfo& paramInfo)
 {
     ++paramInfo.iterationNum;
+
+    if (Bspline::DEBUG)
+    {
+        std::println(Bspline::logFile, "\n~~~ Iteration #{} ~~~", paramInfo.iterationNum);
+    }
+
     Bspline& crv1{ bQueue.front().c1 };
     Bspline& crv2{ bQueue.front().c2 };
 
@@ -973,10 +979,9 @@ void searchIntersection(std::queue<TwoCurves>& bQueue, ParamInfo& paramInfo)
 
     if (Bspline::DEBUG)
     {
-        std::println(Bspline::logFile, "\n~~~ Iteration #{} ~~~", paramInfo.iterationNum);
         std::println(Bspline::logFile, "queue size: {}", bQueue.size());
-        std::println(Bspline::logFile, "curve A u1: {}, u2: {}, deltaU: {}", crv1.knotVector.front(), crv1.knotVector.back(), crv1.knotVector.back() - crv1.knotVector.front());
-        std::println(Bspline::logFile, "curve B u1: {}, u2: {}, deltaU: {}", crv2.knotVector.front(), crv2.knotVector.back(), crv2.knotVector.back() - crv2.knotVector.front());
+        std::println(Bspline::logFile, "curve A, U: [{}, {}], deltaU: {}", crv1.knotVector.front(), crv1.knotVector.back(), crv1.knotVector.back() - crv1.knotVector.front());
+        std::println(Bspline::logFile, "curve B, U: [{}, {}], deltaU: {}", crv2.knotVector.front(), crv2.knotVector.back(), crv2.knotVector.back() - crv2.knotVector.front());
         std::println(Bspline::logFile, "curve A:");
         crv1.printInfo();
         std::println(Bspline::logFile, "curve B:");
@@ -1389,13 +1394,15 @@ void Bspline::checkPointToShrink()
     if (knotVector[cp_n + 1] - knotVector[0] < u2_epsilon)
         return;
 
+    if (DEBUG) { std::println(logFile, "checkPointToShrink(): The curve is a point and the original knot vector interval [{}, {}]", knotVector[0], knotVector[cp_n + 1]); }
+
     double u1{ knotVector[0] };
     double u2{ u1 + u2_epsilon / 10.0 };
     auto decomp{ decompose(u1, u2) };
     if (decomp)
     {
         *this = std::move(*decomp);
-        if (DEBUG) { std::println(logFile, "checkPointToShrink(): The curve is a point and knot vector shrunk to {}, {}", u1, u2); }
+        if (DEBUG) { std::println(logFile, "checkPointToShrink(): The knot vector shrunk to [{}, {}]", u1, u2); }
     }
 }
 
