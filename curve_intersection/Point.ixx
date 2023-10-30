@@ -12,7 +12,6 @@ public:
     static const double epsilon;
     Point() = default;
     Point(double xCoord, double yCoord) : x{ xCoord }, y{ yCoord } {}
-    Point(const Point& pt) = default;
     friend std::ostream& operator<<(std::ostream& os, const Point& cp);
     //void setColor(Color c);
     void findAngleAround(const Point& pt);

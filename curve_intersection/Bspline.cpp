@@ -1007,7 +1007,8 @@ void searchIntersection(std::queue<TwoCurves>& bQueue, ParamInfo& paramInfo)
             std::println(Bspline::logFile, "deltaU1 and deltaU2 are within tolerance: candidate for intersection");
         }
 
-        Point intersectPt, intersectPt2;
+        Point intersectPt;
+        Point intersectPt2;
 
         if (deltaU1 == 0)
         {
