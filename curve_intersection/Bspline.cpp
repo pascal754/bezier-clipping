@@ -790,28 +790,17 @@ std::optional<Bspline> Bspline::decompose(double u1, double u2) const
     int end{ (u2 == knotVector[cp_n + 1]) ? pre_b + m1 + p_degree + 1 : pre_b + m1 + m2 };
 
     int bias{ pre_a + m1 - p_degree };
-    std::vector<double> newKnots(end - bias);
+    std::vector<double> newKnots;
 
-    for (size_t j{ 0 }; j < newKnots.size(); ++j)
-    {
-        newKnots[j] = uBar[j + bias];
-        if (newKnots[j] < 0)
-        {
-            if (DEBUG)
-            {
-                std::println(logFile, "decompose() new knot is negative");
-            }
-            return {};
-        }
-    }
+    newKnots.insert(newKnots.end(), uBar.begin() + bias, uBar.begin() + end);
 
 
     Bspline decomposed{ p_degree, newKnots };
     size_t num_control_points{ newKnots.size() - p_degree - 1 };
-    for (size_t j{ 0 }; j < num_control_points; ++j)
-    {
-        decomposed.addPoint(qw[j + bias]);
-    }
+    
+    decomposed.controlPoints.insert(decomposed.controlPoints.end(), qw.begin() + bias, qw.begin() + bias + num_control_points);
+    decomposed.cp_n = static_cast<int>(std::ssize(decomposed.controlPoints)) - 1;
+    decomposed.id = id;
 
     if (!decomposed.checkNumbers())
     {
@@ -821,8 +810,6 @@ std::optional<Bspline> Bspline::decompose(double u1, double u2) const
         }
         return {};
     }
-
-    decomposed.id = id;
 
     return decomposed;
 } //end decompose
