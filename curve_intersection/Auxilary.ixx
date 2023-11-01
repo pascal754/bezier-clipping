@@ -7,7 +7,7 @@ export module Auxilary;
 import Point;
 import NodeInfo;
 
-export void cleanIntersectionPoints(std::vector<Point>& iPoints)
+void cleanIntersectionPoints(std::vector<Point>& iPoints)
 {
     for (auto& pt : iPoints)
     {
@@ -15,9 +15,11 @@ export void cleanIntersectionPoints(std::vector<Point>& iPoints)
         pt.y = std::round(pt.y);
     }
 
-    std::sort(iPoints.begin(), iPoints.end());
+    std::ranges::sort(iPoints);
 
-    iPoints.erase(std::unique(iPoints.begin(), iPoints.end()), iPoints.end());
+    const auto ret{ std::ranges::unique(iPoints) };
+
+    iPoints.erase(ret.begin(), ret.end());
 }
 
 export void printResult(const int iterationNum, std::vector<Point>& iPoints, const bool DEBUG, std::ofstream& logFile)
@@ -31,7 +33,7 @@ export void printResult(const int iterationNum, std::vector<Point>& iPoints, con
     using namespace std::views;
 
     auto writePoints = [&](std::ostream& os) {
-        for (auto [index, pt] : iPoints | enumerate | as_const)
+        for (auto&& [index, pt] : iPoints | enumerate | as_const)
         {
             std::println(os, "***intersection point #{}: ({}, {})", index + 1, pt.x, pt.y);
         }
@@ -48,7 +50,7 @@ export void printResult(const int iterationNum, std::vector<Point>& iPoints, con
         std::println(logFile, "\n\t{} iteration(s)", iterationNum);
         std::println(logFile, "the number of intersection before clean up: {}", iPoints.size());
 
-        std::sort(iPoints.begin(), iPoints.end());
+        std::ranges::sort(iPoints);
 
         writePoints(logFile);
     }

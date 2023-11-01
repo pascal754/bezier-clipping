@@ -408,8 +408,10 @@ void Bspline::findConvexHull()
             unsortedPoints.push_back(controlPoints[i]);
     }
 
-    std::list<Point>::iterator min, index;
-    std::vector<Point> sortedPoints, tempConvexHull;
+    std::list<Point>::iterator min;
+    std::list<Point>::iterator index;
+    std::vector<Point> sortedPoints;
+    std::vector<Point> tempConvexHull;
 
     // sort points by polar angle between the first point
     // if several points have the same polar angle then keep the farthest point from the first point

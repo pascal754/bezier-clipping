@@ -89,7 +89,9 @@ private:
     std::vector<Point> controlPoints;
     std::vector<Point> interpolationPoints;
     std::vector<double> knotVector;
-    std::vector<double> basis, left, right;
+    std::vector<double> basis;
+    std::vector<double> left;
+    std::vector<double> right;
     std::vector<Point> convexHull;
 
     // ax + by + c = 0 line through the end points (normalized form: a^2 + b^2 = 1)
