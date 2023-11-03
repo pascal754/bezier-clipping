@@ -710,11 +710,9 @@ std::optional<Bspline> Bspline::decompose(double u1, double u2) const
 
 
     std::vector<double> X;
-    for (int j{}; j < m1; ++j)
-        X.push_back(u1);
 
-    for (int j{ m1 }; j < sum; ++j)
-        X.push_back(u2);
+    X.insert(X.end(), m1, u1);
+    X.insert(X.end(), sum - m1, u2);
 
     // find new indices for X vector
     int post_a{ findKnotSpan(X.front()) };
