@@ -411,7 +411,6 @@ void Bspline::findConvexHull()
     std::list<Point>::iterator min;
     std::list<Point>::iterator index;
     std::vector<Point> sortedPoints;
-    std::vector<Point> tempConvexHull;
 
     // sort points by polar angle between the first point
     // if several points have the same polar angle then keep the farthest point from the first point
@@ -446,28 +445,27 @@ void Bspline::findConvexHull()
     if (unsortedPoints.size() == 1)
         sortedPoints.push_back(unsortedPoints.back());
 
-    tempConvexHull.push_back(controlPoints[firstCHPoint]);
+    convexHull.push_back(controlPoints[firstCHPoint]);
 
     if (sortedPoints.size() >= 1)
-        tempConvexHull.push_back(sortedPoints[0]);
+        convexHull.push_back(sortedPoints[0]);
 
     if (sortedPoints.size() >= 2)
     {
-        tempConvexHull.push_back(sortedPoints[1]);
+        convexHull.push_back(sortedPoints[1]);
         for (size_t i{ 2 }; i < sortedPoints.size(); ++i) // find convex hull using Graham Scan
         {
             // if not left turn(counterclockwise) then pop the last point
-            while (tempConvexHull.size() > 1 &&
-                !leftTurn(tempConvexHull[tempConvexHull.size() - 2], tempConvexHull[tempConvexHull.size() - 1], sortedPoints[i]))
+            while (convexHull.size() > 1 &&
+                !leftTurn(convexHull[convexHull.size() - 2], convexHull[convexHull.size() - 1], sortedPoints[i]))
             {
-                tempConvexHull.pop_back();
+                convexHull.pop_back();
             }
 
-            tempConvexHull.push_back(sortedPoints[i]);
+            convexHull.push_back(sortedPoints[i]);
         }
     }
 
-    convexHull = tempConvexHull;
     isConvexHullUpdated = true;
 } //end findConvexHull
 

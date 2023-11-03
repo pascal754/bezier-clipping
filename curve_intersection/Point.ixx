@@ -13,7 +13,6 @@ public:
     Point() = default;
     Point(double xCoord, double yCoord) : x{ xCoord }, y{ yCoord } {}
     friend std::ostream& operator<<(std::ostream& os, const Point& cp);
-    //void setColor(Color c);
     void findAngleAround(const Point& pt);
     bool hasSameCoord(const Point& pt) const;
     bool hasSameCoordWithTolerance(const Point& pt) const;
