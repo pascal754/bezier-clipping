@@ -19,14 +19,6 @@ void Point::findAngleAround(const Point& pt)
     angle = std::atan2(y - pt.y, x - pt.x);
 }
 
-bool Point::hasSameCoord(const Point& pt) const
-{
-    if (x == pt.x && y == pt.y)
-        return true;
-    else
-        return false;
-}
-
 bool Point::hasSameCoordWithTolerance(const Point& pt) const
 {
     if (std::abs(x - pt.x) < epsilon && std::abs(y - pt.y) < epsilon)
