@@ -2,7 +2,7 @@
 
 ## Find intersection points between two B-spline curves
 
-- find intersection between [point, line, or curve] and [point, line, or curve]
+- find intersection between one of (point, line, or curve) and one of (point, line, or curve)
 - each iteration info saved in node_info.log
 - verbose info optionally saved in calc.log
 - m = n + p + 1 should be satisfied for a curve
@@ -15,7 +15,7 @@
 ## Development Tools
 
 - Microsoft Visual Studio Community 2022 (64-bit) - 
-Version 17.8.0 Preview 5.0
+Version 17.8.0 Preview 6.0
 C++latest(modules)
 
 ## Library via vcpkg
