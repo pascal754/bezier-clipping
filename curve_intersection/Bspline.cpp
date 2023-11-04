@@ -820,7 +820,7 @@ void Bspline::findLineThruEndPoints()
 {
     Point pt0{ controlPoints.front() };
     Point ptn{ controlPoints.back() };
-    if (pt0.hasSameCoord(ptn))
+    if (pt0 == ptn)
     {
         if (DEBUG)
         {
