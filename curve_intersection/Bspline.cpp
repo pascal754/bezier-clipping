@@ -402,9 +402,10 @@ void Bspline::findConvexHull()
     int firstCHPoint{ findFirstPointOfConvexHull() };
 
     // find angle between the first point of the convex hull and copy control points except for the first point
-    for (size_t i{}; i < controlPoints.size(); ++i) {
+    for (size_t i{}; i < controlPoints.size(); ++i)
+    {
         controlPoints[i].findAngleAround(controlPoints[firstCHPoint]);
-        if (i != firstCHPoint && !controlPoints[i].hasSameCoord(controlPoints[firstCHPoint])) // do not include the first point of convex hull and the duplicates of it
+        if (i != firstCHPoint && controlPoints[i] != controlPoints[firstCHPoint]) // do not include the first point of convex hull and the duplicates of it
             unsortedPoints.push_back(controlPoints[i]);
     }
 
@@ -414,11 +415,14 @@ void Bspline::findConvexHull()
 
     // sort points by polar angle between the first point
     // if several points have the same polar angle then keep the farthest point from the first point
-    while ((unsortedPoints.size()) >= 2) {
+    while ((unsortedPoints.size()) >= 2)
+    {
         min = unsortedPoints.begin();
         index = std::next(min); // next element
-        while (index != unsortedPoints.end()) {
-            if (min->angle > index->angle) {
+        while (index != unsortedPoints.end())
+        {
+            if (min->angle > index->angle)
+            {
                 min = index;
             }
             else if (min->angle == index->angle)
