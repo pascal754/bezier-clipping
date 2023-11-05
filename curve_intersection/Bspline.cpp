@@ -507,7 +507,7 @@ int Bspline::findKnotMult(int i) const
 
 bool Bspline::hasEnoughPoints() const
 {
-    return (cp_n + 1 > p_degree) ? true : false;
+    return cp_n + 1 > p_degree;
 }
 
 void Bspline::makeKnots()
