@@ -1613,6 +1613,7 @@ void Bspline::globalCurveInterpolation()
             span = findKnotSpan(u_bar_k[i]);
         }
         catch (const std::exception& e) {
+            controlPoints.clear();
             std::print(stderr, "{}", e.what());
             std::println(stderr, ": global interpolation failed.");
             return;
