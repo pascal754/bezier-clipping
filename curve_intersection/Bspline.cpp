@@ -1614,7 +1614,7 @@ void Bspline::globalCurveInterpolation()
         }
         catch (const std::exception& e) {
             std::print(stderr, "{}", e.what());
-            std::println(stderr, ": global interpolation failed. Remove the last point.");
+            std::println(stderr, ": global interpolation failed.");
             return;
         }
         basisFuns(span, u_bar_k[i]);
@@ -1626,12 +1626,6 @@ void Bspline::globalCurveInterpolation()
     if (!LUPDecompose(A, Pm)) {
         std::println(stderr, "LUDecomposition failed");
         controlPoints.clear();
-        if (interpolationPoints.size() >= 2 &&
-            interpolationPoints.back().x == interpolationPoints[interpolationPoints.size() - 2].x &&
-            interpolationPoints.back().y == interpolationPoints[interpolationPoints.size() - 2].y)
-        {
-            std::println(stderr, "Recommendation: remove the last point.");
-        }
         return;
     }
 
