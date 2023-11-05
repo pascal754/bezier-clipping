@@ -318,6 +318,12 @@ void Bspline::addPointAndKnots(const Point& p) // control point
 
 void Bspline::addInterpolationPoint(const Point& p)
 {
+    if (interpolationPoints.size() >= 1 && p == interpolationPoints.back())
+    {
+        std::println(stderr, "The same point cannot be selected in a row.");
+        std::println(stderr, "Please, select a different point.");
+        return;
+    }
     interpolationPoints.push_back(p);
     cp_n = static_cast<int>(std::ssize(interpolationPoints)) - 1;
     isConvexHullUpdated = false;
