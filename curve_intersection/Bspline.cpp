@@ -1714,7 +1714,7 @@ bool Bspline::LUPDecompose(std::vector<std::vector<double>>& A, std::vector<int>
     size_t N{ interpolationPoints.size() };
     std::vector<double> ptr;
 
-    const double Tol{ 1e-6 };
+    constexpr double Tol{ 1e-6 };
 
     for (int i{}; i <= N; ++i)
     {
