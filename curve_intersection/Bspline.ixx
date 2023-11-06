@@ -77,12 +77,12 @@ private:
     void printInfo();
     void checkPointToShrink();
 
-    static const double epsilon;
-    static const double u_epsilon;
-    static const double u1_epsilon;
-    static const double u2_epsilon;
-    static const int max_iteration;
-    static const int max_num_intersection_points;
+    static constexpr double epsilon{ 1e-9 }; // epsilon is for approximate zero and should be much less than u_epsilon
+    static constexpr double u_epsilon{ 0.0001 }; // for knot values
+    static constexpr double u1_epsilon{ u_epsilon / 10.0 };
+    static constexpr double u2_epsilon{ u1_epsilon / 10.0 };
+    static constexpr int max_iteration{ 500'000 }; // maximum iteration for overlapping curves
+    static constexpr int max_num_intersection_points{ 500'000 };
 
     int p_degree{}; // degree
     int cp_n{ -1 }; // cp_n + 1: # of control pts

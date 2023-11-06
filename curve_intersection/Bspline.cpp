@@ -15,12 +15,6 @@ module Bspline;
 import Auxilary;
 
 bool Bspline::DEBUG{ false };
-const double Bspline::epsilon{ 1e-9 }; // epsilon is for approximate zero and should be much less than u_epsilon
-const double Bspline::u_epsilon{ 0.0001 }; // for knot values
-const double Bspline::u1_epsilon{ u_epsilon / 10.0 };
-const double Bspline::u2_epsilon{ u1_epsilon / 10.0 };
-const int Bspline::max_iteration{ 500'000 }; // maximum iteration for overlapping curves
-const int Bspline::max_num_intersection_points{ 500'000 };
 std::ofstream Bspline::logFile;
 
 int Bspline::findKnotSpan(double u) const
