@@ -1079,14 +1079,15 @@ void searchIntersection(std::queue<TwoCurves>& bQueue, ParamInfo& paramInfo)
 
     if (Bspline::DEBUG) { std::println(Bspline::logFile, "min, max of clipping lines of curve A: {}, {}", crv1.minDist, crv1.maxDist); }
 
-    if (crv1.maxDist == crv1.minDist)  // (std::abs(maxDist - minDist) < epsilon)
+    if (crv1.maxDist == crv1.minDist)
     {
         if (Bspline::DEBUG) { std::println(Bspline::logFile, "curve A is a line segment"); }
     }
 
     Bspline distanceCurve{ Bspline(crv2.p_degree, crv2.knotVector) };
 
-    double min{}, max{};
+    double min{};
+    double max{};
 
     crv1.makeDistanceCurve(distanceCurve, crv2, min, max);
     if (Bspline::DEBUG) { std::println(Bspline::logFile, "minimum and maximum of distance curve: {}, {}", min, max); }
