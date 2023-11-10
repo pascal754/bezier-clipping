@@ -396,21 +396,16 @@ void Bspline::findConvexHull()
 
     convexHull.clear();
 
-    std::list<Point> unsortedPoints;
-
     // find the lowest y-coordinate and leftmost point
     int firstCHPoint{ findFirstPointOfConvexHull() };
 
-    // find angle between the first point of the convex hull and copy control points except for the first point
-    for (size_t i{}; i < controlPoints.size(); ++i)
-    {
-        // do not include the first point of convex hull and the duplicates of it
-        if (i != firstCHPoint && controlPoints[i] != controlPoints[firstCHPoint]) 
-        {
-            controlPoints[i].findAngleAround(controlPoints[firstCHPoint]);
-            unsortedPoints.push_back(controlPoints[i]);
-        }
-    }
+    // find angle between the first point of the convex hull and copy control points except for the first point and the duplicates of it
+    namespace rng = std::ranges;
+    namespace vw = std::views;
+
+    auto distinct = [&](Point& p) { return p != controlPoints[firstCHPoint]; };
+    auto angle = [&](Point& p) { p.findAngleAround(controlPoints[firstCHPoint]); return p; };
+    auto unsortedPoints{ controlPoints | vw::filter(distinct) | vw::transform(angle) | rng::to<std::list<Point>>() };
 
     std::list<Point>::iterator min;
     std::list<Point>::iterator index;
