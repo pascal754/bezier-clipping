@@ -40,6 +40,6 @@ struct std::formatter<Point> : std::formatter<std::string>
     auto format(Point p, format_context& ctx) const
     {
         return formatter<string>::format(
-            std::format("({}, {}) ra = {}", p.x, p.y, p.angle), ctx);
+            std::format("({}, {})", p.x, p.y), ctx);
     }
 };
