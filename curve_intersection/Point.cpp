@@ -6,8 +6,6 @@ module;
 
 module Point;
 
-const double Point::epsilon{ 0.5 }; // chosen for screen pixel
-
 std::ostream& operator<<(std::ostream& os, const Point& cp)
 {
     std::print(os, "({}, {}) ra = {}", cp.x, cp.y, cp.angle);

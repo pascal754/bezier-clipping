@@ -7,9 +7,10 @@ module;
 
 export module Point;
 
-export class Point {
+export class Point
+{
 public:
-    static const double epsilon;
+    constexpr static double epsilon{ 0.5 }; // chosen for screen pixel
     Point() = default;
     Point(double xCoord, double yCoord) : x{ xCoord }, y{ yCoord } {}
     friend std::ostream& operator<<(std::ostream& os, const Point& cp);
