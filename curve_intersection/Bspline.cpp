@@ -404,7 +404,8 @@ void Bspline::findConvexHull()
     // find angle between the first point of the convex hull and copy control points except for the first point
     for (size_t i{}; i < controlPoints.size(); ++i)
     {
-        if (i != firstCHPoint && controlPoints[i] != controlPoints[firstCHPoint]) // do not include the first point of convex hull and the duplicates of it
+        // do not include the first point of convex hull and the duplicates of it
+        if (i != firstCHPoint && controlPoints[i] != controlPoints[firstCHPoint]) 
         {
             controlPoints[i].findAngleAround(controlPoints[firstCHPoint]);
             unsortedPoints.push_back(controlPoints[i]);
@@ -1558,7 +1559,7 @@ void Bspline::printInfo() // debug only
     if (!convexHull.empty()) {
         std::println(logFile, "Convex Hull");
         for (const auto& pt : convexHull)
-            std::print(logFile, "   {}", pt);
+            std::print(logFile, "   {} ra = {}", pt, pt.angle);
     }
 
     std::println(logFile, "\n---end curve info------------------------------------------------------------------------");
