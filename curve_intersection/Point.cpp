@@ -8,13 +8,13 @@ module Point;
 
 std::ostream& operator<<(std::ostream& os, const Point& cp)
 {
-    std::print(os, "({}, {}) ra = {}", cp.x, cp.y, cp.angle);
+    std::print(os, "({}, {})", cp.x, cp.y);
     return os;
 }
 
-void Point::findAngleAround(const Point& pt)
+double Point::findAngleAround(const Point& pt)
 {
-    angle = std::atan2(y - pt.y, x - pt.x);
+    return std::atan2(y - pt.y, x - pt.x);
 }
 
 bool Point::hasSameCoordWithTolerance(const Point& pt) const

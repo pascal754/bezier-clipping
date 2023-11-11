@@ -399,21 +399,20 @@ void Bspline::findConvexHull()
     // find the lowest y-coordinate and leftmost point
     int firstCHPoint{ findFirstPointOfConvexHull() };
 
-    std::list<Point> unsortedPoints;
+    std::list<CHPoint> unsortedPoints;
 
-    for (auto& x : controlPoints)
+    for (auto& pt : controlPoints)
     {
         // copy control points except for the first point and the duplicates of it
-        if (x != controlPoints[firstCHPoint])
+        if (pt != controlPoints[firstCHPoint])
         {
             // find an angle between the first point of the convex hull
-            x.findAngleAround(controlPoints[firstCHPoint]);
-            unsortedPoints.push_back(x);
+            unsortedPoints.emplace_back(pt, pt.findAngleAround(controlPoints[firstCHPoint]));
         }
     }
 
-    std::list<Point>::iterator min;
-    std::list<Point>::iterator index;
+    std::list<CHPoint>::iterator min;
+    std::list<CHPoint>::iterator index;
     std::vector<Point> sortedPoints;
 
     // sort points by polar angle between the first point
@@ -430,7 +429,8 @@ void Bspline::findConvexHull()
             }
             else if (min->angle == index->angle)
             {
-                if (min->findDistance(controlPoints[firstCHPoint]) >= index->findDistance(controlPoints[firstCHPoint]))
+                if (min->p.findDistance(controlPoints[firstCHPoint])
+                    >= index->p.findDistance(controlPoints[firstCHPoint]))
                 {
                     auto temp{ std::prev(index) };
                     unsortedPoints.erase(index);
@@ -445,12 +445,12 @@ void Bspline::findConvexHull()
             ++index;
         }
 
-        sortedPoints.push_back(*min);
+        sortedPoints.push_back(min->p);
         unsortedPoints.erase(min);
     }
 
     if (unsortedPoints.size() == 1)
-        sortedPoints.push_back(unsortedPoints.back());
+        sortedPoints.push_back(unsortedPoints.back().p);
 
     convexHull.push_back(controlPoints[firstCHPoint]);
 
@@ -1559,7 +1559,7 @@ void Bspline::printInfo() // debug only
     if (!convexHull.empty()) {
         std::println(logFile, "Convex Hull");
         for (const auto& pt : convexHull)
-            std::print(logFile, "   {} ra = {}", pt, pt.angle);
+            std::print(logFile, "   {}", pt);
     }
 
     std::println(logFile, "\n---end curve info------------------------------------------------------------------------");

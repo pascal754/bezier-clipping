@@ -14,7 +14,7 @@ public:
     Point() = default;
     Point(double xCoord, double yCoord) : x{ xCoord }, y{ yCoord } {}
     friend std::ostream& operator<<(std::ostream& os, const Point& cp);
-    void findAngleAround(const Point& pt);
+    double findAngleAround(const Point& pt);
     bool hasSameCoordWithTolerance(const Point& pt) const;
     double findDistance(const Point& pt) const;
     bool operator==(const Point& other) const { return x == other.x && y == other.y; }
@@ -32,6 +32,11 @@ public:
     }
     double x{};
     double y{};
+};
+
+export struct CHPoint //convex hull points
+{
+    Point p;
     double angle{};
 };
 
