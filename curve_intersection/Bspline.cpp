@@ -415,7 +415,7 @@ void Bspline::findConvexHull()
     std::list<CHPoint>::iterator index;
     std::vector<Point> sortedPoints;
 
-    // sort points by polar angle between the first point
+    // sort points by polar angle around the first point
     // if several points have the same polar angle then keep the farthest point from the first point
     while ((unsortedPoints.size()) >= 2)
     {
@@ -1069,15 +1069,6 @@ void searchIntersection(std::queue<TwoCurves>& bQueue, ParamInfo& paramInfo)
         return;
     }
 
-    // line or point detection
-    // on: simple line intersection between straight lines, no iterative solution
-    // off: try to find intersection, the number of iteration is limited by Bspline::max_iteration or Bspline::max_num_intersection_points whichever comes first
-    if (paramInfo.lineDetection && findPointLine(crv1, crv2, paramInfo.iPoints))
-    {
-        paramInfo.vNodeInfo.back().rInfo = ReturnInfo::Found;
-        return;
-    }
-
     crv1.findMinMaxDistance();
 
     if (Bspline::DEBUG) { std::println(Bspline::logFile, "min, max of clipping lines of curve A: {}, {}", crv1.minDist, crv1.maxDist); }
@@ -1322,59 +1313,6 @@ void searchIntersection(std::queue<TwoCurves>& bQueue, ParamInfo& paramInfo)
         return;
     }
 } //end searchIntersection
-
-bool findPointLine(Bspline& crv1, Bspline& crv2, std::vector<Point>& iPoints)
-{
-    crv1.findConvexHull();
-    crv2.findConvexHull();
-
-    if (crv1.convexHull.size() <= 2 && crv2.convexHull.size() <= 2) // two line segments or points
-    {
-        if (Bspline::DEBUG) { std::println(Bspline::logFile, "point and line detection"); }
-        crv1.findLineThruEndPoints();
-        crv2.findLineThruEndPoints();
-
-        if (crv1.convexHull.size() == 1 && crv2.convexHull.size() == 1) // point vs. point
-        {
-            if (Bspline::DEBUG) { std::println(Bspline::logFile, "curve A and curve B are points"); }
-            if (crv1.convexHull.front().hasSameCoordWithTolerance(crv2.convexHull.front()))
-            {
-                iPoints.push_back(crv1.convexHull.front());
-                if (Bspline::DEBUG) { std::println(Bspline::logFile, "=== intersection found: two points coincide with each other ==="); }
-                return true;
-            }
-        }
-        else if (crv1.convexHull.size() == 1 && crv2.convexHull.size() == 2) // point vs. line
-        {
-            if (Bspline::DEBUG) { std::println(Bspline::logFile, "curve A : point, curve B : line"); }
-            if (crv2.isPointOnLineSegment(crv1.convexHull.front()))
-            {
-                if (Bspline::DEBUG)
-                {
-                    std::println(Bspline::logFile, "=== intersection found between a point and a line ===");
-                    std::println(Bspline::logFile, "intersection point: ({}, {})", crv1.convexHull.front().x, crv1.convexHull.front().y);
-                }
-                iPoints.push_back(crv1.convexHull.front());
-                return true;
-            }
-        }
-        else if (crv1.convexHull.size() == 2 && crv2.convexHull.size() == 1) // line vs. point
-        {
-            if (Bspline::DEBUG) { std::println(Bspline::logFile, "curve A : line, curve B : point"); }
-            if (crv1.isPointOnLineSegment(crv2.convexHull.front()))
-            {
-                if (Bspline::DEBUG)
-                {
-                    std::println(Bspline::logFile, "=== intersection found between a point and a line ===");
-                    std::println(Bspline::logFile, "intersection point: ({}, {})", crv2.convexHull.front().x, crv2.convexHull.front().y);
-                }
-                iPoints.push_back(crv2.convexHull.front());
-                return true;
-            }
-        }
-    }
-    return false;
-}
 
 void Bspline::checkPointToShrink()
 // if a curve is a point then shrink knot vector

@@ -125,7 +125,6 @@ export struct IPointInfo
 
 export struct ParamInfo
 {
-    bool lineDetection;
     bool decomposeFirst;
     int iterationNum;
     std::vector<Point> iPoints;
