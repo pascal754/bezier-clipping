@@ -1511,7 +1511,8 @@ void Bspline::globalCurveInterpolation()
         {
             span = findKnotSpan(u_bar_k[i]);
         }
-        catch (const std::exception& e) {
+        catch (const std::exception& e)
+        {
             //controlPoints.clear();
             std::print(stderr, "{}", e.what());
             std::println(stderr, ": global interpolation failed.");
@@ -1523,7 +1524,8 @@ void Bspline::globalCurveInterpolation()
 
     std::vector<int> Pm(interpolationPoints.size() + 1); // permutation matrix
 
-    if (!LUPDecompose(A, Pm)) {
+    if (!LUPDecompose(A, Pm))
+    {
         std::println(stderr, "LUDecomposition failed");
         //controlPoints.clear();
         return;
@@ -1620,20 +1622,25 @@ bool Bspline::LUPDecompose(std::vector<std::vector<double>>& A, std::vector<int>
         Pm[i] = i;
     } //Unit permutation matrix, P[N] initialized with N
 
-    for (size_t i{}; i < N; ++i) {
+    for (size_t i{}; i < N; ++i)
+    {
         double maxA{};
         size_t imax{ i };
 
         double absA{};
         for (size_t k{ i }; k < N; ++k)
-            if ((absA = std::abs(A[k][i])) > maxA) {
+        {
+            if ((absA = std::abs(A[k][i])) > maxA)
+            {
                 maxA = absA;
                 imax = k;
             }
+        }
 
         if (maxA < Tol) { return false; } //failure, matrix is degenerate
 
-        if (imax != i) {
+        if (imax != i)
+        {
             //pivoting P
             int temp{ Pm[i] };
             Pm[i] = Pm[imax];
@@ -1648,7 +1655,8 @@ bool Bspline::LUPDecompose(std::vector<std::vector<double>>& A, std::vector<int>
             ++Pm[N];
         }
 
-        for (size_t j{ i + 1 }; j < N; ++j) {
+        for (size_t j{ i + 1 }; j < N; ++j)
+        {
             A[j][i] /= A[i][i];
 
             for (size_t k{ i + 1 }; k < N; ++k)
@@ -1669,9 +1677,9 @@ void Bspline::LUPSolve(const std::vector<std::vector<double>>& A, const std::vec
      */
 
     auto N{ std::ssize(A) };
-    //controlPoints.resize(N);
 
-    for (std::ptrdiff_t i{}; i < N; ++i) {
+    for (std::ptrdiff_t i{}; i < N; ++i)
+    {
         controlPoints[i].y = interpolationPoints[Pm[i]].y;
         controlPoints[i].x = interpolationPoints[Pm[i]].x;
 
@@ -1682,7 +1690,8 @@ void Bspline::LUPSolve(const std::vector<std::vector<double>>& A, const std::vec
         }
     }
 
-    for (std::ptrdiff_t i{ N - 1 }; i >= 0; --i) {
+    for (std::ptrdiff_t i{ N - 1 }; i >= 0; --i)
+    {
         for (std::ptrdiff_t k{ i + 1 }; k < N; ++k)
         {
             controlPoints[i].x -= A[i][k] * controlPoints[k].x;
