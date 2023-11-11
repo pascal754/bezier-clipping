@@ -18,7 +18,9 @@ export class Bspline
 public:
     explicit Bspline(int degree) : p_degree{ degree }
     {
-        basis.resize(p_degree + 1); left.resize(p_degree + 1); right.resize(p_degree + 1);
+        basis.resize(p_degree + 1);
+        left.resize(p_degree + 1);
+        right.resize(p_degree + 1);
     }
     Bspline(int degree, const std::vector<double>& knotVec) : Bspline{ degree } { knotVector = knotVec; }
     void basisFuns(int i, double u);
@@ -56,7 +58,6 @@ private:
     void deleteLastPoint();
     friend void searchIntersection(std::queue<TwoCurves>& bQueue, ParamInfo& paramInfo);
     friend bool exceedsMaximums(int iter, size_t numIntersectionPoints);
-    friend bool findPointLine(Bspline& crv1, Bspline& crv2, std::vector<Point>& iPoints);
     void addPoint(const Point& p);
     int findFirstPointOfConvexHull() const;
     bool isPointOnLineSegment(const Point& pt);
@@ -118,9 +119,10 @@ export struct TwoCurves
 
 export struct IPointInfo
 {
+    int curveID;
     double ua;
     double ub;
-    Point iPoint;
+    Point p;
 };
 
 export struct ParamInfo
