@@ -60,7 +60,6 @@ private:
     friend bool exceedsMaximums(int iter, size_t numIntersectionPoints);
     void addPoint(const Point& p);
     int findFirstPointOfConvexHull() const;
-    bool isPointOnLineSegment(const Point& pt);
     int findKnotMult(int i) const;
     void makeKnots();
     void findLineThruEndPoints();

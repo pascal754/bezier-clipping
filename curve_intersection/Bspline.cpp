@@ -1435,48 +1435,6 @@ bool Bspline::isThereLineIntersection(double y, double y1, double y2) const
         return true;
 }
 
-bool Bspline::isPointOnLineSegment(const Point& pt)
-{
-    // find the intersection point between the given line and the perpendicular line passing through the point
-    /*double x{ coef_b * coef_b * pt.x - coef_a * coef_b * pt.y - coef_a * coef_c };
-    double y{ coef_a * coef_a * pt.y - coef_a * coef_b * pt.x - coef_b * coef_c };*/
-
-
-    //if (DEBUG) { std::println(logFile, "calculated point: ({}, {})", x, y); }
-
-    auto d{ coef_a * pt.x + coef_b * pt.y + coef_c };
-
-    if (DEBUG) { std::println(logFile, "distance from the line: {}", d); }
-
-    auto min_x{ std::min(controlPoints.front().x, controlPoints.back().x) };
-    auto max_x{ std::max(controlPoints.front().x, controlPoints.back().x) };
-    auto min_y{ std::min(controlPoints.front().y, controlPoints.back().y) };
-    auto max_y{ std::max(controlPoints.front().y, controlPoints.back().y) };
-
-    // check A: the intersection point coincides with the given point
-    // B: the point is inside the line segment
-    // due to floating point error check again the point is on either end points of the line segment
-
-    //findConvexHull();
-
-    /*if (
-        (
-            (std::abs(pt.x - x) < Point::epsilon && std::abs(pt.y - y) < Point::epsilon) &&
-            (min_x - Point::epsilon) < x && x < (max_x + Point::epsilon) && (min_y - Point::epsilon) < y && y < (max_y + Point::epsilon)
-            ) ||
-        pt.hasSameCoordWithTolerance(convexHull.front()) ||
-        pt.hasSameCoordWithTolerance(convexHull.back())
-        )*/
-    if (std::abs(d) < epsilon && (min_x - Point::epsilon) < pt.x && pt.x < (max_x + Point::epsilon) && (min_y - Point::epsilon) < pt.y && pt.y < (max_y + Point::epsilon))
-    {
-        if (DEBUG) { std::println(logFile, "a point is on the line"); }
-        return true;
-    }
-
-    if (DEBUG) { std::println(logFile, "a point is not on the line"); }
-    return false;
-}
-
 void Bspline::printInfo() // debug only
 {
     findConvexHull();
