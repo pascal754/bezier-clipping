@@ -56,7 +56,8 @@ bool Bspline::checkNumbers() const
         return false;
     }
 
-    if (knotVector.size() == controlPoints.size() + p_degree + 1) // m = n + p + 1, knotVector.size() -1 == controlPoints.size() -1 + p_degree + 1
+    // m = n + p + 1, knotVector.size() -1 == controlPoints.size() -1 + p_degree + 1
+    if (knotVector.size() == controlPoints.size() + p_degree + 1)
     {
         return true;
     }
@@ -397,17 +398,17 @@ void Bspline::findConvexHull()
     convexHull.clear();
 
     // find the lowest y-coordinate and leftmost point
-    int firstCHPoint{ findFirstPointOfConvexHull() };
+    const Point& firstCHPoint{ controlPoints[findFirstPointOfConvexHull()] };
 
     std::list<CHPoint> unsortedPoints;
 
     for (auto& pt : controlPoints)
     {
         // copy control points except for the first point and the duplicates of it
-        if (pt != controlPoints[firstCHPoint])
+        if (pt != firstCHPoint)
         {
             // find an angle between the first point of the convex hull
-            unsortedPoints.emplace_back(pt, pt.findAngleAround(controlPoints[firstCHPoint]));
+            unsortedPoints.emplace_back(pt, pt.findAngleAround(firstCHPoint));
         }
     }
 
@@ -429,8 +430,8 @@ void Bspline::findConvexHull()
             }
             else if (min->angle == index->angle)
             {
-                if (min->p.findDistance(controlPoints[firstCHPoint])
-                    >= index->p.findDistance(controlPoints[firstCHPoint]))
+                if (min->p.findDistance(firstCHPoint)
+                    >= index->p.findDistance(firstCHPoint))
                 {
                     auto temp{ std::prev(index) };
                     unsortedPoints.erase(index);
@@ -452,7 +453,7 @@ void Bspline::findConvexHull()
     if (unsortedPoints.size() == 1)
         sortedPoints.push_back(unsortedPoints.back().p);
 
-    convexHull.push_back(controlPoints[firstCHPoint]);
+    convexHull.push_back(firstCHPoint);
 
     if (sortedPoints.size() >= 1)
         convexHull.push_back(sortedPoints[0]);

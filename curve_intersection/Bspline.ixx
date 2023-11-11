@@ -120,8 +120,8 @@ export struct TwoCurves
 export struct IPointInfo
 {
     int curveID;
-    double ua;
-    double ub;
+    double uLow;
+    double uHigh;
     Point p;
 };
 
