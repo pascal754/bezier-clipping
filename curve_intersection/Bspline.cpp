@@ -28,12 +28,17 @@ int Bspline::findKnotSpan(double u) const
         throw std::runtime_error("findKnotSpan() u is outside of range");
     }
 
+    if (controlPoints.empty())
+    {
+        throw std::runtime_error("No control points");
+    }
+
     //algorithm A2.1 FindSpan pp68
-    if (u == knotVector[cp_n + 1]) // special case
-        return cp_n;
+    if (u == knotVector[cp_n() + 1]) // special case
+        return cp_n();
 
     int low{ p_degree };
-    int high{ cp_n + 1 };
+    int high{ cp_n() + 1 };
     int mid{ (low + high) / 2 };
 
     while (u < knotVector[mid] || u >= knotVector[mid + 1])
@@ -73,7 +78,6 @@ void Bspline::clear()
     convexHull.clear();
     isConvexHullUpdated = false;
     drawUpdated = false;
-    cp_n = -1;
 }
 
 void Bspline::clearControlPoints()
@@ -82,7 +86,6 @@ void Bspline::clearControlPoints()
     convexHull.clear();
     isConvexHullUpdated = false;
     drawUpdated = false;
-    cp_n = -1;
 }
 
 void Bspline::changeDegree(int degree)
@@ -300,7 +303,6 @@ void Bspline::curvePoint(double u, Point& cp) {
 void Bspline::addPoint(const Point& p) // control point
 {
     controlPoints.push_back(p);
-    cp_n = static_cast<int>(std::ssize(controlPoints)) - 1;
     isConvexHullUpdated = false;
     drawUpdated = false;
 }
@@ -320,7 +322,7 @@ void Bspline::addInterpolationPoint(const Point& p)
         return;
     }
     interpolationPoints.push_back(p);
-    cp_n = static_cast<int>(std::ssize(interpolationPoints)) - 1;
+    controlPoints.resize(interpolationPoints.size());
     isConvexHullUpdated = false;
     drawUpdated = false;
     globalCurveInterpolation();
@@ -329,7 +331,6 @@ void Bspline::addInterpolationPoint(const Point& p)
 void Bspline::deleteLastPoint() // control point
 {
     controlPoints.pop_back();
-    cp_n = static_cast<int>(std::ssize(controlPoints)) - 1;
     isConvexHullUpdated = false;
     drawUpdated = false;
 }
@@ -351,7 +352,7 @@ void Bspline::deleteLastInterpolationPoint()
     }
 
     interpolationPoints.pop_back();
-    cp_n = static_cast<int>(std::ssize(interpolationPoints)) - 1;
+    controlPoints.resize(interpolationPoints.size());
     isConvexHullUpdated = false;
     convexHull.clear();
     drawUpdated = false;
@@ -505,7 +506,7 @@ int Bspline::findKnotMult(int i) const
 
 bool Bspline::hasEnoughPoints() const
 {
-    return cp_n + 1 > p_degree;
+    return cp_n() + 1 > p_degree;
 }
 
 void Bspline::makeKnots()
@@ -522,25 +523,25 @@ void Bspline::makeKnots()
     }
 
     knotVector.clear();
-    knotVector.resize(cp_n + p_degree + 2); // vector size: m + 1
+    knotVector.resize(cp_n() + p_degree + 2); // vector size: m + 1
     for (int i{}; i <= p_degree; ++i)
         knotVector[i] = 0.0;
 
-    int denominator{ cp_n + 1 - p_degree };
+    int denominator{ cp_n() + 1 - p_degree };
 
-    for (int i{ p_degree + 1 }; i <= cp_n; ++i)
+    for (int i{ p_degree + 1 }; i <= cp_n(); ++i)
     {
         knotVector[i] = static_cast<double>(i - p_degree) / denominator;
     }
 
-    int m{ cp_n + p_degree + 1 };
-    for (int i{ cp_n + 1 }; i <= m; ++i)
+    int m{ cp_n() + p_degree + 1 };
+    for (int i{ cp_n() + 1 }; i <= m; ++i)
         knotVector[i] = 1.0;
 }
 
 void Bspline::drawControlPolygon(sf::RenderWindow& window) const
 {
-    if (cp_n < 0)
+    if (cp_n() < 0)
         return;
 
     sf::VertexArray poly{ sf::LineStrip };
@@ -569,17 +570,17 @@ void Bspline::drawCurve(sf::RenderWindow& window, sf::Color col, sf::VertexArray
             if (!drawUpdated)
             {
                 va.clear();
-                double step = (knotVector[cp_n + 1] - knotVector[0]) / ((cp_n / 20 + 1) * 200);
+                double step = (knotVector[cp_n() + 1] - knotVector[0]) / ((cp_n() / 20 + 1) * 200);
                 Point pt;
                 auto wSize{ window.getSize() };
 
-                for (auto u{ knotVector[0] }; u < knotVector[cp_n + 1]; u += step)
+                for (auto u{ knotVector[0] }; u < knotVector[cp_n() + 1]; u += step)
                 {
                     curvePoint(u, pt);
                     va.append(sf::Vertex{ sf::Vector2f{static_cast<float>(pt.x), wSize.y - static_cast<float>(pt.y)}, col });
                 }
 
-                curvePoint(knotVector[cp_n + 1], pt);
+                curvePoint(knotVector[cp_n() + 1], pt);
                 va.append(sf::Vertex{ sf::Vector2f{static_cast<float>(pt.x), wSize.y - static_cast<float>(pt.y)}, col });
                 drawUpdated = true;
             }
@@ -650,13 +651,13 @@ std::optional<Bspline> Bspline::decompose(double u1, double u2) const
     }
 
 
-    if (std::ssize(knotVector) - 1 != cp_n + p_degree + 1)
+    if (std::ssize(knotVector) - 1 != cp_n() + p_degree + 1)
     {
         if (DEBUG) { std::println(logFile, "decompose(); m = n + p + 1 not satisfied, return"); }
         return {};
     }
 
-    if (u1 == knotVector[0] && u2 == knotVector[cp_n + 1])
+    if (u1 == knotVector[0] && u2 == knotVector[cp_n() + 1])
     {
         if (DEBUG)
         {
@@ -679,7 +680,7 @@ std::optional<Bspline> Bspline::decompose(double u1, double u2) const
         m1 = p_degree + 1 - m1;
     }
 
-    if (u2 == knotVector[cp_n + 1])
+    if (u2 == knotVector[cp_n() + 1])
     {
         m2 = 0;
     }
@@ -732,15 +733,15 @@ std::optional<Bspline> Bspline::decompose(double u1, double u2) const
     }
 
     int r{ static_cast<int>(std::ssize(X)) - 1 };
-    int m{ cp_n + p_degree + 1 };
+    int m{ cp_n() + p_degree + 1 };
     uBar.resize(m + r + 2);
-    qw.resize(cp_n + r + 2);
+    qw.resize(cp_n() + r + 2);
 
     for (int j{}; j <= post_a - p_degree; ++j)
     {
         qw[j] = controlPoints[j];
     }
-    for (int j{ post_b - 1 }; j <= cp_n; ++j)
+    for (int j{ post_b - 1 }; j <= cp_n(); ++j)
     {
         qw[j + r + 1] = controlPoints[j];
     }
@@ -793,7 +794,7 @@ std::optional<Bspline> Bspline::decompose(double u1, double u2) const
     } // end of algorithm A5.4
 
 
-    int end{ (u2 == knotVector[cp_n + 1]) ? pre_b + m1 + p_degree + 1 : pre_b + m1 + m2 };
+    int end{ (u2 == knotVector[cp_n() + 1]) ? pre_b + m1 + p_degree + 1 : pre_b + m1 + m2};
 
     int bias{ pre_a + m1 - p_degree };
     std::vector<double> newKnots;
@@ -805,7 +806,6 @@ std::optional<Bspline> Bspline::decompose(double u1, double u2) const
     size_t num_control_points{ newKnots.size() - p_degree - 1 };
     
     decomposed.controlPoints.insert(decomposed.controlPoints.end(), qw.begin() + bias, qw.begin() + bias + num_control_points);
-    decomposed.cp_n = static_cast<int>(std::ssize(decomposed.controlPoints)) - 1;
     decomposed.id = id;
 
     if (!decomposed.checkNumbers())
@@ -861,7 +861,7 @@ void Bspline::findMinMaxDistance()
     double dist{ coef_a * pt.x + coef_b * pt.y + coef_c };
     minDist = maxDist = dist;
 
-    for (int i{ 1 }; i < cp_n; ++i) // the first and the last control point has the same distance
+    for (int i{ 1 }; i < cp_n(); ++i) // the first and the last control point has the same distance
     {
         dist = coef_a * controlPoints[i].x + coef_b * controlPoints[i].y + coef_c;
         minDist = std::fmin(minDist, dist);
@@ -896,7 +896,7 @@ void Bspline::findMinMaxDistanceFromRotatedLine()
     double dist{ coef_a * controlPoints.front().x + coef_b * controlPoints.front().y + coef_c };
     minDist = maxDist = dist;
 
-    for (int i{ 1 }; i <= cp_n; ++i)
+    for (int i{ 1 }; i <= cp_n(); ++i)
     {
         dist = coef_a * controlPoints[i].x + coef_b * controlPoints[i].y + coef_c;
         minDist = std::fmin(minDist, dist);
@@ -913,7 +913,7 @@ void Bspline::makeDistanceCurve(Bspline& distanceCurve, const Bspline& crv, doub
 
     distanceCurve.clearControlPoints();
 
-    for (int i{}; i <= crv.cp_n; ++i)
+    for (int i{}; i <= crv.cp_n(); ++i)
     {
         double xi{};
         for (int j{ 1 }; j <= crv.p_degree; ++j)
@@ -988,8 +988,8 @@ void searchIntersection(std::queue<TwoCurves>& bQueue, ParamInfo& paramInfo)
         return;
     }
 
-    double deltaU1{ crv1.knotVector[crv1.cp_n + 1] - crv1.knotVector[0] };
-    double deltaU2{ crv2.knotVector[crv2.cp_n + 1] - crv2.knotVector[0] };
+    double deltaU1{ crv1.knotVector[crv1.cp_n() + 1] - crv1.knotVector[0] };
+    double deltaU2{ crv2.knotVector[crv2.cp_n() + 1] - crv2.knotVector[0] };
 
     if (deltaU1 < 0 || deltaU2 < 0)
     {
@@ -1175,7 +1175,7 @@ void searchIntersection(std::queue<TwoCurves>& bQueue, ParamInfo& paramInfo)
             if (Bspline::DEBUG) { std::println(Bspline::logFile, "a pair of curves added to bQueue from case 1-1"); }
         }
 
-        auto bs2{ crv2.decompose(crv2.knotVector[0] + deltaU2 / 2.0, crv2.knotVector[crv2.cp_n + 1]) };
+        auto bs2{ crv2.decompose(crv2.knotVector[0] + deltaU2 / 2.0, crv2.knotVector[crv2.cp_n() + 1]) };
         if (bs2) {
             bQueue.push(TwoCurves{ std::move(*bs2), std::move(crv1), paramInfo.iterationNum, bQueue.front().depth + 1 });
             if (Bspline::DEBUG) { std::println(Bspline::logFile, "a pair of curves added to bQueue from case 1-2"); }
@@ -1291,7 +1291,7 @@ void searchIntersection(std::queue<TwoCurves>& bQueue, ParamInfo& paramInfo)
             if (Bspline::DEBUG) { std::println(Bspline::logFile, "a pair of curves added to bQueue from case 2-1"); }
         }
 
-        auto bs2{ crv2.decompose(crv2.knotVector[0] + deltaU2 / 2.0, crv2.knotVector[crv2.cp_n + 1]) };
+        auto bs2{ crv2.decompose(crv2.knotVector[0] + deltaU2 / 2.0, crv2.knotVector[crv2.cp_n() + 1]) };
         if (bs2) {
             bQueue.push(TwoCurves{ std::move(*bs2), std::move(crv1), paramInfo.iterationNum, bQueue.front().depth + 1 });
             if (Bspline::DEBUG) { std::println(Bspline::logFile, "a pair of curves added to bQueue from case 2-2"); }
@@ -1323,10 +1323,10 @@ void Bspline::checkPointToShrink()
     if (convexHull.size() != 1)
         return;
 
-    if (knotVector[cp_n + 1] - knotVector[0] < u2_epsilon)
+    if (knotVector[cp_n() + 1] - knotVector[0] < u2_epsilon)
         return;
 
-    if (DEBUG) { std::println(logFile, "checkPointToShrink(): The curve is a point and the original knot vector interval [{}, {}]", knotVector[0], knotVector[cp_n + 1]); }
+    if (DEBUG) { std::println(logFile, "checkPointToShrink(): The curve is a point and the original knot vector interval [{}, {}]", knotVector[0], knotVector[cp_n() + 1]); }
 
     double u1{ knotVector[0] };
     double u2{ u1 + u2_epsilon / 10.0 };
@@ -1403,7 +1403,7 @@ void predecomposeCurves(Bspline crv1, Bspline crv2, std::queue<TwoCurves>& bQueu
         }
         else
         {
-            for (int i{ curve.p_degree }; i <= curve.cp_n; ++i)
+            for (int i{ curve.p_degree }; i <= curve.cp_n(); ++i)
             {
                 bList.push_back(curve.decompose(curve.knotVector[i], curve.knotVector[i + 1]));
             }
@@ -1488,7 +1488,7 @@ void Bspline::printInfo() // debug only
     for (const auto& x : knotVector)
         std::print(logFile, " {}", x);
 
-    std::println(logFile, "\nnumber of control points: {}", cp_n + 1);
+    std::println(logFile, "\nnumber of control points: {}", cp_n() + 1);
 
     for (auto&& [index, pt] : std::views::enumerate(std::as_const(controlPoints)))
     {
@@ -1518,7 +1518,7 @@ void Bspline::globalCurveInterpolation()
     size_t m{ interpolationPoints.size() + p_degree };
     if (m < (p_degree + 1) * 2)
     {
-        controlPoints.clear();
+        //controlPoints.clear();
         std::println(stderr, "No. of interpolation points not enough. Add more points");
         return;
     }
@@ -1539,7 +1539,11 @@ void Bspline::globalCurveInterpolation()
         x.resize(interpolationPoints.size());
     }
 
-    auto vectorAssign = [&](size_t i, size_t offset) {for (size_t col{ 0 }; col < basis.size(); ++col) { A[i][col + offset] = basis[col]; }};
+    auto vectorAssign = [&](size_t i, size_t offset) {
+        for (size_t col{ 0 }; col < basis.size(); ++col)
+        {
+            A[i][col + offset] = basis[col];
+        }};
 
     for (size_t i{}; i < interpolationPoints.size(); ++i)
     {
@@ -1550,7 +1554,7 @@ void Bspline::globalCurveInterpolation()
             span = findKnotSpan(u_bar_k[i]);
         }
         catch (const std::exception& e) {
-            controlPoints.clear();
+            //controlPoints.clear();
             std::print(stderr, "{}", e.what());
             std::println(stderr, ": global interpolation failed.");
             return;
@@ -1563,7 +1567,7 @@ void Bspline::globalCurveInterpolation()
 
     if (!LUPDecompose(A, Pm)) {
         std::println(stderr, "LUDecomposition failed");
-        controlPoints.clear();
+        //controlPoints.clear();
         return;
     }
 
@@ -1707,7 +1711,7 @@ void Bspline::LUPSolve(const std::vector<std::vector<double>>& A, const std::vec
      */
 
     auto N{ std::ssize(A) };
-    controlPoints.resize(N);
+    //controlPoints.resize(N);
 
     for (std::ptrdiff_t i{}; i < N; ++i) {
         controlPoints[i].y = interpolationPoints[Pm[i]].y;

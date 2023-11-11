@@ -77,6 +77,7 @@ private:
     bool LUPDecompose(std::vector<std::vector<double>>& A, std::vector<int>& Pm);
     void printInfo();
     void checkPointToShrink();
+    int cp_n() const { return static_cast<int>(std::ssize(controlPoints)) - 1; } // cp_n + 1: # of control points
 
     static constexpr double epsilon{ 1e-9 }; // epsilon is for approximate zero and should be much less than u_epsilon
     static constexpr double u_epsilon{ 0.0001 }; // for knot values
@@ -86,7 +87,6 @@ private:
     static constexpr int max_num_intersection_points{ 500'000 };
 
     int p_degree{}; // degree
-    int cp_n{ -1 }; // cp_n + 1: # of control points
     std::vector<Point> controlPoints;
     std::vector<Point> interpolationPoints;
     std::vector<double> knotVector;
