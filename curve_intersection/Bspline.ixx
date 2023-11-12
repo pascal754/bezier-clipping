@@ -69,7 +69,7 @@ private:
     bool isThereLineIntersection(double y, double y1, double y2) const;
     bool leftTurn(const Point& p0, const Point& p1, const Point& p2) const;
     void clearControlPoints();
-    int findKnotSpan(double u) const;
+    int findKnotSpan(double u, int control_point_n) const;
     void find_u_bar_k(std::vector<double>& u_bar_k);
     void find_U(const std::vector<double>& u_bar_k);
     void LUPSolve(const std::vector<std::vector<double>>& A, const std::vector<int>& Pm);

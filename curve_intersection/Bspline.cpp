@@ -17,7 +17,7 @@ import Auxilary;
 bool Bspline::DEBUG{ false };
 std::ofstream Bspline::logFile;
 
-int Bspline::findKnotSpan(double u) const
+int Bspline::findKnotSpan(double u, int control_point_n) const
 {
     if (u < knotVector.front() || u > knotVector.back())
     {
@@ -28,17 +28,17 @@ int Bspline::findKnotSpan(double u) const
         throw std::runtime_error("findKnotSpan() u is outside of range");
     }
 
-    if (controlPoints.empty())
+    if (control_point_n < 0)
     {
-        throw std::runtime_error("No control points");
+        throw std::runtime_error("cp_n is negative.");
     }
 
     //algorithm A2.1 FindSpan pp68
-    if (u == knotVector[cp_n() + 1]) // special case
-        return cp_n();
+    if (u == knotVector[control_point_n + 1]) // special case
+        return control_point_n;
 
     int low{ p_degree };
-    int high{ cp_n() + 1 };
+    int high{ control_point_n + 1 };
     int mid{ (low + high) / 2 };
 
     while (u < knotVector[mid] || u >= knotVector[mid + 1])
@@ -289,7 +289,7 @@ void Bspline::curvePoint(double u, Point& cp) {
         return;
     }
 
-    int span{ findKnotSpan(u) };
+    int span{ findKnotSpan(u, cp_n()) };
     basisFuns(span, u);
 
     cp.x = cp.y = 0.0;
@@ -322,7 +322,6 @@ void Bspline::addInterpolationPoint(const Point& p)
         return;
     }
     interpolationPoints.push_back(p);
-    controlPoints.resize(interpolationPoints.size());
     isConvexHullUpdated = false;
     drawUpdated = false;
     globalCurveInterpolation();
@@ -352,9 +351,7 @@ void Bspline::deleteLastInterpolationPoint()
     }
 
     interpolationPoints.pop_back();
-    controlPoints.resize(interpolationPoints.size());
     isConvexHullUpdated = false;
-    convexHull.clear();
     drawUpdated = false;
     globalCurveInterpolation();
 }
@@ -384,12 +381,12 @@ int Bspline::findFirstPointOfConvexHull() const
 
 void Bspline::findConvexHull()
 {
-    if (isConvexHullUpdated || controlPoints.size() == 0)
+    if (isConvexHullUpdated)
     {
         return;
     }
 
-    if (controlPoints.size() == 1)
+    if (controlPoints.size() <= 1)
     {
         convexHull = controlPoints;
         isConvexHullUpdated = true;
@@ -671,8 +668,8 @@ std::optional<Bspline> Bspline::decompose(double u1, double u2) const
     int m2{ p_degree + 1 };
 
     // a, b: indices in knotVector
-    int pre_a = { findKnotSpan(u1) };
-    int pre_b = { findKnotSpan(u2) };
+    int pre_a = { findKnotSpan(u1, cp_n()) };
+    int pre_b = { findKnotSpan(u2, cp_n()) };
 
     if (u1 == knotVector[pre_a])
     {
@@ -722,8 +719,8 @@ std::optional<Bspline> Bspline::decompose(double u1, double u2) const
     X.insert(X.end(), sum - m1, u2);
 
     // find new indices for X vector
-    int post_a{ findKnotSpan(X.front()) };
-    int post_b{ findKnotSpan(X.back()) };
+    int post_a{ findKnotSpan(X.front(), cp_n()) };
+    int post_b{ findKnotSpan(X.back(), cp_n()) };
 
     ++post_b;
 
@@ -1476,7 +1473,8 @@ void Bspline::globalCurveInterpolation()
     size_t m{ interpolationPoints.size() + p_degree };
     if (m < (p_degree + 1) * 2)
     {
-        //controlPoints.clear();
+        controlPoints.clear();
+        isConvexHullUpdated = false;
         std::println(stderr, "No. of interpolation points not enough. Add more points");
         return;
     }
@@ -1509,11 +1507,12 @@ void Bspline::globalCurveInterpolation()
         int span{};
         try
         {
-            span = findKnotSpan(u_bar_k[i]);
+            span = findKnotSpan(u_bar_k[i], static_cast<int>(std::ssize(interpolationPoints)) - 1);
         }
         catch (const std::exception& e)
         {
             //controlPoints.clear();
+            //isConvexHullUpdated = false;
             std::print(stderr, "{}", e.what());
             std::println(stderr, ": global interpolation failed.");
             return;
@@ -1528,6 +1527,7 @@ void Bspline::globalCurveInterpolation()
     {
         std::println(stderr, "LUDecomposition failed");
         //controlPoints.clear();
+        //isConvexHullUpdated = false;
         return;
     }
 
@@ -1676,7 +1676,8 @@ void Bspline::LUPSolve(const std::vector<std::vector<double>>& A, const std::vec
      * OUTPUT: x(control points) - solution vector of A*x=b
      */
 
-    auto N{ std::ssize(A) };
+    const auto N{ std::ssize(A) };
+    controlPoints.resize(N);
 
     for (std::ptrdiff_t i{}; i < N; ++i)
     {
