@@ -76,7 +76,10 @@ private:
     bool LUPDecompose(std::vector<std::vector<double>>& A, std::vector<int>& Pm);
     void printInfo();
     void checkPointToShrink();
-    int cp_n() const { return static_cast<int>(std::ssize(controlPoints)) - 1; } // cp_n + 1: # of control points
+
+    // cp_n: the last index of control points
+    // cp_n + 1: # of control points
+    int cp_n() const { return static_cast<int>(std::ssize(controlPoints)) - 1; }
 
     static constexpr double epsilon{ 1e-9 }; // epsilon is for approximate zero and should be much less than u_epsilon
     static constexpr double u_epsilon{ 0.0001 }; // for knot values

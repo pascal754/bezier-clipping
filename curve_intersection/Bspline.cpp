@@ -30,7 +30,7 @@ int Bspline::findKnotSpan(double u, int control_point_n) const
 
     if (control_point_n < 0)
     {
-        throw std::runtime_error("cp_n is negative.");
+        throw std::runtime_error("control_point_n is negative.");
     }
 
     //algorithm A2.1 FindSpan pp68
@@ -1470,8 +1470,9 @@ void Bspline::globalCurveInterpolation()
     // Output: U, P
     //     U: knot vector
     //     P: control points (solution)
-    size_t m{ interpolationPoints.size() + p_degree };
-    if (m < (p_degree + 1) * 2)
+
+    // interpolationPoints.size() + p_degree  < (p_degree + 1) * 2
+    if (std::ssize(interpolationPoints) < p_degree + 2)
     {
         controlPoints.clear();
         isConvexHullUpdated = false;
@@ -1487,13 +1488,7 @@ void Bspline::globalCurveInterpolation()
     find_U(u_bar_k);
 
     // 3. initialize array A to 0
-    std::vector<std::vector<double>> A;
-    A.resize(interpolationPoints.size());
-
-    for (auto& x : A)
-    {
-        x.resize(interpolationPoints.size());
-    }
+    std::vector<std::vector<double>> A(interpolationPoints.size(), std::vector<double>(interpolationPoints.size(), 0.));
 
     auto vectorAssign = [&](size_t i, size_t offset) {
         for (size_t col{ 0 }; col < basis.size(); ++col)
