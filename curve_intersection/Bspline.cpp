@@ -1475,7 +1475,6 @@ void Bspline::globalCurveInterpolation()
     if (std::ssize(interpolationPoints) < p_degree + 2)
     {
         controlPoints.clear();
-        isConvexHullUpdated = false;
         std::println(stderr, "No. of interpolation points not enough. Add more points");
         return;
     }
@@ -1488,7 +1487,8 @@ void Bspline::globalCurveInterpolation()
     find_U(u_bar_k);
 
     // 3. initialize array A to 0
-    std::vector<std::vector<double>> A(interpolationPoints.size(), std::vector<double>(interpolationPoints.size(), 0.));
+    const auto N{ interpolationPoints.size() };
+    std::vector<std::vector<double>> A(N, std::vector<double>(N, 0.));
 
     auto vectorAssign = [&](size_t i, size_t offset) {
         for (size_t col{ 0 }; col < basis.size(); ++col)
@@ -1496,7 +1496,7 @@ void Bspline::globalCurveInterpolation()
             A[i][col + offset] = basis[col];
         }};
 
-    for (size_t i{}; i < interpolationPoints.size(); ++i)
+    for (size_t i{}; i < N; ++i)
     {
         // Set up coefficient matrix
         int span{};
@@ -1506,8 +1506,7 @@ void Bspline::globalCurveInterpolation()
         }
         catch (const std::exception& e)
         {
-            //controlPoints.clear();
-            //isConvexHullUpdated = false;
+            controlPoints.clear();
             std::print(stderr, "{}", e.what());
             std::println(stderr, ": global interpolation failed.");
             return;
@@ -1516,13 +1515,12 @@ void Bspline::globalCurveInterpolation()
         vectorAssign(i, span - p_degree);
     }
 
-    std::vector<int> Pm(interpolationPoints.size() + 1); // permutation matrix
+    std::vector<int> Pm(N + 1); // permutation matrix
 
     if (!LUPDecompose(A, Pm))
     {
         std::println(stderr, "LUDecomposition failed");
-        //controlPoints.clear();
-        //isConvexHullUpdated = false;
+        controlPoints.clear();
         return;
     }
 
