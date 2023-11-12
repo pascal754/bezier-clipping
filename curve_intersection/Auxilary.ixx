@@ -64,6 +64,8 @@ export void printResult(const int iterationNum, std::vector<Point>& iPoints, con
         std::println(logFile, "\nthe number of intersection after clean up: {}", iPoints.size());
 
         writePoints(logFile);
+
+        std::println("\nDebug info written to 'calc.log'.");
     }
 }
 
