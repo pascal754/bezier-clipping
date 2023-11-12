@@ -28,7 +28,7 @@ export void printResult(const int iterationNum, std::vector<Point>& iPoints, con
 
     std::println("\n\t{} iteration(s)", iterationNum);
 
-    std::println("the number of intersection before clean up: {}", iPoints.size());
+    std::println("the number of intersection points before clean up: {}", iPoints.size());
 
     using namespace std::views;
 
@@ -39,16 +39,11 @@ export void printResult(const int iterationNum, std::vector<Point>& iPoints, con
         }
         };
 
-    if (iPoints.size() <= 1'000)
-    {
-        writePoints(std::cout);
-    }
-
     if (DEBUG)
     {
         std::println(logFile, "\n--- calculation results ---");
         std::println(logFile, "\n\t{} iteration(s)", iterationNum);
-        std::println(logFile, "the number of intersection before clean up: {}", iPoints.size());
+        std::println(logFile, "the number of intersection points before clean up: {}", iPoints.size());
 
         std::ranges::sort(iPoints);
 
@@ -62,14 +57,7 @@ export void printResult(const int iterationNum, std::vector<Point>& iPoints, con
 
     cleanIntersectionPoints(iPoints);
 
-    std::println("\nthe number of intersection after clean up: {}", iPoints.size());
-
-    if (iPoints.size() <= 1'000)
-    {
-        writePoints(std::cout);
-    }
-
-    std::println("\t{} iteration(s)", iterationNum);
+    std::println("\nthe number of intersection points after clean up: {}", iPoints.size());
 
     if (DEBUG)
     {
@@ -81,6 +69,8 @@ export void printResult(const int iterationNum, std::vector<Point>& iPoints, con
 
 export void writeNodeInfo(const std::vector<NodeInfo>& vNodeInfo)
 {
+    std::print("\nWriting iteration info to 'node_info.log' ... ");
+
     std::ofstream file("node_info.log");
     std::println(file, "{:>10}{:>10}{:>5}  {:^23}  {:^23}  {:>5}  {:^23}  {:^23}  {:5}  {:^15}  {:>5}",
         "Iteration",
@@ -94,6 +84,7 @@ export void writeNodeInfo(const std::vector<NodeInfo>& vNodeInfo)
         "First",
         "Info",
         "Depth");
+
     for (const auto& x : vNodeInfo)
     {
         if (x.curveA.id == 0)
@@ -127,4 +118,6 @@ export void writeNodeInfo(const std::vector<NodeInfo>& vNodeInfo)
                 x.depth);
         }
     }
+
+    std::println("Done.");
 }

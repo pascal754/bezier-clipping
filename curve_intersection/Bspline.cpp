@@ -1372,12 +1372,11 @@ void findIntersection(Bspline crv1, Bspline crv2, ParamInfo& paramInfo)
 
         auto stop = high_resolution_clock::now();
         auto duration = duration_cast<microseconds>(stop - start);
+        if (!Bspline::DEBUG) { std::println("\n\tTime elapsed: {} microseconds", duration.count()); }
 
         printResult(paramInfo.iterationNum, paramInfo.iPoints, Bspline::DEBUG, Bspline::logFile);
 
         writeNodeInfo(paramInfo.vNodeInfo);
-
-        if (!Bspline::DEBUG) { std::println("Time elapsed: {} microseconds", duration.count()); }
     }
     catch (const std::exception& e)
     {
