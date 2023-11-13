@@ -1034,7 +1034,7 @@ void searchIntersection(std::queue<TwoCurves>& bQueue, ParamInfo& paramInfo)
             std::println(Bspline::logFile, "a candidate point on curve B: ({}, {})", intersectPt2.x, intersectPt2.y);
         }
 
-        if (std::abs(intersectPt.x - intersectPt2.x) < Point::epsilon && std::abs(intersectPt.y - intersectPt2.y) < Point::epsilon)
+        if (intersectPt.hasSameCoordWithTolerance(intersectPt2))
         {
             if (Bspline::DEBUG) { std::println(Bspline::logFile, "=== Intersection found === "); }
             paramInfo.iPoints.push_back(intersectPt);
