@@ -12,6 +12,7 @@
 
 ### Interpolation mode
 - A curve is supposed to pass through the selected points.
+- Global interpolation is used. A curve becomes distorted when the degree of a curve is high.
 - The same point cannot be selected successively, which causes an LU decomposition failure.
 - The minimum number of interpolation points to make a curve is degree + 2.
 
