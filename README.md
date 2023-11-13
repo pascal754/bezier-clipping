@@ -2,9 +2,9 @@
 
 ## Find intersection points between two B-spline curves
 
-- find intersection between one of (point, line, or curve) and one of (point, line, or curve)
-- each iteration info saved in node_info.log file
-- verbose info optionally saved in calc.log file
+- Find intersection between one of (point, line, or curve) and one of (point, line, or curve)
+- Each iteration info saved in node_info.log file
+- Verbose info optionally saved in calc.log file
 - m = n + p + 1 should be satisfied for a curve
 (m: knot vector [u_0, u_m], n: control points [P_0, P_n], p: degree of a curve)
 
