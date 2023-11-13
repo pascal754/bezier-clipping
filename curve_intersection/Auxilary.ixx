@@ -24,11 +24,11 @@ void cleanIntersectionPoints(std::vector<Point>& iPoints)
 
 export void printResult(const int iterationNum, std::vector<Point>& iPoints, const bool DEBUG, std::ofstream& logFile)
 {
-    std::println("\n--- calculation results ---");
+    std::println("\n\t* Calculation Summary *");
 
     std::println("\n\t{} iteration(s)", iterationNum);
 
-    std::println("the number of intersection points before clean up: {}", iPoints.size());
+    std::println("\nthe number of intersection points before clean up: {}", iPoints.size());
 
     using namespace std::views;
 
