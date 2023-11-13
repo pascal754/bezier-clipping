@@ -970,8 +970,8 @@ void searchIntersection(std::queue<TwoCurves>& bQueue, ParamInfo& paramInfo)
     if (Bspline::DEBUG)
     {
         std::println(Bspline::logFile, "queue size: {}", bQueue.size());
-        std::println(Bspline::logFile, "curve A, U: [{}, {}], deltaU: {}", crv1.knotVector.front(), crv1.knotVector.back(), crv1.knotVector.back() - crv1.knotVector.front());
-        std::println(Bspline::logFile, "curve B, U: [{}, {}], deltaU: {}", crv2.knotVector.front(), crv2.knotVector.back(), crv2.knotVector.back() - crv2.knotVector.front());
+        std::println(Bspline::logFile, "curve A, U: [{} {}], deltaU: {}", crv1.knotVector.front(), crv1.knotVector.back(), crv1.knotVector.back() - crv1.knotVector.front());
+        std::println(Bspline::logFile, "curve B, U: [{} {}], deltaU: {}", crv2.knotVector.front(), crv2.knotVector.back(), crv2.knotVector.back() - crv2.knotVector.front());
         std::println(Bspline::logFile, "curve A:");
         crv1.printInfo();
         std::println(Bspline::logFile, "curve B:");
