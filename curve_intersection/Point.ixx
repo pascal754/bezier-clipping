@@ -10,7 +10,6 @@ export module Point;
 export class Point
 {
 public:
-    constexpr static double epsilon{ 0.5 }; // chosen for screen pixel
     Point() = default;
     Point(double xCoord, double yCoord) : x{ xCoord }, y{ yCoord } {}
     friend std::ostream& operator<<(std::ostream& os, const Point& cp);
@@ -32,6 +31,9 @@ public:
     }
     double x{};
     double y{};
+
+private:
+    constexpr static double epsilon{ 0.1 }; // chosen for a screen pixel unit
 };
 
 export struct CHPoint //convex hull points
