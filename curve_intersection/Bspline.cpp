@@ -1084,10 +1084,12 @@ void searchIntersection(std::queue<TwoCurves>& bQueue, ParamInfo& paramInfo)
     crv1.makeDistanceCurve(distanceCurve, crv2, min, max);
     if (Bspline::DEBUG) { std::println(Bspline::logFile, "minimum and maximum of distance curve: {}, {}", min, max); }
 
-    // check whether two line segments on the same line
-    if (std::abs(crv1.maxDist - crv1.minDist) < Bspline::u2_epsilon && std::abs(max - min) < Bspline::u2_epsilon && std::abs(crv1.minDist - min) < Bspline::u2_epsilon)
+    // check whether two line segments are on the same line
+    if (std::abs(crv1.maxDist - crv1.minDist) < Bspline::rotation_epsilon
+        && std::abs(max - min) < Bspline::rotation_epsilon
+        && std::abs(crv1.minDist - min) < Bspline::rotation_epsilon)
     {
-        // recalculate distance from 90 degree rotated line
+        // recalculate distance from the rotated line by 90 degree
         crv1.findMinMaxDistanceFromRotatedLine();
 
         // update distance curve

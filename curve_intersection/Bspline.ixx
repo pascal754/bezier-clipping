@@ -82,6 +82,7 @@ private:
     int cp_n() const { return static_cast<int>(std::ssize(controlPoints)) - 1; }
 
     static constexpr double epsilon{ 1e-9 }; // epsilon is for approximate zero and should be much less than u_epsilon
+    static constexpr double rotation_epsilon{ 0.001 }; // to rotate clipping lines
     static constexpr double u_epsilon{ 0.0001 }; // for knot values
     static constexpr double u1_epsilon{ u_epsilon / 10.0 };
     static constexpr double u2_epsilon{ u1_epsilon / 10.0 };
