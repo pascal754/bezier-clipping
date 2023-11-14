@@ -970,8 +970,8 @@ void searchIntersection(std::queue<TwoCurves>& bQueue, ParamInfo& paramInfo)
     if (Bspline::DEBUG)
     {
         std::println(Bspline::logFile, "queue size: {}", bQueue.size());
-        std::println(Bspline::logFile, "curve A, U: [{}, {}], deltaU: {}", crv1.knotVector.front(), crv1.knotVector.back(), crv1.knotVector.back() - crv1.knotVector.front());
-        std::println(Bspline::logFile, "curve B, U: [{}, {}], deltaU: {}", crv2.knotVector.front(), crv2.knotVector.back(), crv2.knotVector.back() - crv2.knotVector.front());
+        std::println(Bspline::logFile, "curve A, U: [{} {}], deltaU: {}", crv1.knotVector.front(), crv1.knotVector.back(), crv1.knotVector.back() - crv1.knotVector.front());
+        std::println(Bspline::logFile, "curve B, U: [{} {}], deltaU: {}", crv2.knotVector.front(), crv2.knotVector.back(), crv2.knotVector.back() - crv2.knotVector.front());
         std::println(Bspline::logFile, "curve A:");
         crv1.printInfo();
         std::println(Bspline::logFile, "curve B:");
@@ -1034,7 +1034,7 @@ void searchIntersection(std::queue<TwoCurves>& bQueue, ParamInfo& paramInfo)
             std::println(Bspline::logFile, "a candidate point on curve B: ({}, {})", intersectPt2.x, intersectPt2.y);
         }
 
-        if (std::abs(intersectPt.x - intersectPt2.x) < Point::epsilon && std::abs(intersectPt.y - intersectPt2.y) < Point::epsilon)
+        if (intersectPt.hasSameCoordWithTolerance(intersectPt2))
         {
             if (Bspline::DEBUG) { std::println(Bspline::logFile, "=== Intersection found === "); }
             paramInfo.iPoints.push_back(intersectPt);
@@ -1372,7 +1372,13 @@ void findIntersection(Bspline crv1, Bspline crv2, ParamInfo& paramInfo)
 
         auto stop = high_resolution_clock::now();
         auto duration = duration_cast<microseconds>(stop - start);
-        if (!Bspline::DEBUG) { std::println("\n\tTime elapsed: {} microseconds", duration.count()); }
+
+        std::println("\n-------------------------------------------------------");
+
+        if (!Bspline::DEBUG)
+        {
+            std::println("\n\tTime elapsed: {} microseconds", duration.count());
+        }
 
         printResult(paramInfo.iterationNum, paramInfo.iPoints, Bspline::DEBUG, Bspline::logFile);
 
