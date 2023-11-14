@@ -1,28 +1,28 @@
 // precompiled header
 #pragma once
 
-#include <iostream>
-#include <vector>
-#include <array>
-#include <string>
 #include <algorithm>
-#include <format>
-#include <optional>
-#include <fstream>
-#include <utility>
-#include <queue>
-#include <list>
-#include <stdexcept>
+#include <array>
 #include <chrono>
-#include <ranges>
+#include <format>
+#include <fstream>
+#include <iostream>
+#include <list>
+#include <optional>
 #include <print>
+#include <queue>
+#include <ranges>
+#include <stdexcept>
+#include <string>
+#include <utility>
+#include <vector>
 
+#include <cmath>
 #include <cstddef>
 #include <cstring>
-#include <cmath>
 
 #include <imgui.h>
 #include <imgui-SFML.h>
+#include <magic_enum.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/System/Clock.hpp>
-#include <magic_enum.hpp>
