@@ -17,6 +17,8 @@ import Auxilary;
 bool Bspline::DEBUG{ false };
 std::ofstream Bspline::logFile;
 
+std::array<double, Bspline::max_degree + 1> Bspline::basis;
+
 int Bspline::findKnotSpan(double u, int control_point_n) const
 {
     if (u < knotVector.front() || u > knotVector.back())
@@ -90,13 +92,10 @@ void Bspline::clearControlPoints()
 
 void Bspline::changeDegree(int degree)
 {
-    if (degree < 1 || degree > 10)
+    if (degree < 1 || degree > max_degree)
         return;
 
     p_degree = degree;
-    basis.resize(p_degree + 1);
-    left.resize(p_degree + 1);
-    right.resize(p_degree + 1);
 
     if (!interpolationMode)
     {
@@ -256,17 +255,20 @@ void savePoints(const Bspline& curve1, const Bspline& curve2, const std::string&
     }
 }
 
-void Bspline::basisFuns(int i, double u)
+void Bspline::basisFuns(const Bspline& crv, int i, double u)
 {
     // Algorithm A2.2 pp70
     // Compute the nonvanishing basis functions
 
+    static std::array<double, max_degree + 1> left;
+    static std::array<double, max_degree + 1> right;
+
     basis[0] = 1.0;
 
-    for (int j{ 1 }; j <= p_degree; ++j)
+    for (int j{ 1 }; j <= crv.p_degree; ++j)
     {
-        left[j] = u - knotVector[i + 1 - j];
-        right[j] = knotVector[i + j] - u;
+        left[j] = u - crv.knotVector[i + 1 - j];
+        right[j] = crv.knotVector[i + j] - u;
         double saved{};
         for (int r{}; r < j; ++r)
         {
@@ -290,7 +292,7 @@ void Bspline::curvePoint(double u, Point& cp) {
     }
 
     int span{ findKnotSpan(u, cp_n()) };
-    basisFuns(span, u);
+    basisFuns(*this, span, u);
 
     cp.x = cp.y = 0.0;
     for (int i{}; i <= p_degree; ++i)
@@ -1494,22 +1496,22 @@ void Bspline::globalCurveInterpolation()
     find_U(u_bar_k);
 
     // 3. initialize array A to 0
-    const auto N{ interpolationPoints.size() };
+    const auto N{ static_cast<int>(std::ssize(interpolationPoints)) };
     std::vector<std::vector<double>> A(N, std::vector<double>(N, 0.));
 
-    auto vectorAssign = [&](size_t i, size_t offset) {
-        for (size_t col{ 0 }; col < basis.size(); ++col)
+    auto vectorAssign = [&](int i, int offset) {
+        for (int col{ 0 }; col <= p_degree; ++col)
         {
             A[i][col + offset] = basis[col];
         }};
 
-    for (size_t i{}; i < N; ++i)
+    for (int i{}; i < N; ++i)
     {
         // Set up coefficient matrix
         int span{};
         try
         {
-            span = findKnotSpan(u_bar_k[i], static_cast<int>(std::ssize(interpolationPoints)) - 1);
+            span = findKnotSpan(u_bar_k[i], N - 1);
         }
         catch (const std::exception& e)
         {
@@ -1518,7 +1520,7 @@ void Bspline::globalCurveInterpolation()
             std::println(stderr, ": global interpolation failed.");
             return;
         }
-        basisFuns(span, u_bar_k[i]);
+        basisFuns(*this, span, u_bar_k[i]);
         vectorAssign(i, span - p_degree);
     }
 
