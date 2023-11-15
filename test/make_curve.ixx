@@ -1,4 +1,8 @@
-export module make_curve;
+module;
+
+#include "pch.h"
+
+export module MakeCurve;
 
 import Point;
 import Bspline;

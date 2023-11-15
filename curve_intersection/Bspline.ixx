@@ -18,12 +18,10 @@ export class Bspline
 public:
     explicit Bspline(int degree) : p_degree{ degree }
     {
-        basis.resize(p_degree + 1);
-        left.resize(p_degree + 1);
-        right.resize(p_degree + 1);
+        if (degree < 1 || degree > max_degree)
+            throw std::invalid_argument("the degree of the curve is wrong");
     }
     Bspline(int degree, const std::vector<double>& knotVec) : Bspline{ degree } { knotVector = knotVec; }
-    void basisFuns(int i, double u);
     void curvePoint(double u, Point& pt);
     void addPointAndKnots(const Point& p);
     void addInterpolationPoint(const Point& p);
@@ -81,20 +79,23 @@ private:
     // cp_n + 1: # of control points
     int cp_n() const { return static_cast<int>(std::ssize(controlPoints)) - 1; }
 
+    static void basisFuns(const Bspline& crv, int i, double u);
     static constexpr double epsilon{ 1e-9 }; // epsilon is for approximate zero and should be much less than u_epsilon
+    static constexpr double rotation_epsilon{ 0.001 }; // to rotate clipping lines
     static constexpr double u_epsilon{ 0.0001 }; // for knot values
     static constexpr double u1_epsilon{ u_epsilon / 10.0 };
     static constexpr double u2_epsilon{ u1_epsilon / 10.0 };
     static constexpr int max_iteration{ 500'000 }; // maximum iteration for overlapping curves
     static constexpr int max_num_intersection_points{ 500'000 };
+    static constexpr int max_degree{ 10 }; // maximum degree of a curve
 
-    int p_degree{}; // degree
+    // for basisFuns function
+    static std::array<double, max_degree + 1> basis;
+
+    int p_degree{ 1 }; // degree
     std::vector<Point> controlPoints;
     std::vector<Point> interpolationPoints;
     std::vector<double> knotVector;
-    std::vector<double> basis;
-    std::vector<double> left;
-    std::vector<double> right;
     std::vector<Point> convexHull;
 
     // ax + by + c = 0 line through the end points (normalized form: a^2 + b^2 = 1)

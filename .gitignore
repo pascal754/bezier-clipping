@@ -40,3 +40,8 @@
 /code_analysis.ruleset
 /curve_intersection/node_info.log
 *.dat
+/curve_intersection/Bspline - before basis mod.cpp
+/curve_intersection/Bspline - before basis mod.ixx
+/test/x64
+/curve_intersection/Bspline - mdspan wip.cpp
+/curve_intersection/Bspline - mdspan wip.ixx

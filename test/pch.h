@@ -6,6 +6,7 @@
 #include <chrono>
 #include <format>
 #include <fstream>
+#include <functional>
 #include <iostream>
 #include <list>
 #include <optional>
