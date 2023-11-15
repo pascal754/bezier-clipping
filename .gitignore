@@ -42,3 +42,4 @@
 *.dat
 /curve_intersection/Bspline - before basis mod.cpp
 /curve_intersection/Bspline - before basis mod.ixx
+/test/x64
