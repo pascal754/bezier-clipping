@@ -1615,7 +1615,6 @@ bool Bspline::LUPDecompose(std::vector<std::vector<double>>& A, std::vector<int>
      */
 
     size_t N{ interpolationPoints.size() };
-    std::vector<double> ptr;
 
     constexpr double Tol{ 1e-6 };
 
@@ -1627,7 +1626,7 @@ bool Bspline::LUPDecompose(std::vector<std::vector<double>>& A, std::vector<int>
     for (size_t i{}; i < N; ++i)
     {
         double maxA{};
-        size_t imax{ i };
+        size_t iMax{ i };
 
         double absA{};
         for (size_t k{ i }; k < N; ++k)
@@ -1635,23 +1634,19 @@ bool Bspline::LUPDecompose(std::vector<std::vector<double>>& A, std::vector<int>
             if ((absA = std::abs(A[k][i])) > maxA)
             {
                 maxA = absA;
-                imax = k;
+                iMax = k;
             }
         }
 
         if (maxA < Tol) { return false; } //failure, matrix is degenerate
 
-        if (imax != i)
+        if (iMax != i)
         {
             //pivoting P
-            int temp{ Pm[i] };
-            Pm[i] = Pm[imax];
-            Pm[imax] = temp;
+            std::swap(Pm[i], Pm[iMax]);
 
             //pivoting rows of A
-            ptr = A[i];
-            A[i] = A[imax];
-            A[imax] = ptr;
+            std::swap(A[i], A[iMax]);
 
             //counting pivots starting from N (for determinant)
             ++Pm[N];

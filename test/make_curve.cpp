@@ -1,4 +1,8 @@
-module make_curve;
+module;
+
+#include "pch.h"
+
+module MakeCurve;
 
 import Point;
 import Bspline;
@@ -514,6 +518,9 @@ void make_curve23(Bspline& curve1, Bspline& curve2)
 void make_curve24(Bspline& curve1, Bspline& curve2)
 {
 	// two points, degree is 1
+	curve1.changeDegree(1);
+	curve2.changeDegree(1);
+
 	curve1.addPointAndKnots(Point{ 550, 200 });
 	curve1.addPointAndKnots(Point{ 550, 200 });
 
@@ -545,7 +552,7 @@ void do_test100()
 	curve1.addPointAndKnots(Point{ 200, 200 });
 	curve1.findConvexHull();
 
-	curve1.printInfo();
+	//curve1.printInfo();
 
 	Point testPt{};
 	//curve1.curvePoint(-1.5, testPt); // out of range error
