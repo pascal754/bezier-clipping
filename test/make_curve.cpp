@@ -1,6 +1,7 @@
 module;
 
 #include "pch.h"
+#include <conio.h>
 
 module MakeCurve;
 
@@ -542,51 +543,6 @@ void make_curve25(Bspline& curve1, Bspline& curve2)
 	curve2.addPointAndKnots(Point{ 210, 210 });
 }
 
-void do_test100()
-{
-	Bspline curve1{ 3 };
-
-	curve1.addPointAndKnots(Point{ 200, 200 });
-	curve1.addPointAndKnots(Point{ 200, 200 });
-	curve1.addPointAndKnots(Point{ 200, 200 });
-	curve1.addPointAndKnots(Point{ 200, 200 });
-	curve1.findConvexHull();
-
-	//curve1.printInfo();
-
-	Point testPt{};
-	//curve1.curvePoint(-1.5, testPt); // out of range error
-	curve1.curvePoint(0.0, testPt); // ok
-	curve1.curvePoint(0.5, testPt); // ok
-	curve1.curvePoint(1.0, testPt); // ok
-	//curve1.curvePoint(1.5, testPt); // out of range error
-
-	std::optional<Bspline> dCurve1{ curve1.decompose(0.0, 0.0001) }; // ok
-	if (dCurve1)
-	{
-		dCurve1->curvePoint(0.0, testPt);
-		dCurve1->curvePoint(0.00005, testPt);
-		dCurve1->curvePoint(0.0001, testPt);
-	}
-
-	dCurve1 = curve1.decompose(0.0, 0.0);
-	dCurve1 = curve1.decompose(0.0, 0.5);
-	if (dCurve1)
-	{
-		dCurve1->curvePoint(0.3, testPt);
-		dCurve1->curvePoint(0.0, testPt);
-		dCurve1->curvePoint(0.5, testPt);
-	}
-
-	dCurve1 = curve1.decompose(0.5, 0.5);
-	if (dCurve1)
-	{
-		dCurve1->curvePoint(0.5, testPt); // NaN
-	}
-
-	dCurve1 = curve1.decompose(1.0, 1.0);
-}
-
 void make_curve26(Bspline& curve1, Bspline& curve2)
 {
 	curve1.addPointAndKnots(Point{ 338, 351 });
@@ -781,9 +737,6 @@ void make_curve26(Bspline& curve1, Bspline& curve2)
 	curve1.addPointAndKnots(Point{ 35, 110 });
 	curve1.addPointAndKnots(Point{ 28, 119 });
 
-
-
-
 	curve2.addPointAndKnots(Point{ 294, 116 });
 	curve2.addPointAndKnots(Point{ 208, 153 });
 	curve2.addPointAndKnots(Point{ 159, 254 });
@@ -824,4 +777,82 @@ void make_curve26(Bspline& curve1, Bspline& curve2)
 	curve2.addPointAndKnots(Point{ 462, 426 });
 	curve2.addPointAndKnots(Point{ 462, 459 });
 	curve2.addPointAndKnots(Point{ 479, 480 });
+}
+
+void write_dat_files()
+{
+	std::vector<std::function<void(Bspline&, Bspline&)>> vf{
+			make_curve01, make_curve02, make_curve03, make_curve04, make_curve05,
+			make_curve06, make_curve07, make_curve08, make_curve09, make_curve10,
+			make_curve11, make_curve12, make_curve13, make_curve14, make_curve15,
+			make_curve16, make_curve17, make_curve18, make_curve19, make_curve20,
+			make_curve21, make_curve22, make_curve23, make_curve24, make_curve25,
+			make_curve26 };
+
+	for (auto&& [index, make_crv] : std::views::enumerate(vf))
+	{
+		Bspline c1{ 3 };
+		Bspline c2{ 3 };
+
+		c1.setID(1);
+		c1.interpolationMode = false;
+
+		c2.interpolationMode = false;
+		c2.setID(2);
+
+		ParamInfo pInfo{};
+
+		make_crv(c1, c2);
+		auto filename{ std::format("curves_{:02}.dat", index + 1) };
+		savePoints(c1, c2, filename);
+
+		/*findIntersection(c1, c2, pInfo);
+
+		std::println("Press any key to continue ...");
+		_getch();*/
+	}
+}
+
+void decompose_test()
+{
+	Bspline curve1{ 3 };
+	curve1.interpolationMode = false;
+
+	curve1.addPointAndKnots(Point{ 200, 200 });
+	curve1.addPointAndKnots(Point{ 200, 200 });
+	curve1.addPointAndKnots(Point{ 200, 200 });
+	curve1.addPointAndKnots(Point{ 200, 200 });
+	curve1.findConvexHull();
+
+	Point testPt{};
+	//curve1.curvePoint(-1.5, testPt); // out of range error
+	curve1.curvePoint(0.0, testPt); // ok
+	curve1.curvePoint(0.5, testPt); // ok
+	curve1.curvePoint(1.0, testPt); // ok
+	//curve1.curvePoint(1.5, testPt); // out of range error
+
+	std::optional<Bspline> dCurve1{ curve1.decompose(0.0, 0.0001) }; // ok
+	if (dCurve1)
+	{
+		dCurve1->curvePoint(0.0, testPt);
+		dCurve1->curvePoint(0.00005, testPt);
+		dCurve1->curvePoint(0.0001, testPt);
+	}
+
+	dCurve1 = curve1.decompose(0.0, 0.0);
+	dCurve1 = curve1.decompose(0.0, 0.5);
+	if (dCurve1)
+	{
+		dCurve1->curvePoint(0.3, testPt);
+		dCurve1->curvePoint(0.0, testPt);
+		dCurve1->curvePoint(0.5, testPt);
+	}
+
+	dCurve1 = curve1.decompose(0.5, 0.5);
+	if (dCurve1)
+	{
+		dCurve1->curvePoint(0.5, testPt);
+	}
+
+	dCurve1 = curve1.decompose(1.0, 1.0);
 }

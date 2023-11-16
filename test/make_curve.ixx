@@ -7,7 +7,8 @@ export module MakeCurve;
 import Point;
 import Bspline;
 
-export {
+export
+{
 	void make_curve01(Bspline& curve1, Bspline& curve2);
 
 	void make_curve02(Bspline& curve1, Bspline& curve2);
@@ -59,4 +60,8 @@ export {
 	void make_curve25(Bspline& curve1, Bspline& curve2);
 
 	void make_curve26(Bspline& curve1, Bspline& curve2);
+
+	void write_dat_files();
+
+	void decompose_test();
 }
