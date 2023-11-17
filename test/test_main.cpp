@@ -7,7 +7,7 @@ int main()
 {
     try
     {
-        decompose_test();
+        find_intersection_batch();
     }
     catch (const std::exception& e)
     {

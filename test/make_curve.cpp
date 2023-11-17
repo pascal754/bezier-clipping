@@ -856,3 +856,44 @@ void decompose_test()
 
 	dCurve1 = curve1.decompose(1.0, 1.0);
 }
+
+void find_intersection_batch()
+{
+    std::vector<std::string> crv_files{
+        "curves_01.dat", "curves_02.dat", "curves_03.dat", "curves_04.dat", "curves_05.dat",
+        "curves_06.dat", "curves_07.dat", "curves_08.dat", "curves_09.dat", "curves_10.dat",
+        "curves_11.dat", "curves_12.dat", "curves_13.dat", "curves_14.dat", "curves_15.dat",
+        "curves_16.dat", "curves_17.dat", "curves_18.dat", "curves_19.dat", "curves_20.dat",
+        "curves_21.dat", "curves_22.dat", "curves_23.dat", "curves_24.dat", "curves_25.dat",
+        "curves_26.dat", "grid_lines.dat", "lines.dat", "lines_deg1.dat", "line_curve.dat",
+		"overlapping_curves.dat", "overlapping_curves_deg1.dat",
+        "overlapping_lines.dat", "point_line.dat", "saved_points0921.dat", 
+        "test2.dat", "test3.dat", "test3_deg1.dat","test4.dat"
+    };
+
+	std::ofstream summaryFile{ "summary.log" };
+	constexpr std::string_view fileFmt{ "{:30}{:15}{:20}{:15}{:20}" };
+	std::println(summaryFile, fileFmt, "filename", "iter_num", "intersection_num",
+		"iter_num", "intersection_num");
+	for (const auto& dat_file : crv_files)
+	{
+		Bspline c1{ 3 };
+		c1.setID(1);
+		Bspline c2{ 3 };
+		c2.setID(2);
+
+        loadPoints(c1, c2, dat_file);
+
+        ParamInfo pInfo{};
+        findIntersection(c1, c2, pInfo);
+
+		ParamInfo pInfo2{};
+		pInfo2.decomposeFirst = true;
+
+		findIntersection(c1, c2, pInfo2);
+
+        std::println(summaryFile, fileFmt, dat_file,
+			pInfo.iterationNum, pInfo.iPoints.size(),
+			pInfo2.iterationNum, pInfo2.iPoints.size());
+	}
+}

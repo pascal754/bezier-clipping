@@ -64,4 +64,6 @@ export
 	void write_dat_files();
 
 	void decompose_test();
+
+	void find_intersection_batch();
 }
