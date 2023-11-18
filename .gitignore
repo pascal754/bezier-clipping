@@ -46,3 +46,5 @@
 /curve_intersection/Bspline - mdspan wip.cpp
 /curve_intersection/Bspline - mdspan wip.ixx
 *.log
+/comparison_parameters.ods
+/.~lock.comparison_parameters.ods#

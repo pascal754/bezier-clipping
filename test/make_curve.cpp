@@ -859,17 +859,16 @@ void decompose_test()
 
 void find_intersection_batch()
 {
-    std::vector<std::string> crv_files{
-        "curves_01.dat", "curves_02.dat", "curves_03.dat", "curves_04.dat", "curves_05.dat",
-        "curves_06.dat", "curves_07.dat", "curves_08.dat", "curves_09.dat", "curves_10.dat",
-        "curves_11.dat", "curves_12.dat", "curves_13.dat", "curves_14.dat", "curves_15.dat",
-        "curves_16.dat", "curves_17.dat", "curves_18.dat", "curves_19.dat", "curves_20.dat",
-        "curves_21.dat", "curves_22.dat", "curves_23.dat", "curves_24.dat", "curves_25.dat",
-        "curves_26.dat", "grid_lines.dat", "lines.dat", "lines_deg1.dat", "line_curve.dat",
-		"overlapping_curves.dat", "overlapping_curves_deg1.dat",
-        "overlapping_lines.dat", "point_line.dat", "saved_points0921.dat", 
-        "test2.dat", "test3.dat", "test3_deg1.dat","test4.dat"
-    };
+	std::vector<std::string> crv_files;
+	const std::filesystem::path pwd{ "." };
+	for (auto const& dir_entry : std::filesystem::directory_iterator{ pwd })
+	{
+		if (dir_entry.is_regular_file()
+			&& dir_entry.path().filename().extension().string() == ".dat")
+		{
+			crv_files.push_back(dir_entry.path().filename().string());
+		}
+	}
 
 	std::ofstream summaryFile{ "summary.log" };
 	constexpr std::string_view fileFmt{ "{:30}{:15}{:20}{:15}{:20}" };
