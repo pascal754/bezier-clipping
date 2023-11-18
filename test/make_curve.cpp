@@ -805,11 +805,6 @@ void write_dat_files()
 		make_crv(c1, c2);
 		auto filename{ std::format("curves_{:02}.dat", index + 1) };
 		savePoints(c1, c2, filename);
-
-		/*findIntersection(c1, c2, pInfo);
-
-		std::println("Press any key to continue ...");
-		_getch();*/
 	}
 }
 
@@ -894,5 +889,9 @@ void find_intersection_batch()
         std::println(summaryFile, fileFmt, dat_file,
 			pInfo.iterationNum, pInfo.iPoints.size(),
 			pInfo2.iterationNum, pInfo2.iPoints.size());
+
+		/*std::println("\n{} finished.", dat_file);
+		std::println("\nPress any key to continue ...");
+		_getch();*/
 	}
 }
