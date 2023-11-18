@@ -858,10 +858,13 @@ void find_intersection_batch()
 	const std::filesystem::path pwd{ "." };
 	for (auto const& dir_entry : std::filesystem::directory_iterator{ pwd })
 	{
-		if (dir_entry.is_regular_file()
-			&& dir_entry.path().filename().extension().string() == ".dat")
+		if (dir_entry.is_regular_file())
 		{
-			crv_files.push_back(dir_entry.path().filename().string());
+			auto filename{ dir_entry.path().filename().string() };
+			if (filename.ends_with(".dat"))
+			{
+				crv_files.push_back(std::move(filename));
+			}
 		}
 	}
 
