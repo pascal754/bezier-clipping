@@ -1134,7 +1134,7 @@ void searchIntersection(std::queue<TwoCurves>& bQueue, ParamInfo& paramInfo)
     if (adjusted)
     {
         auto comp = [](const Point& a, const Point& b) -> bool {return a.y < b.y; };
-        const auto [small, big] = std::minmax_element(distanceCurve.controlPoints.begin(), distanceCurve.controlPoints.end(), comp);
+        const auto [small, big] = std::ranges::minmax_element(distanceCurve.controlPoints, comp);
         min = small->y;
         max = big->y;
 
