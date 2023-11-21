@@ -1233,8 +1233,7 @@ void searchIntersection(std::queue<TwoCurves>& bQueue, ParamInfo& paramInfo)
         return;
     }
 
-    double u_min{ *std::min_element(uValues.begin(), uValues.end()) };
-    double u_max{ *std::max_element(uValues.begin(), uValues.end()) };
+    auto [u_min, u_max]{ std::ranges::minmax(uValues) };
 
     if (std::isnan(u_min) || std::isnan(u_max))
     {
