@@ -1,4 +1,4 @@
-# Intersection algorithm for two B-spline curves using Bezier clipping
+# Intersection algorithm for two B-spline curves using Bézier clipping
 
 ## Find intersection points between two B-spline curves
 
