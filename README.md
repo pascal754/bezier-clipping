@@ -2,7 +2,7 @@
 
 ## Find intersection points between two B-spline curves
 
-- Find intersection between one of (point, line, or curve) and one of (point, line, or curve).
+- Find intersection between one of (point, straight line, or curve) and one of (point, straight line, or curve).
 - Each iteration info is saved in node_info.log file.
 - Verbose info optionally can be saved in calc.log file.
 - A curve should satisfy m = n + p + 1.
