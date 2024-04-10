@@ -10,6 +10,8 @@ export module Bspline;
 import Point;
 import NodeInfo;
 
+import std;
+
 struct TwoCurves;
 struct ParamInfo;
 

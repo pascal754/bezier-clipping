@@ -4,6 +4,8 @@ module;
 
 export module Grid;
 
+import std;
+
 export void drawGrids(sf::RenderWindow& window, unsigned int width, unsigned int height, unsigned int step)
 {
 	std::array<sf::Vertex, 2> line;

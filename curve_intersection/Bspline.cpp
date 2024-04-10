@@ -14,6 +14,8 @@ module Bspline;
 
 import Auxilary;
 
+import std;
+
 bool Bspline::DEBUG{ false };
 std::ofstream Bspline::logFile;
 

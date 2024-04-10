@@ -7,6 +7,8 @@ export module Auxilary;
 import Point;
 import NodeInfo;
 
+import std;
+
 void cleanIntersectionPoints(std::vector<Point>& iPoints)
 {
     for (auto& pt : iPoints)

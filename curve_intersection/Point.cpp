@@ -6,6 +6,8 @@ module;
 
 module Point;
 
+import std;
+
 std::ostream& operator<<(std::ostream& os, const Point& cp)
 {
     std::print(os, "({}, {})", cp.x, cp.y);

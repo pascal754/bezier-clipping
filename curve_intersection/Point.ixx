@@ -7,6 +7,8 @@ module;
 
 export module Point;
 
+import std;
+
 export class Point
 {
 public:

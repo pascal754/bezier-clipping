@@ -10,6 +10,8 @@ import Grid;
 import FileDialog;
 import NodeInfo;
 
+import std;
+
 auto main() -> int
 {
     try
