@@ -70,14 +70,16 @@ export bool launchFileDialog(char mode, std::string& sFilePath, std::string& sSe
     else
         return false;
 
-    if (FAILED(f_SysHr)) {
+    if (FAILED(f_SysHr))
+    {
         CoUninitialize();
         return false;
     }
 
     //  SHOW OPEN FILE DIALOG WINDOW
     f_SysHr = f_FileSystem->Show(NULL);
-    if (FAILED(f_SysHr)) {
+    if (FAILED(f_SysHr))
+    {
         f_FileSystem->Release();
         CoUninitialize();
         return false;
@@ -86,7 +88,8 @@ export bool launchFileDialog(char mode, std::string& sFilePath, std::string& sSe
     //  RETRIEVE FILE NAME FROM THE SELECTED ITEM
     IShellItem* f_Files;
     f_SysHr = f_FileSystem->GetResult(&f_Files);
-    if (FAILED(f_SysHr)) {
+    if (FAILED(f_SysHr))
+    {
         f_FileSystem->Release();
         CoUninitialize();
         return false;
@@ -95,7 +98,8 @@ export bool launchFileDialog(char mode, std::string& sFilePath, std::string& sSe
     //  STORE AND CONVERT THE FILE NAME
     PWSTR f_Path;
     f_SysHr = f_Files->GetDisplayName(SIGDN_FILESYSPATH, &f_Path);
-    if (FAILED(f_SysHr)) {
+    if (FAILED(f_SysHr))
+    {
         f_Files->Release();
         f_FileSystem->Release();
         CoUninitialize();

@@ -4,8 +4,6 @@ module;
 
 export module NodeInfo;
 
-import std;
-
 export enum class ReturnInfo
 {
     Default,

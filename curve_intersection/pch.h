@@ -20,6 +20,7 @@
 //#include <cmath>
 //#include <cstddef>
 //#include <cstring>
+//use import std; for headers above
 
 #include <imgui.h>
 #include <imgui-SFML.h>

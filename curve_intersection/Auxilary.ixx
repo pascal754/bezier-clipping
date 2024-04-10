@@ -6,7 +6,6 @@ export module Auxilary;
 
 import Point;
 import NodeInfo;
-
 import std;
 
 void cleanIntersectionPoints(std::vector<Point>& iPoints)
@@ -32,10 +31,10 @@ export void printResult(const int iterationNum, std::vector<Point>& iPoints, con
 
     std::println("\nthe number of intersection points before clean up: {}", iPoints.size());
 
-    using namespace std::views;
+    namespace rv = std::ranges::views;
 
     auto writePoints = [&](std::ostream& os) {
-        for (auto&& [index, pt] : iPoints | enumerate | as_const)
+        for (auto&& [index, pt] : iPoints | rv::enumerate | rv::as_const)
         {
             std::println(os, "***intersection point #{}: ({}, {})", index + 1, pt.x, pt.y);
         }

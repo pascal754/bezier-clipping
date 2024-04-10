@@ -2,6 +2,9 @@
 // by SM
 // curve intersection
 
+// April 10, 2024
+// use import std;
+
 #include "pch.h"
 
 import Bspline;
@@ -9,7 +12,6 @@ import Point;
 import Grid;
 import FileDialog;
 import NodeInfo;
-
 import std;
 
 auto main() -> int
