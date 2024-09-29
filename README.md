@@ -29,15 +29,15 @@
 ## Development Tools
 
 - Microsoft Visual Studio Community 2022 (64-bit) - 
-Version 17.9.0 Preview 1.0
+Version 17.10.0 Preview 3.0
 C++latest(modules)
 
 ## Library via vcpkg
 
-- sfml 2.6.1
-- imgui 1.90
-- imgui-sfml 2.6
-- magic-enum 0.9.5
+- sfml:x64-windows 2.6.1
+- imgui:x64-windows 1.90.2
+- imgui-sfml:x64-windows 2.6
+- magic-enum:x64-windows 0.9.5
 
 ## Sample calculation
 ![screenshot](Screenshot_3.png)
