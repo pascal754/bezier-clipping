@@ -1,27 +1,28 @@
 // precompiled header
 #pragma once
 
-#include <algorithm>
-#include <array>
-#include <chrono>
-#include <filesystem>
-#include <format>
-#include <fstream>
-#include <functional>
-#include <iostream>
-#include <list>
-#include <optional>
-#include <print>
-#include <queue>
-#include <ranges>
-#include <stdexcept>
-#include <string>
-#include <utility>
-#include <vector>
-
-#include <cmath>
-#include <cstddef>
-#include <cstring>
+//#include <algorithm>
+//#include <array>
+//#include <chrono>
+//#include <filesystem>
+//#include <format>
+//#include <fstream>
+//#include <functional>
+//#include <iostream>
+//#include <list>
+//#include <optional>
+//#include <print>
+//#include <queue>
+//#include <ranges>
+//#include <stdexcept>
+//#include <string>
+//#include <utility>
+//#include <vector>
+//
+//#include <cmath>
+//#include <cstddef>
+//#include <cstring>
+//use import std; instead of headers above
 
 #include <imgui.h>
 #include <imgui-SFML.h>

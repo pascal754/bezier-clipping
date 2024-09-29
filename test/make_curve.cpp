@@ -7,6 +7,7 @@ module MakeCurve;
 
 import Point;
 import Bspline;
+import std;
 
 void make_curve01(Bspline& curve1, Bspline& curve2)
 {

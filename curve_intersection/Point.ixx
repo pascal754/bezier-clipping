@@ -44,12 +44,30 @@ export struct CHPoint //convex hull points
     double angle{};
 };
 
+// raises errors in __msvc_formatter.hpp using Microsoft Visual Studio Community 2022 (64-bit) - Preview
+// Version 17.12.0 Preview 2.1
+
+//template <>
+//struct std::formatter<Point> : std::formatter<std::string>
+//{
+//    auto format(const Point& p, std::format_context& ctx) const
+//    {
+//        return std::formatter<string>::format(
+//            std::format("({}, {})", p.x, p.y), ctx);
+//    }
+//};
+
+// a workaround to avoid the above errors
 template <>
-struct std::formatter<Point> : std::formatter<std::string>
+struct std::formatter<Point>
 {
-    auto format(Point p, format_context& ctx) const
+    constexpr auto parse(std::format_parse_context& ctx)
     {
-        return formatter<string>::format(
-            std::format("({}, {})", p.x, p.y), ctx);
+        return ctx.begin();
+    }
+
+    auto format(const Point& p, std::format_context& ctx) const
+    {
+        return std::format_to(ctx.out(), "({}, {})", p.x, p.y);
     }
 };

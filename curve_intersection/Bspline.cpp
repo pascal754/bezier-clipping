@@ -1454,7 +1454,7 @@ void Bspline::printInfo() // debug only
 
     std::println(logFile, "\nnumber of control points: {}", cp_n() + 1);
 
-    for (auto&& [index, pt] : std::views::enumerate(std::as_const(controlPoints)))
+    for (auto&& [index, pt] : std::ranges::views::enumerate(std::as_const(controlPoints)))
     {
         std::println(logFile, "{}\t{}", index + 1, pt);
     }

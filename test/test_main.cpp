@@ -2,6 +2,7 @@
 
 import Bspline;
 import MakeCurve;
+import std;
 
 int main()
 {
