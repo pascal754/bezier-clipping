@@ -29,15 +29,19 @@
 ## Development Tools
 
 - Microsoft Visual Studio Community 2022 (64-bit) - 
-Version 17.12.0 Preview 2.1
+Version 17.13.0 Preview 1.0
 C++latest(modules)
 
 ## Library via vcpkg
 
-- sfml:x64-windows 2.6.1
-- imgui:x64-windows 1.91.0
+- sfml:x64-windows 2.6.2
+- imgui:x64-windows 1.91.5
 - imgui-sfml:x64-windows 2.6
-- magic-enum:x64-windows 0.9.6
+- magic-enum:x64-windows 0.9.7 (#include path changed from <magic_enum.hpp> to <magic_enum/magic_enum.hpp>)
 
+## MSVC Bug
+
+- Warning C5201 is incorrect: [Developer Community](https://developercommunity.visualstudio.com/t/C-modules-and-precompiled-header-incor/10016869)
+  
 ## Sample calculation
 ![screenshot](Screenshot_3.png)
