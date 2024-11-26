@@ -26,6 +26,6 @@
 
 #include <imgui.h>
 #include <imgui-SFML.h>
-#include <magic_enum.hpp>
+#include <magic_enum/magic_enum.hpp> // since 0.9.7, from #include <magic_enum.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/System/Clock.hpp>
