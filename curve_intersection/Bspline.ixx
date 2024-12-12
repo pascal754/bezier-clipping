@@ -7,8 +7,8 @@ module;
 
 export module Bspline;
 
-import Point;
 import NodeInfo;
+import Point;
 import std;
 
 struct TwoCurves;
@@ -20,7 +20,9 @@ public:
   explicit Bspline(int degree) : p_degree{ degree }
   {
     if (degree < 1 || degree > max_degree)
-      throw std::invalid_argument("the degree of the curve is out of range");
+    {
+      throw std::invalid_argument{ "the degree of the curve is out of range" };
+    }
   }
   Bspline(int degree, const std::vector<double>& knotVec) : Bspline{ degree } { knotVector = knotVec; }
   void curvePoint(double u, Point& pt);

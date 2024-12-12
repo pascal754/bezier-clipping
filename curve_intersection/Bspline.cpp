@@ -128,14 +128,14 @@ void loadPoints(Bspline& curve1, Bspline& curve2, const std::string& filePathNam
     std::string yCoord;
     dataFile >> xCoord >> yCoord;
     if (xCoord != "A" || yCoord != "A")
-      throw std::exception("curve A indicator missing");
+      throw std::runtime_error{ "curve A indicator missing" };
 
     auto readHeader = [&](Bspline& curve) {
       dataFile >> xCoord >> yCoord;
       if (xCoord == "degree")
         curve.changeDegree(std::stoi(yCoord));
       else
-        throw std::exception("degree not found");
+        throw std::runtime_error{ "degree not found" };
 
       dataFile >> xCoord >> yCoord;
       if (xCoord == "interpolation" && yCoord == "true")
@@ -143,7 +143,7 @@ void loadPoints(Bspline& curve1, Bspline& curve2, const std::string& filePathNam
       else if (xCoord == "interpolation" && yCoord == "false")
         curve.interpolationMode = false;
       else
-        throw std::exception("interpolation format wrong");
+        throw std::runtime_error{ "interpolation format wrong" };
       };
 
     readHeader(curve1);
@@ -170,10 +170,10 @@ void loadPoints(Bspline& curve1, Bspline& curve2, const std::string& filePathNam
       readData(curve1);
     }
     if (!curve1.checkNumbers())
-      throw std::exception("curve1: checkNumbers() failed");
+      throw std::runtime_error{ "curve1: checkNumbers() failed" };
 
     if (!curveBHeader)
-      throw std::exception("curve B indicator missing");
+      throw std::runtime_error{ "curve B indicator missing" };
 
     readHeader(curve2);
 
@@ -182,7 +182,7 @@ void loadPoints(Bspline& curve1, Bspline& curve2, const std::string& filePathNam
       readData(curve2);
     }
     if (!curve2.checkNumbers())
-      throw std::exception("curve2: checkNumbers() failed");
+      throw std::runtime_error{ "curve2: checkNumbers() failed" };
 
     std::println("curves data loaded");
   }
