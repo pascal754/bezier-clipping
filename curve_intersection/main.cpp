@@ -96,27 +96,31 @@ auto main() -> int
             {
               if (curve1.interpolationMode)
               {
-                curve1.addInterpolationPoint(Point{ static_cast<double>(mPos.x), static_cast<double>(window.getSize().y - mPos.y) });
+                curve1.addInterpolationPoint(
+                  Point{ static_cast<double>(mPos.x), static_cast<double>(window.getSize().y - mPos.y) });
               }
               else
               {
-                curve1.addPointAndKnots(Point{ static_cast<double>(mPos.x), static_cast<double>(window.getSize().y - mPos.y) });
+                curve1.addPointAndKnots(
+                  Point{ static_cast<double>(mPos.x), static_cast<double>(window.getSize().y - mPos.y) });
               }
             }
             if (curve2EditMode)
             {
               if (curve2.interpolationMode)
               {
-                curve2.addInterpolationPoint(Point{ static_cast<double>(mPos.x), static_cast<double>(window.getSize().y - mPos.y) });
+                curve2.addInterpolationPoint(
+                  Point{ static_cast<double>(mPos.x), static_cast<double>(window.getSize().y - mPos.y) });
               }
               else
               {
-                curve2.addPointAndKnots(Point{ static_cast<double>(mPos.x), static_cast<double>(window.getSize().y - mPos.y) });
+                curve2.addPointAndKnots(
+                  Point{ static_cast<double>(mPos.x), static_cast<double>(window.getSize().y - mPos.y) });
               }
             }
           }
         }
-      }
+      } // end of main window event polling
 
       // Child window event processing
       if (childWindow.isOpen())
@@ -148,7 +152,10 @@ auto main() -> int
         ImGui::SetNextWindowPos(ImVec2{ 5.f, 5.f }); // , ImGuiCond_FirstUseEver);
         ImGui::SetNextWindowSize(ImVec2{ 280.f, 780.f });
 
-        ImGui::Begin("Operations", &imguiOpen, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar);
+        ImGui::Begin(
+          "Operations",
+          &imguiOpen,
+          ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar);
         ImGui::BeginGroup();
 
         ImGui::Checkbox("Show grid", &gridMode);
@@ -343,7 +350,12 @@ auto main() -> int
         //ImGui::CheckboxFlags("ImGuiInputTextFlags_ReadOnly", &flags, ImGuiInputTextFlags_ReadOnly);
         //ImGui::CheckboxFlags("ImGuiInputTextFlags_AllowTabInput", &flags, ImGuiInputTextFlags_AllowTabInput);
         //ImGui::CheckboxFlags("ImGuiInputTextFlags_CtrlEnterForNewLine", &flags, ImGuiInputTextFlags_CtrlEnterForNewLine);
-        ImGui::InputTextMultiline("##source", text.data(), text.size(), ImVec2(-FLT_MIN, ImGui::GetTextLineHeight() * 16), ImGuiInputTextFlags_ReadOnly);
+        ImGui::InputTextMultiline(
+          "##source",
+          text.data(),
+          text.size(),
+          ImVec2{ -FLT_MIN, ImGui::GetTextLineHeight() * 16 },
+          ImGuiInputTextFlags_ReadOnly);
 
         ImGui::EndGroup();
         ImGui::End();
@@ -398,7 +410,7 @@ auto main() -> int
         ImGui::SFML::Render(childWindow);
         childWindow.display();
       }
-    }
+    } // end of while(window.isOpen())
 
     ImGui::SFML::Shutdown();
   }
