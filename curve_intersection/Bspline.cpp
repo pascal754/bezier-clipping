@@ -544,7 +544,7 @@ void Bspline::drawControlPolygon(sf::RenderWindow& window) const
   if (cp_n() < 0)
     return;
 
-  sf::VertexArray poly{ sf::LineStrip };
+  sf::VertexArray poly{ sf::PrimitiveType::LineStrip };
   auto wSize{ window.getSize() };
   for (const auto& pt : controlPoints)
     poly.append(sf::Vertex{ sf::Vector2f{ static_cast<float>(pt.x), wSize.y - static_cast<float>(pt.y) } });
@@ -562,7 +562,7 @@ void Bspline::drawCurve(sf::RenderWindow& window, sf::Color col, sf::VertexArray
       auto wSize{ window.getSize() };
       sf::CircleShape c{ 5 };
       c.setFillColor(col);
-      c.setPosition(static_cast<float>(convexHull.front().x) - c.getRadius(), wSize.y - static_cast<float>(convexHull.front().y) - c.getRadius());
+      c.setPosition({ static_cast<float>(convexHull.front().x) - c.getRadius(), wSize.y - static_cast<float>(convexHull.front().y) - c.getRadius() });
       window.draw(c);
     }
     else // draw curve
@@ -596,7 +596,7 @@ void Bspline::drawCurve(sf::RenderWindow& window, sf::Color col, sf::VertexArray
         {
             sf::CircleShape c{ 5 };
             c.setFillColor(col);
-            c.setPosition(static_cast<float>(p.x) - c.getRadius(), wSize.y - static_cast<float>(p.y) - c.getRadius());
+            c.setPosition({ static_cast<float>(p.x) - c.getRadius(), wSize.y - static_cast<float>(p.y) - c.getRadius() });
             window.draw(c);
         }
         } };
@@ -614,7 +614,7 @@ void Bspline::drawConvexHull(sf::RenderWindow& window, sf::Color col)
   if (convexHull.size() == 0)
     return;
 
-  sf::VertexArray ch{ sf::LineStrip }; //, convexHull.size() + 1};
+  sf::VertexArray ch{ sf::PrimitiveType::LineStrip }; //, convexHull.size() + 1};
   auto wSize{ window.getSize() };
   for (const auto& pt : convexHull)
     ch.append(sf::Vertex{ sf::Vector2f{static_cast<float>(pt.x), wSize.y - static_cast<float>(pt.y)}, col });

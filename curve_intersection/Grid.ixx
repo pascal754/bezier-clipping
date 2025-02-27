@@ -21,7 +21,7 @@ export void drawGrids(sf::RenderWindow& window, unsigned int width, unsigned int
   {
     line[0].position.x = static_cast<float>(i);
     line[1].position.x = static_cast<float>(i);
-    window.draw(line.data(), line.size(), sf::Lines);
+    window.draw(line.data(), line.size(), sf::PrimitiveType::Lines);
   }
 
   // draw horizontal lines
@@ -32,6 +32,6 @@ export void drawGrids(sf::RenderWindow& window, unsigned int width, unsigned int
   {
     line[0].position.y = static_cast<float>(i);
     line[1].position.y = static_cast<float>(i);
-    window.draw(line.data(), line.size(), sf::Lines);
+    window.draw(line.data(), line.size(), sf::PrimitiveType::Lines);
   }
 }

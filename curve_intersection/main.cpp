@@ -5,6 +5,9 @@
 // April 10, 2024
 // use import std;
 
+// February 27, 2025
+// sfml v2 -> v3; breaking changes
+
 #include "pch.h"
 
 import Bspline;
@@ -26,19 +29,25 @@ auto main() -> int
     Bspline curve2{ degreeB };
     curve1.setID(0);
     curve2.setID(1);
-    sf::VertexArray va1{ sf::LineStrip }; // for curve1.drawCurve()
-    sf::VertexArray va2{ sf::LineStrip }; // for curve2.drawCurve()
+    sf::VertexArray va1{ sf::PrimitiveType::LineStrip }; // for curve1.drawCurve()
+    sf::VertexArray va2{ sf::PrimitiveType::LineStrip }; // for curve2.drawCurve()
 
-    sf::RenderWindow window{ sf::VideoMode(1000, 800), "Curve Intersection", sf::Style::Titlebar | sf::Style::Close };
+    sf::RenderWindow window{ sf::VideoMode{{1000, 800}}, "Curve Intersection", sf::Style::Titlebar | sf::Style::Close };
     window.setFramerateLimit(60);
     window.setPosition(sf::Vector2i{ 300, 50 });
-    ImGui::SFML::Init(window);
+    if (!ImGui::SFML::Init(window))
+    {
+      throw std::runtime_error{ "ImGui::SFML::Init error" };
+    }
 
-    sf::RenderWindow childWindow{ sf::VideoMode(290, 790), "Operations", sf::Style::Titlebar };
+    sf::RenderWindow childWindow{ sf::VideoMode{{290, 790}}, "Operations", sf::Style::Titlebar };
     childWindow.setFramerateLimit(60);
-    ImGui::SFML::Init(childWindow);
+    if (!ImGui::SFML::Init(childWindow))
+    {
+      throw std::runtime_error{ "ImGui::SFML::Init error" };
+    }
 
-    auto pos{ window.getPosition() };
+    sf::Vector2i pos{ window.getPosition() };
     pos.x += window.getSize().x;
 
     childWindow.setPosition(pos);
@@ -57,13 +66,13 @@ auto main() -> int
 
     while (window.isOpen())
     {
-      auto windowSize{ window.getSize() };
-      sf::Event event;
-      while (window.pollEvent(event))
-      {
-        ImGui::SFML::ProcessEvent(window, event);
+      sf::Vector2u windowSize{ window.getSize() };
 
-        if (event.type == sf::Event::Closed)
+      while (const std::optional event{ window.pollEvent() })
+      {
+        ImGui::SFML::ProcessEvent(window, *event);
+
+        if (event->is<sf::Event::Closed>())
         {
           if (childWindow.isOpen())
           {
@@ -72,9 +81,9 @@ auto main() -> int
 
           window.close();
         }
-        else if (event.type == sf::Event::MouseButtonPressed)
+        else if (const auto* mousePressed{ event->getIf<sf::Event::MouseButtonPressed>() })
         {
-          if (event.mouseButton.button == sf::Mouse::Left)
+          if (mousePressed->button == sf::Mouse::Button::Left)
           {
             sf::Vector2i mPos{ sf::Mouse::getPosition(window) };
             if (gridSnapMode)
@@ -112,10 +121,10 @@ auto main() -> int
       // Child window event processing
       if (childWindow.isOpen())
       {
-        while (childWindow.pollEvent(event))
+        while (const std::optional event{ childWindow.pollEvent() })
         {
-          ImGui::SFML::ProcessEvent(childWindow, event);
-          if (event.type == sf::Event::Closed)
+          ImGui::SFML::ProcessEvent(childWindow, *event);
+          if (event->is<sf::Event::Closed>())
           {
             childWindow.close();
             ImGui::SFML::Shutdown(childWindow);
@@ -135,8 +144,9 @@ auto main() -> int
 
       // Add ImGui widgets in the child window
       if (childWindow.isOpen()) {
-        ImGui::SetNextWindowPos(ImVec2(5, 5)); // , ImGuiCond_FirstUseEver);
-        ImGui::SetNextWindowSize(ImVec2(280, 780));
+        ImGui::SFML::SetCurrentWindow(childWindow);
+        ImGui::SetNextWindowPos(ImVec2{ 5.f, 5.f }); // , ImGuiCond_FirstUseEver);
+        ImGui::SetNextWindowSize(ImVec2{ 280.f, 780.f });
 
         ImGui::Begin("Operations", &imguiOpen, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar);
         ImGui::BeginGroup();
@@ -373,7 +383,7 @@ auto main() -> int
       for (auto& p : paramInfo.iPoints)
       {
         sf::CircleShape c{ 3 };
-        c.setPosition(static_cast<float>(p.x) - c.getRadius(), windowSize.y - static_cast<float>(p.y) - c.getRadius());
+        c.setPosition({ static_cast<float>(p.x) - c.getRadius(), windowSize.y - static_cast<float>(p.y) - c.getRadius() });
         window.draw(c);
       }
 
