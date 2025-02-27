@@ -144,7 +144,7 @@ auto main() -> int
 
       // Add ImGui widgets in the child window
       if (childWindow.isOpen()) {
-        ImGui::SFML::SetCurrentWindow(childWindow);
+        ImGui::SFML::SetCurrentWindow(childWindow); // added 2025. 2.27
         ImGui::SetNextWindowPos(ImVec2{ 5.f, 5.f }); // , ImGuiCond_FirstUseEver);
         ImGui::SetNextWindowSize(ImVec2{ 280.f, 780.f });
 
