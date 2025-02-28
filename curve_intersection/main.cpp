@@ -32,7 +32,11 @@ auto main() -> int
     sf::VertexArray va1{ sf::PrimitiveType::LineStrip }; // for curve1.drawCurve()
     sf::VertexArray va2{ sf::PrimitiveType::LineStrip }; // for curve2.drawCurve()
 
-    sf::RenderWindow window{ sf::VideoMode{{1000, 800}}, "Curve Intersection", sf::Style::Titlebar | sf::Style::Close };
+    sf::RenderWindow window{
+      sf::VideoMode{{1000, 800}},
+      "Curve Intersection",
+      sf::Style::Titlebar | sf::Style::Close };
+
     window.setFramerateLimit(60);
     window.setPosition(sf::Vector2i{ 300, 50 });
     if (!ImGui::SFML::Init(window))
@@ -40,7 +44,11 @@ auto main() -> int
       throw std::runtime_error{ "ImGui::SFML::Init error" };
     }
 
-    sf::RenderWindow childWindow{ sf::VideoMode{{290, 790}}, "Operations", sf::Style::Titlebar };
+    sf::RenderWindow childWindow{
+      sf::VideoMode{{290, 790}},
+      "Operations",
+      sf::Style::Titlebar };
+
     childWindow.setFramerateLimit(60);
     if (!ImGui::SFML::Init(childWindow))
     {
@@ -80,6 +88,8 @@ auto main() -> int
           }
 
           window.close();
+          ImGui::SFML::Shutdown();
+          return 0;
         }
         else if (const auto* mousePressed{ event->getIf<sf::Event::MouseButtonPressed>() })
         {
@@ -412,7 +422,6 @@ auto main() -> int
       }
     } // end of while(window.isOpen())
 
-    ImGui::SFML::Shutdown();
   }
   catch (const std::exception& e)
   {
