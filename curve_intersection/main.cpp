@@ -8,7 +8,16 @@
 // February 27, 2025
 // sfml v2 -> v3; breaking changes
 
-#include "pch.h"
+// March 1, 2025
+// vcpkg error
+// GImGui is nullptr using vcpkg
+// use imgui v1.91.8 and imgui-sfml v3.0 directly
+
+//#include "pch.h"
+#include <imgui.h>
+#include <imgui-SFML.h>
+#include <SFML/Graphics.hpp>
+#include <SFML/System/Clock.hpp>
 
 import Bspline;
 import FileDialog;
@@ -71,6 +80,9 @@ auto main() -> int
     bool gridMode{ true };
     bool gridSnapMode{ true };
     bool imguiOpen{ true };
+
+    /*ImFontAtlas my_ImFontAtlas{};
+    ImGui::CreateContext(&my_ImFontAtlas);*/
 
     while (window.isOpen())
     {

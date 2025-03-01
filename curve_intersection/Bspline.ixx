@@ -3,7 +3,8 @@
 
 module;
 
-#include "pch.h"
+//#include "pch.h"
+#include <SFML/Graphics.hpp>
 
 export module Bspline;
 
