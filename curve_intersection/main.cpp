@@ -6,12 +6,12 @@
 // use import std;
 
 // February 27, 2025
-// sfml v2 -> v3; breaking changes
+// SFML v2 -> v3; breaking changes
 
 // March 1, 2025
-// vcpkg error
-// GImGui is nullptr using vcpkg
-// use imgui v1.91.8 and imgui-sfml v3.0 directly
+// suspicious vcpkg error:
+// - GImGui is nullptr using vcpkg
+// - use downloaded imgui v1.91.8 and imgui-SFML v3.0 instead of vcpkg
 
 //#include "pch.h"
 #include <imgui.h>
