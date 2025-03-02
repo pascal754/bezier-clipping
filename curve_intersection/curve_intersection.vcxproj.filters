@@ -13,12 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="imgui">
-      <UniqueIdentifier>{acce0b8a-9d1b-41b1-83df-eb0ebb55dc56}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="imgui-SFML">
-      <UniqueIdentifier>{091de9f0-c189-4852-a788-a8c47d459573}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Point.cpp">
@@ -48,28 +42,31 @@
     <ClCompile Include="NodeInfo.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\imgui\imgui.cpp">
-      <Filter>imgui</Filter>
+    <ClCompile Include="imgui.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\imgui-SFML\imgui-SFML.cpp">
-      <Filter>imgui-SFML</Filter>
+    <ClCompile Include="imgui-SFML.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\imgui\imconfig.h">
-      <Filter>imgui</Filter>
+    <ClInclude Include="imconfig.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\imgui\imgui.h">
-      <Filter>imgui</Filter>
+    <ClInclude Include="imconfig-SFML.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\imgui-SFML\imconfig-SFML.h">
-      <Filter>imgui-SFML</Filter>
+    <ClInclude Include="imgui.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\imgui-SFML\imgui-SFML.h">
-      <Filter>imgui-SFML</Filter>
+    <ClInclude Include="imgui_internal.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\imgui-SFML\imgui-SFML_export.h">
-      <Filter>imgui-SFML</Filter>
+    <ClInclude Include="imgui-SFML.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui-SFML_export.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
