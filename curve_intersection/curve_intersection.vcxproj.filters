@@ -48,27 +48,27 @@
     <ClCompile Include="NodeInfo.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="imgui.cpp">
+    <ClCompile Include="..\imgui\imgui.cpp">
       <Filter>imgui</Filter>
     </ClCompile>
-    <ClCompile Include="imgui-SFML.cpp">
+    <ClCompile Include="..\imgui-SFML\imgui-SFML.cpp">
       <Filter>imgui-SFML</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="imgui.h">
+    <ClInclude Include="..\imgui\imconfig.h">
       <Filter>imgui</Filter>
     </ClInclude>
-    <ClInclude Include="imconfig.h">
+    <ClInclude Include="..\imgui\imgui.h">
       <Filter>imgui</Filter>
     </ClInclude>
-    <ClInclude Include="imconfig-SFML.h">
+    <ClInclude Include="..\imgui-SFML\imconfig-SFML.h">
       <Filter>imgui-SFML</Filter>
     </ClInclude>
-    <ClInclude Include="imgui-SFML.h">
+    <ClInclude Include="..\imgui-SFML\imgui-SFML.h">
       <Filter>imgui-SFML</Filter>
     </ClInclude>
-    <ClInclude Include="imgui-SFML_export.h">
+    <ClInclude Include="..\imgui-SFML\imgui-SFML_export.h">
       <Filter>imgui-SFML</Filter>
     </ClInclude>
   </ItemGroup>
