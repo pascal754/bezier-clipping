@@ -29,14 +29,12 @@
 ## Development Tools
 
 - Microsoft Visual Studio Community 2022 (64-bit) - 
-Version 17.13.0 Preview 1.0
+Version 17.14.0 Preview 1.1
 C++latest(modules)
 
 ## Library via vcpkg
 
-- sfml:x64-windows 2.6.2
-- imgui:x64-windows 1.91.5
-- imgui-sfml:x64-windows 2.6
+- sfml:x64-windows 3.0.0 (breaking changes)
 - magic-enum:x64-windows 0.9.7 (#include path changed from <magic_enum.hpp> to <magic_enum/magic_enum.hpp>)
 
 ## MSVC Bug
