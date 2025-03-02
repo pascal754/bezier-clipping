@@ -9,12 +9,12 @@
 // SFML v2 -> v3; breaking changes
 
 // March 1, 2025
-// suspicious vcpkg error:
-// - GImGui is nullptr using vcpkg
-// - use downloaded imgui v1.91.8 and imgui-SFML v3.0 instead of vcpkg
+// a vcpkg issue:
+// - GImGui is nullptr after using SFML v3
+// - workaround: add downloaded imgui v1.91.8 and imgui-SFML v3.0
 
-#include "imgui.h"
-#include "imgui-SFML.h"
+#include <imgui.h>
+#include <imgui-SFML.h>
 #include <SFML/Graphics.hpp>
 #include <SFML/System/Clock.hpp>
 

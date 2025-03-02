@@ -34,8 +34,10 @@ C++latest(modules)
 
 ## Library via vcpkg
 
-- sfml:x64-windows 3.0.0 (breaking changes)
+- imgui:x64-windows 1.91.8
+- imgui-sfml:x64-windows 3.0
 - magic-enum:x64-windows 0.9.7 (#include path changed from <magic_enum.hpp> to <magic_enum/magic_enum.hpp>)
+- sfml:x64-windows 3.0.0 (breaking changes)
 
 ## MSVC Bug
 

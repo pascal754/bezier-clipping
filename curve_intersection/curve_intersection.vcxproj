@@ -185,25 +185,25 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\imgui-SFML\imgui-SFML.cpp" />
+    <ClCompile Include="..\imgui\imgui.cpp" />
     <ClCompile Include="Auxilary.ixx" />
     <ClCompile Include="Bspline.cpp" />
     <ClCompile Include="Bspline.ixx" />
     <ClCompile Include="FileDialog.ixx" />
     <ClCompile Include="Grid.ixx" />
-    <ClCompile Include="imgui-SFML.cpp" />
-    <ClCompile Include="imgui.cpp" />
     <ClCompile Include="NodeInfo.ixx" />
     <ClCompile Include="Point.cpp" />
     <ClCompile Include="Point.ixx" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="imconfig-SFML.h" />
-    <ClInclude Include="imconfig.h" />
-    <ClInclude Include="imgui-SFML.h" />
-    <ClInclude Include="imgui-SFML_export.h" />
-    <ClInclude Include="imgui.h" />
-    <ClInclude Include="imgui_internal.h" />
+    <ClInclude Include="..\imgui-SFML\imconfig-SFML.h" />
+    <ClInclude Include="..\imgui-SFML\imgui-SFML.h" />
+    <ClInclude Include="..\imgui-SFML\imgui-SFML_export.h" />
+    <ClInclude Include="..\imgui\imconfig.h" />
+    <ClInclude Include="..\imgui\imgui.h" />
+    <ClInclude Include="..\imgui\imgui_internal.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
