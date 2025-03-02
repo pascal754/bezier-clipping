@@ -1,7 +1,3 @@
-//module;
-//
-//#include "pch.h"
-
 export module NodeInfo;
 
 export enum class ReturnInfo

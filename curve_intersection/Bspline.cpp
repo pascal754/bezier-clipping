@@ -8,7 +8,6 @@
 
 module;
 
-//#include "pch.h"
 #include <SFML/Graphics.hpp>
 
 module Bspline;

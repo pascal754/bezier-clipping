@@ -1,10 +1,6 @@
 // September 2, 2022
 // by SM
 
-//module;
-//
-//#include "pch.h"
-
 export module Point;
 
 import std;

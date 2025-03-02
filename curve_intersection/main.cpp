@@ -13,7 +13,6 @@
 // - GImGui is nullptr using vcpkg
 // - use downloaded imgui v1.91.8 and imgui-SFML v3.0 instead of vcpkg
 
-//#include "pch.h"
 #include <imgui.h>
 #include <imgui-SFML.h>
 #include <SFML/Graphics.hpp>

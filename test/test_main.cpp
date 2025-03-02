@@ -1,5 +1,3 @@
-#include "pch.h"
-
 import Bspline;
 import MakeCurve;
 import std;
@@ -12,10 +10,10 @@ int main()
   }
   catch (const std::exception& e)
   {
-    std::println(stderr, "{}", e.what());
+    std::println(std::cerr, "{}", e.what());
   }
   catch (...)
   {
-    std::println(stderr, "other error");
+    std::println(std::cerr, "other error");
   }
 }

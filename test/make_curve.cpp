@@ -1,6 +1,5 @@
 module;
 
-#include "pch.h"
 #include <conio.h>
 
 module MakeCurve;
