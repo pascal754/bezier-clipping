@@ -186,7 +186,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\imgui-SFML\imgui-SFML.cpp" />
-    <ClCompile Include="..\imgui\imgui.cpp" />
     <ClCompile Include="Auxilary.ixx" />
     <ClCompile Include="Bspline.cpp" />
     <ClCompile Include="Bspline.ixx" />
@@ -196,14 +195,6 @@
     <ClCompile Include="Point.cpp" />
     <ClCompile Include="Point.ixx" />
     <ClCompile Include="main.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\imgui-SFML\imconfig-SFML.h" />
-    <ClInclude Include="..\imgui-SFML\imgui-SFML.h" />
-    <ClInclude Include="..\imgui-SFML\imgui-SFML_export.h" />
-    <ClInclude Include="..\imgui\imconfig.h" />
-    <ClInclude Include="..\imgui\imgui.h" />
-    <ClInclude Include="..\imgui\imgui_internal.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

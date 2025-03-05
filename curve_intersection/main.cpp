@@ -13,6 +13,10 @@
 // - GImGui is nullptr after using SFML v3
 // - workaround: add downloaded imgui v1.91.8 and imgui-SFML v3.0
 
+// March 5, 2025
+// issue; GImGui is nullptr.
+// only one file, imgui-SFML.cpp, needs adding for workaround.
+
 #include <imgui.h>
 #include <imgui-SFML.h>
 #include <SFML/Graphics.hpp>

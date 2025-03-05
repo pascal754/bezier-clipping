@@ -16,9 +16,6 @@
     <Filter Include="imgui-SFML">
       <UniqueIdentifier>{861655ba-2551-4034-9177-cbe85c9a9cde}</UniqueIdentifier>
     </Filter>
-    <Filter Include="imgui">
-      <UniqueIdentifier>{8fa6f267-3220-48f7-8cdf-fa6ff70ba389}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Point.cpp">
@@ -48,31 +45,8 @@
     <ClCompile Include="NodeInfo.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\imgui\imgui.cpp">
-      <Filter>imgui</Filter>
-    </ClCompile>
     <ClCompile Include="..\imgui-SFML\imgui-SFML.cpp">
       <Filter>imgui-SFML</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\imgui\imconfig.h">
-      <Filter>imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\imgui\imgui.h">
-      <Filter>imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\imgui\imgui_internal.h">
-      <Filter>imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\imgui-SFML\imconfig-SFML.h">
-      <Filter>imgui-SFML</Filter>
-    </ClInclude>
-    <ClInclude Include="..\imgui-SFML\imgui-SFML.h">
-      <Filter>imgui-SFML</Filter>
-    </ClInclude>
-    <ClInclude Include="..\imgui-SFML\imgui-SFML_export.h">
-      <Filter>imgui-SFML</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>
