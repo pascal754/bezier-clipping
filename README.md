@@ -46,7 +46,7 @@ C++latest(modules)
 ## Sample calculation
 ![screenshot](Screenshot_3.png)
 
-## Reference
+## References
 - Paper
   - [Curve intersection using Bézier clipping by T W Sederberg and T Nishita](http://nishitalab.org/user/nis/cdrom/cad/CAGD90Curve.pdf)
 
