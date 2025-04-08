@@ -45,3 +45,10 @@ C++latest(modules)
   
 ## Sample calculation
 ![screenshot](Screenshot_3.png)
+
+## Reference
+- Paper
+  - [Curve intersection using Bézier clipping by T W Sederberg and T Nishita](http://nishitalab.org/user/nis/cdrom/cad/CAGD90Curve.pdf)
+
+- Book
+  - 'The NURBS Book' by Les Piegl and Wayne Tiller, publisher: Springer, ISBN 3-540-55069-0
