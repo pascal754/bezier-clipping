@@ -409,7 +409,7 @@ void Bspline::findConvexHull()
     if (pt != firstCHPoint)
     {
       // find an angle between the first point of the convex hull
-      unsortedPoints.emplace_back(pt, pt.findAngleAround(firstCHPoint));
+      unsortedPoints.emplace_back(pt.x, pt.y, pt.findAngleAround(firstCHPoint));
     }
   }
 

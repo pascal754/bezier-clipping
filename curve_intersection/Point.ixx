@@ -40,6 +40,7 @@ private:
 
 export struct CHPoint //convex hull points
 {
+  CHPoint(double x, double y, double a) : p{ x, y }, angle{ a } {}
   Point p;
   double angle{};
 };
