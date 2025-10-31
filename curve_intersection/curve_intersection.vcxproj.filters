@@ -13,9 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="imgui-SFML">
-      <UniqueIdentifier>{861655ba-2551-4034-9177-cbe85c9a9cde}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Point.cpp">
@@ -44,9 +41,6 @@
     </ClCompile>
     <ClCompile Include="NodeInfo.ixx">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\imgui-SFML\imgui-SFML.cpp">
-      <Filter>imgui-SFML</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
