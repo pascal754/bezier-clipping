@@ -45,3 +45,12 @@ Version 17.14.19
   
 ## Sample calculation
 ![screenshot](Screenshot_3.png)
+
+## References
+- Papers
+  - [Sederberg, T. W. and Nishita, T. (1990) *Curve intersection using Bézier clipping*, computer-aided design](http://nishitalab.org/user/nis/cdrom/cad/CAGD90Curve.pdf)
+  - [Schulz, Christian (2009) *Bézier clipping is quadratically convergent*, Computer Aided Geometric Design](https://doi.org/10.1016/j.cagd.2007.12.006)
+
+- Books
+  - Piegl, Les and Tiller, Wayne (1995) *The NURBS Book*, Springer, ISBN 3-540-55069-0
+  - [Sederberg, T. W. (2012) *Computer Aided Geometric Design*, Faculty Publications](https://scholarsarchive.byu.edu/facpub/1/)
