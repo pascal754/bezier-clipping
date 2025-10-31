@@ -29,15 +29,15 @@
 ## Development Tools
 
 - Microsoft Visual Studio Community 2022 (64-bit) - 
-Version 17.14.0 Preview 1.1
-C++latest(modules)
+Version 17.14.19
+/std:c++latest
 
 ## Library via vcpkg
 
-- imgui:x64-windows 1.91.8
-- imgui-sfml:x64-windows 3.0
-- magic-enum:x64-windows 0.9.7 (#include path changed from <magic_enum.hpp> to <magic_enum/magic_enum.hpp>)
-- sfml:x64-windows 3.0.0 (breaking changes)
+- imgui:x64-windows 1.91.9
+- imgui-sfml:x64-windows 3.0#2 ([MSVC + vcpkg: Exception thrown. g was nullptr.](https://github.com/SFML/imgui-sfml/issues/315) fixed)
+- magic-enum:x64-windows 0.9.7#1 (v0.9.7: #include path changed from <magic_enum.hpp> to <magic_enum/magic_enum.hpp>)
+- sfml:x64-windows 3.0.2 (v3.0.0: breaking changes)
 
 ## MSVC Bug
 
